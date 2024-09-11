@@ -1,0 +1,81 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
+  
+  .main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+  }
+  
+  .accountManagement {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .accountManagement h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+  }
+  
+  .deleteButton {
+    background-color: #ff4136;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .deleteButton:hover {
+    background-color: #e60000;
+  }
+  
+  .deleteButton:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 65, 54, 0.5);
+  }
+  
+  .warning {
+    color: #ff4136;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    font-style: italic;
+  }
+  
+  @media (max-width: 768px) {
+    .main {
+      padding: 1rem;
+    }
+  
+    .title {
+      font-size: 2rem;
+    }
+  
+    .accountManagement {
+      padding: 1.5rem;
+    }
+  
+    .accountManagement h2 {
+      font-size: 1.5rem;
+    }
+  }

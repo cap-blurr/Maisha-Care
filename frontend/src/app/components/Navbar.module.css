@@ -1,0 +1,25 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: rgba(255, 82, 82, 0.1);
+  }
+  
+  .navbar a {
+    color: var(--text-color);
+    margin-right: 1rem;
+  }
+  
+  .navbar a:hover {
+    color: var(--secondary-color);
+  }
+  
+  .signOut {
+    background-color: transparent;
+    border: 1px solid var(--primary-color);
+  }
+  
+  .signOut:hover {
+    background-color: var(--primary-color);
+  }

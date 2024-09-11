@@ -1,0 +1,25 @@
+.card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  
+  .actions button {
+    flex: 1;
+    margin: 0 0.5rem;
+  }
+  
+  .actions button:first-child {
+    margin-left: 0;
+  }
+  
+  .actions button:last-child {
+    margin-right: 0;
+  }

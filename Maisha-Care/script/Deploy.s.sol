@@ -9,6 +9,7 @@ import "../src/PersonalInfo.sol";
 import "../src/MedicalHistory.sol";
 import "../src/CurrentHealth.sol";
 import "../src/TreatmentRecords.sol";
+import "../src/TemporaryAccess.sol";
 import "../src/HealthRecordManager.sol";
 import "../src/MaishaToken.sol";
 
@@ -16,60 +17,55 @@ contract DeployScript is Script {
     function setUp() public {}
 
     function run() public {
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address deployerAddress = vm.addr(deployerPrivateKey);
+        vm.startBroadcast();
 
-        vm.startBroadcast(deployerPrivateKey);
+        // Deploy contracts in order
+        VerifiedAddressRegistry verifiedRegistry = new VerifiedAddressRegistry();
+        MaishaToken maishaToken = new MaishaToken();
 
-        // Deploy VerifiedAddressRegistry
-        VerifiedAddressRegistry verifiedRegistry = new VerifiedAddressRegistry(
-            deployerAddress
-        );
-
-        // Deploy RoleManager
         RoleManager roleManager = new RoleManager(address(verifiedRegistry));
 
-        // Deploy UpdateApproval
         UpdateApproval updateApproval = new UpdateApproval(
             address(roleManager)
         );
 
-        // Deploy PersonalInfo
         PersonalInfo personalInfo = new PersonalInfo(
             address(roleManager),
             address(updateApproval)
         );
-
-        // Deploy MedicalHistory
         MedicalHistory medicalHistory = new MedicalHistory(
             address(roleManager),
             address(updateApproval)
         );
-
-        // Deploy CurrentHealth
         CurrentHealth currentHealth = new CurrentHealth(
             address(roleManager),
             address(updateApproval)
         );
-
-        // Deploy TreatmentRecords
         TreatmentRecords treatmentRecords = new TreatmentRecords(
             address(roleManager),
             address(updateApproval)
         );
+        TemporaryAccess temporaryAccess = new TemporaryAccess(
+            address(roleManager)
+        );
 
-        // Deploy HealthRecordManager
+        // Deploy HealthRecordManager last
         HealthRecordManager healthRecordManager = new HealthRecordManager(
+            address(maishaToken),
             address(personalInfo),
             address(medicalHistory),
             address(currentHealth),
             address(treatmentRecords),
             address(roleManager),
+            address(temporaryAccess),
             address(updateApproval)
         );
 
-        // Deploy MaishaToken
-        MaishaToken maishaToken = new MaishaToken();
+        // Ownership transfer
+        personalInfo.transferOwnership(address(healthRecordManager));
+        medicalHistory.transferOwnership(address(healthRecordManager));
+        currentHealth.transferOwnership(address(healthRecordManager));
+        treatmentRecords.transferOwnership(address(healthRecordManager));
 
         vm.stopBroadcast();
 
@@ -80,14 +76,15 @@ contract DeployScript is Script {
         );
         console.log("RoleManager deployed to:", address(roleManager));
         console.log("UpdateApproval deployed to:", address(updateApproval));
+        console.log("MaishaToken deployed to:", address(maishaToken));
         console.log("PersonalInfo deployed to:", address(personalInfo));
         console.log("MedicalHistory deployed to:", address(medicalHistory));
         console.log("CurrentHealth deployed to:", address(currentHealth));
         console.log("TreatmentRecords deployed to:", address(treatmentRecords));
+        console.log("TemporaryAccess deployed to:", address(temporaryAccess));
         console.log(
             "HealthRecordManager deployed to:",
             address(healthRecordManager)
         );
-        console.log("MaishaToken deployed to:", address(maishaToken));
     }
 }

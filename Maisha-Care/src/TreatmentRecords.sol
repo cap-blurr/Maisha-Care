@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {RoleManager} from "./RoleManager.sol";
 import {UpdateApproval} from "./UpdateApproval.sol";
 
-contract TreatmentRecords {
+contract TreatmentRecords is Ownable {
     RoleManager public roleManager;
     UpdateApproval public updateApproval;
 
@@ -15,33 +16,60 @@ contract TreatmentRecords {
 
     mapping(address => Record[]) private treatmentRecords;
 
-    event RecordAddInitiated(address indexed patient, address indexed doctor, bytes32 updateId);
+    event RecordAddInitiated(
+        address indexed patient,
+        address indexed doctor,
+        bytes32 updateId
+    );
     event RecordAdded(address indexed patient, uint256 timestamp);
 
-    constructor(address _roleManagerAddress, address _updateApprovalAddress) {
+    constructor(
+        address _roleManagerAddress,
+        address _updateApprovalAddress
+    ) Ownable(msg.sender) {
         roleManager = RoleManager(_roleManagerAddress);
         updateApproval = UpdateApproval(_updateApprovalAddress);
     }
 
-    function initiateAddRecord(address _patient, string memory _dataHash) public {
-        require(roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender), "Must be a doctor");
-        bytes32 updateId = updateApproval.initiateUpdate(_patient, keccak256(abi.encodePacked(_dataHash)));
+    function initiateAddRecord(
+        address _patient,
+        string memory _dataHash
+    ) public {
+        require(
+            roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
+            "Must be a doctor"
+        );
+        bytes32 updateId = updateApproval.initiateUpdate(
+            _patient,
+            keccak256(abi.encodePacked(_dataHash))
+        );
         emit RecordAddInitiated(_patient, msg.sender, updateId);
     }
 
     function addRecord(bytes32 _updateId) public {
         require(updateApproval.isApproved(_updateId), "Update not approved");
-        (address doctor, address patient, bytes32 dataHash, , , ) = updateApproval.getPendingUpdate(_updateId);
+        (
+            address doctor,
+            address patient,
+            bytes32 dataHash,
+            ,
+            ,
+
+        ) = updateApproval.getPendingUpdate(_updateId);
         require(msg.sender == doctor, "Only initiating doctor can update");
-        
-        treatmentRecords[patient].push(Record(bytes32ToString(dataHash), block.timestamp));
+
+        treatmentRecords[patient].push(
+            Record(bytes32ToString(dataHash), block.timestamp)
+        );
         emit RecordAdded(patient, block.timestamp);
     }
 
-    function getRecords(address _patient) public view returns (string[] memory, uint256[] memory) {
+    function getRecords(
+        address _patient
+    ) public view returns (string[] memory, uint256[] memory) {
         require(
             roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender) ||
-            roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
+                roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
             "Must be patient or authorized doctor"
         );
         Record[] memory records = treatmentRecords[_patient];
@@ -56,8 +84,13 @@ contract TreatmentRecords {
         return (dataHashes, timestamps);
     }
 
-    function getAnonymizedRecords(address _patient) public view returns (uint256[] memory) {
-        require(roleManager.hasRole(roleManager.RESEARCHER_ROLE(), msg.sender), "Must be a researcher");
+    function getAnonymizedRecords(
+        address _patient
+    ) public view returns (uint256[] memory) {
+        require(
+            roleManager.hasRole(roleManager.RESEARCHER_ROLE(), msg.sender),
+            "Must be a researcher"
+        );
         Record[] memory records = treatmentRecords[_patient];
         uint256[] memory timestamps = new uint256[](records.length);
 
@@ -68,8 +101,13 @@ contract TreatmentRecords {
         return timestamps;
     }
 
-    function getBuilderRecords(address _patient) public view returns (uint256[] memory) {
-        require(roleManager.hasRole(roleManager.BUILDER_ROLE(), msg.sender), "Must be a builder");
+    function getBuilderRecords(
+        address _patient
+    ) public view returns (uint256[] memory) {
+        require(
+            roleManager.hasRole(roleManager.BUILDER_ROLE(), msg.sender),
+            "Must be a builder"
+        );
         Record[] memory records = treatmentRecords[_patient];
         uint256[] memory timestamps = new uint256[](records.length);
 
@@ -80,9 +118,11 @@ contract TreatmentRecords {
         return timestamps;
     }
 
-    function bytes32ToString(bytes32 _bytes32) private pure returns (string memory) {
+    function bytes32ToString(
+        bytes32 _bytes32
+    ) private pure returns (string memory) {
         uint8 i = 0;
-        while(i < 32 && _bytes32[i] != 0) {
+        while (i < 32 && _bytes32[i] != 0) {
             i++;
         }
         bytes memory bytesArray = new bytes(i);

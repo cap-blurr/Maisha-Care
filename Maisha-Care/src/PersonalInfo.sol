@@ -48,15 +48,9 @@ contract PersonalInfo is Ownable {
 
     function updateInfo(bytes32 _updateId) public {
         require(updateApproval.isApproved(_updateId), "Update not approved");
-        (
-            address doctor,
-            address patient,
-            bytes32 dataHash,
-            ,
-            ,
-
-        ) = updateApproval.getPendingUpdate(_updateId);
-        require(msg.sender == doctor, "Only initiating doctor can update");
+        (, address patient, bytes32 dataHash, , , ) = updateApproval
+            .getPendingUpdate(_updateId);
+        require(msg.sender == patient, "Only patient can execute the update");
 
         personalInfo[patient] = Info(
             bytes32ToString(dataHash),

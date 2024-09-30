@@ -6,14 +6,19 @@ import Navbar from '../components/Navbar'
 import styles from './monetizedata.module.css'
 
 export default function MonetizeData() {
-  const { address } = useAuth()
+  const { address, isAuthenticated, isRegistered, userRole } = useAuth()
   const [isMonetized, setIsMonetized] = useState(false)
 
+  if (!isAuthenticated || !isRegistered || userRole !== 'patient') {
+    return <div>Unauthorized access</div>;
+  }
+  
   const handleMonetizeData = () => {
     // Here you would implement the logic to monetize the data
     // For now, we'll just toggle the state
     setIsMonetized(!isMonetized)
   }
+  
 
   return (
     <div className={styles.container}>

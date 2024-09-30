@@ -1,0 +1,121 @@
+{
+  "abi": [
+    {
+      "type": "event",
+      "name": "AddressUnverified",
+      "inputs": [
+        {
+          "name": "role",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "account",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "AddressVerified",
+      "inputs": [
+        {
+          "name": "role",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "account",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "function",
+      "name": "unverifyAddress",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "verifyAddress",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "getBuilderRole",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "pure"
+    },
+    {
+      "type": "function",
+      "name": "getDoctorRole",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "pure"
+    },
+    {
+      "type": "function",
+      "name": "getPatientRole",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "pure"
+    },
+    {
+      "type": "function",
+      "name": "getResearcherRole",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "pure"
+    },
+    {
+      "type": "function",
+      "name": "isVerified",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "unverifyAddress",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "verifyAddress",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" },
+        { "name": "uniqueHash", "type": "bytes32", "internalType": "bytes32" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    }
+  ]
+}

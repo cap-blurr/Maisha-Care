@@ -9,27 +9,16 @@ import { useAuth } from './hooks/useAuth'
 
 export default function Home() {
   const router = useRouter()
-  const { isAuthenticated, isRegistered, isLoading, userRole } = useAuth()
+  const { isAuthenticated, isRegistered, isLoading, userRole } = useAuth();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (isAuthenticated) {
-        if (isRegistered && userRole) {
-          router.push(`/dashboard/${userRole}`)
-        } else if (!isRegistered) {
-          router.push('/registration')
-        } 
-        // else if (isRegistered) {
-        //   router.push('/form')
-        // }
-      }
+    if (!isLoading && isAuthenticated) {
+      router.push('/registration')
     }
-  }, [isAuthenticated, isRegistered, isLoading, userRole, router])
+  }, [isAuthenticated, isLoading, router])
 
-  if (isLoading) {
-    return <div className={styles.loading}>Loading...</div>
-  }
-
+  if (isLoading) return <div>Loading...</div>;
+  
   return (
     <main className={styles.main}>
       <AnimatedBackground />

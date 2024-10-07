@@ -15,7 +15,7 @@ import {MaishaToken} from "./MaishaToken.sol";
 
 error HealthRecordManage__NotAuthorized();
 
-contract HealthRecordManager is AccessControl,Ownable {
+contract HealthRecordManager is AccessControl, Ownable {
     MaishaToken public maishaToken;
     PersonalInfo public personalInfo;
     MedicalHistory public medicalHistory;
@@ -26,7 +26,9 @@ contract HealthRecordManager is AccessControl,Ownable {
     UpdateApproval public updateApproval;
 
     mapping(address => mapping(address => bool)) private authorizedViewers;
+    mapping(address => bool) public dataMonetizationOptIn;
 
+    event DataMonetizationOptIn(address indexed patient);
     event AccessGranted(address indexed patient, address indexed viewer);
     event AccessRevoked(address indexed patient, address indexed viewer);
 
@@ -50,12 +52,14 @@ contract HealthRecordManager is AccessControl,Ownable {
         updateApproval = UpdateApproval(_updateApproval);
     }
 
-        function checkRole(address account) public view returns (string memory) {
+    function checkRole(address account) public view returns (string memory) {
         if (roleManager.hasRole(roleManager.DOCTOR_ROLE(), account)) {
             return "Doctor";
         } else if (roleManager.hasRole(roleManager.PATIENT_ROLE(), account)) {
             return "Patient";
-        } else if (roleManager.hasRole(roleManager.RESEARCHER_ROLE(), account)) {
+        } else if (
+            roleManager.hasRole(roleManager.RESEARCHER_ROLE(), account)
+        ) {
             return "Researcher";
         } else if (roleManager.hasRole(roleManager.BUILDER_ROLE(), account)) {
             return "Builder";
@@ -64,21 +68,32 @@ contract HealthRecordManager is AccessControl,Ownable {
         }
     }
 
-
     // data modification functions
-    function initiatePersonalInfoUpdate(address _patient, string memory _dataHash) public {
+    function initiatePersonalInfoUpdate(
+        address _patient,
+        string memory _dataHash
+    ) public {
         personalInfo.initiateInfoUpdate(_patient, _dataHash);
     }
 
-    function initiateMedicalHistoryUpdate(address _patient, string memory _dataHash) public {
+    function initiateMedicalHistoryUpdate(
+        address _patient,
+        string memory _dataHash
+    ) public {
         medicalHistory.initiateHistoryUpdate(_patient, _dataHash);
     }
 
-    function initiateCurrentHealthUpdate(address _patient, string memory _dataHash) public {
+    function initiateCurrentHealthUpdate(
+        address _patient,
+        string memory _dataHash
+    ) public {
         currentHealth.initiateHealthUpdate(_patient, _dataHash);
     }
 
-    function initiateTreatmentRecordAdd(address _patient, string memory _dataHash) public {
+    function initiateTreatmentRecordAdd(
+        address _patient,
+        string memory _dataHash
+    ) public {
         treatmentRecords.initiateAddRecord(_patient, _dataHash);
     }
 
@@ -86,19 +101,32 @@ contract HealthRecordManager is AccessControl,Ownable {
         updateApproval.approveUpdate(_updateId);
     }
 
-    function getPersonalInfo(address _patient) public view onlyAuthorized(_patient) returns (string memory, uint256) {
+    function getPersonalInfo(
+        address _patient
+    ) public view onlyAuthorized(_patient) returns (string memory, uint256) {
         return personalInfo.getInfo(_patient);
     }
 
-    function getMedicalHistory(address _patient) public view onlyAuthorized(_patient) returns (string memory, uint256) {
+    function getMedicalHistory(
+        address _patient
+    ) public view onlyAuthorized(_patient) returns (string memory, uint256) {
         return medicalHistory.getHistory(_patient);
     }
 
-    function getCurrentHealth(address _patient) public view onlyAuthorized(_patient) returns (string memory, uint256) {
+    function getCurrentHealth(
+        address _patient
+    ) public view onlyAuthorized(_patient) returns (string memory, uint256) {
         return currentHealth.getHealth(_patient);
     }
 
-    function getTreatmentRecords(address _patient) public view onlyAuthorized(_patient) returns (string[] memory, uint256[] memory) {
+    function getTreatmentRecords(
+        address _patient
+    )
+        public
+        view
+        onlyAuthorized(_patient)
+        returns (string[] memory, uint256[] memory)
+    {
         return treatmentRecords.getRecords(_patient);
     }
 
@@ -112,13 +140,33 @@ contract HealthRecordManager is AccessControl,Ownable {
         emit AccessRevoked(msg.sender, _viewer);
     }
 
-    function isAuthorized(address _patient, address _viewer) public view returns (bool) {
-        return _patient == _viewer || authorizedViewers[_patient][_viewer];
+    function isAuthorized(
+        address _patient,
+        address _viewer
+    ) public view returns (bool) {
+        if (_patient == _viewer) {
+            return true;
+        }
+        if (temporaryAccess.hasAccess(_patient, _viewer)) {
+            return true;
+        }
+        return false;
+    }
+
+    function optInDataMonetization() public {
+        require(
+            roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender),
+            "Must be a patient"
+        );
+        require(!dataMonetizationOptIn[msg.sender], "Already opted in");
+        dataMonetizationOptIn[msg.sender] = true;
+        uint256 rewardAmount = 1000 * 10 ** 18; // reward the user with 1000 tokens after opting in for data monetization
+        maishaToken.mint(msg.sender, rewardAmount);
+        emit DataMonetizationOptIn(msg.sender);
     }
 
     modifier onlyAuthorized(address _patient) {
-        if (!isAuthorized(_patient, msg.sender)) revert HealthRecordManage__NotAuthorized();
+        require(isAuthorized(_patient, msg.sender), "Not authorized");
         _;
     }
-
 }

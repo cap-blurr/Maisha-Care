@@ -1,0 +1,41 @@
+{
+  "abi": [
+    {
+      "type": "function",
+      "name": "approveAccess",
+      "inputs": [
+        { "name": "_doctor", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "denyAccess",
+      "inputs": [
+        { "name": "_doctor", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "hasAccess",
+      "inputs": [
+        { "name": "_patient", "type": "address", "internalType": "address" },
+        { "name": "_accessor", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "requestAccess",
+      "inputs": [
+        { "name": "_patient", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    }
+  ]
+}

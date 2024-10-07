@@ -66,6 +66,7 @@ contract DeployScript is Script {
         medicalHistory.transferOwnership(address(healthRecordManager));
         currentHealth.transferOwnership(address(healthRecordManager));
         treatmentRecords.transferOwnership(address(healthRecordManager));
+        maishaToken.transferOwnership(address(healthRecordManager));
 
         vm.stopBroadcast();
 

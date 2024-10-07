@@ -1,36 +1,32 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useAuth } from '../hooks/useAuth'
-import Navbar from '../components/Navbar'
-import RequestCard from '../components/RequestCard'
-import HospitalVisitsList from '../components/HospitalVisitsLists'
-import styles from './dashboard.module.css'
+import { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
+import Navbar from '../components/Navbar';
+import RequestCard from '../components/RequestCard';
+import styles from './dashboard.module.css';
+import { useWatchContractEvent } from 'wagmi';
+import TemporaryAccessABI from '../abis/TemporaryAccess.json';
+// import { TEMPORARY_ACCESS_ADDRESS } from '../../config';
 
 export default function PatientDashboard() {
-  const { address } = useAuth()
-  const [requests, setRequests] = useState([])
-  const [visits, setVisits] = useState([])
+  const { address } = useAuth();
+  const [accessRequests, setAccessRequests] = useState([]);
 
-  useEffect(() => {
-    // Mock data for requests
-    setRequests([
-      { id: 1, type: 'access', from: '0x1234...5678' },
-      { id: 2, type: 'update', from: '0x9876...5432' },
-    ])
+  useWatchContractEvent({
+    address: TEMPORARY_ACCESS_ADDRESS,
+    abi: TemporaryAccessABI,
+    eventName: 'AccessRequested',
+    listener: (event) => {
+      if (event.args.patient === address) {
+        setAccessRequests((prev) => [...prev, event.args.doctor]);
+      }
+    },
+  });
 
-    // Mock data for visits
-    setVisits([
-      { date: '2023-05-15', reason: 'Annual checkup', doctor: 'Dr. Smith', notes: 'Patient is in good health.' },
-      { date: '2023-03-02', reason: 'Flu symptoms', doctor: 'Dr. Johnson', notes: 'Prescribed antiviral medication.' },
-    ])
-  }, [])
-
-  const handleRequestAction = (id, action) => {
-    console.log(`Request ${id} ${action}`)
-    // Update local state
-    setRequests(requests.filter(req => req.id !== id))
-  }
+  const handleApprove = async (doctorAddress) => {
+    // Implement approve access function
+  };
 
   return (
     <div className={styles.container}>
@@ -38,18 +34,18 @@ export default function PatientDashboard() {
       <main className={styles.main}>
         <h1 className={styles.title}>Patient Dashboard</h1>
         <p className={styles.address}>Wallet Address: {address}</p>
-        <div className={styles.requestsContainer}>
-          <h2>Pending Requests</h2>
-          {requests.map(request => (
-            <RequestCard
-              key={request.id}
-              request={request}
-              onAction={handleRequestAction}
-            />
-          ))}
-        </div>
-        <HospitalVisitsList visits={visits} />
+        <h2>Access Requests</h2>
+        {accessRequests.length > 0 ? (
+          accessRequests.map((doctorAddress, index) => (
+            <div key={index} className={styles.requestCard}>
+              <p>Doctor Address: {doctorAddress}</p>
+              <button onClick={() => handleApprove(doctorAddress)}>Approve</button>
+            </div>
+          ))
+        ) : (
+          <p>No access requests at this time.</p>
+        )}
       </main>
     </div>
-  )
+  );
 }

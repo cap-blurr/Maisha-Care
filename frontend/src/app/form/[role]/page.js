@@ -1,49 +1,66 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '../../hooks/useAuth'
-import styles from '../form.module.css'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../hooks/useAuth';
+import styles from '../form.module.css';
 
 export default function Form({ params }) {
-  const router = useRouter()
-  const { address, setRole } = useAuth()
+  const router = useRouter();
+  const { address, setRole } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    dateOfBirth: '',
     specialization: '', // Only for doctors
-  })
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  if (!params || !params.role) {
+    return <div>Invalid route parameters</div>;
+  }
+
+  const isDoctor = params.role === 'doctor';
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    console.log('Form submitted:', formData)
-    
+    e.preventDefault();
+    setLoading(true);
+    setError('');
     try {
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      console.log('Registration successful')
-      setRole(params.role)
-      console.log('Role set:', params.role)
-      
-      console.log('Redirecting to:', `/dashboard/${params.role}`)
-      router.push(`/dashboard/${params.role}`)
+      // Send form data to backend for verification, IPFS storage, and contract interaction
+      const response = await fetch('http://localhost:5000/api/verify-and-store', {
+        method: 'POST',
+        body: JSON.stringify({ role: params.role, address, formData }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      if (data.success) {
+        setRole(params.role);
+        router.push(`/dashboard/${params.role}`);
+      } else {
+        setError(data.message || 'Verification failed');
+      }
     } catch (error) {
-      console.error('Registration error:', error)
-      // Handle error (e.g., show error message to user)
+      console.error('Verification error:', error);
+      setError('An error occurred during verification');
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>{params.role === 'doctor' ? 'Doctor' : 'Patient'} Registration</h1>
+      <h1 className={styles.title}>
+        {isDoctor ? 'Doctor' : 'Patient'} Registration
+      </h1>
+      {error && <p className={styles.error}>{error}</p>}
       <form className={styles.form} onSubmit={handleSubmit}>
         <input
-          type="text"
           name="name"
           value={formData.name}
           onChange={handleInputChange}
@@ -52,17 +69,24 @@ export default function Form({ params }) {
           className={styles.input}
         />
         <input
-          type="email"
           name="email"
+          type="email"
           value={formData.email}
           onChange={handleInputChange}
           placeholder="Email"
           required
           className={styles.input}
         />
-        {params.role === 'doctor' && (
+        <input
+          name="dateOfBirth"
+          type="date"
+          value={formData.dateOfBirth}
+          onChange={handleInputChange}
+          required
+          className={styles.input}
+        />
+        {isDoctor && (
           <input
-            type="text"
             name="specialization"
             value={formData.specialization}
             onChange={handleInputChange}
@@ -71,8 +95,10 @@ export default function Form({ params }) {
             className={styles.input}
           />
         )}
-        <button type="submit" className={styles.submitButton}>Register</button>
+        <button type="submit" className={styles.submitButton} disabled={loading}>
+          {loading ? 'Submitting...' : 'Register'}
+        </button>
       </form>
     </div>
-  )
+  );
 }

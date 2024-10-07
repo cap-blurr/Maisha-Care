@@ -7,7 +7,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 error Not_Owner();
 
 contract MaishaToken is ERC20, Ownable {
-    uint256 private constant INITIAL_SUPPLY = 1000000000 * 10**18; // 1 billion tokens
+    uint256 private constant INITIAL_SUPPLY = 1000000000 * 10 ** 18; // 1 billion tokens
 
     constructor() ERC20("MaishaToken", "MSHA") Ownable(msg.sender) {
         _mint(msg.sender, INITIAL_SUPPLY);
@@ -21,9 +21,8 @@ contract MaishaToken is ERC20, Ownable {
         _burn(msg.sender, amount);
     }
 
-        modifier onlyOwnerCustom() {
+    modifier onlyOwnerCustom() {
         if (owner() != msg.sender) revert Not_Owner();
         _;
     }
-
 }

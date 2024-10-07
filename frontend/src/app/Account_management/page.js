@@ -7,13 +7,20 @@ import styles from './AccountManagement.module.css'
 
 export default function AccountManagement() {
   const router = useRouter()
-  const { clearRole } = useAuth()
+  const { isAuthenticated, isRegistered, userRole } = useAuth()
 
   const handleDeleteAccount = () => {
     if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-      clearRole()
+      // Instead of clearRole, we need to implement a new function to handle account deletion
+      // This should interact with the smart contract to remove the user's role
+      // For now, we'll just redirect to the registration page
       router.push('/registration')
     }
+  }
+
+  if (!isAuthenticated || !isRegistered) {
+    router.push('/')
+    return null
   }
 
   return (
@@ -30,7 +37,7 @@ export default function AccountManagement() {
             Delete Account
           </button>
           <p className={styles.warning}>
-            Warning: This will remove your role and you'll need to register again.
+            Warning: This will remove your role and you&apos;ll need to register again.
           </p>
         </div>
       </main>

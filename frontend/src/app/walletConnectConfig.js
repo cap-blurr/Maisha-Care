@@ -11,7 +11,7 @@ if (!projectId) throw new Error('Project ID is not defined')
 export const metadata = {
   name: 'Maisha-Care',
   description: 'Maisha-Care Web3 Application',
-  url: 'https://minfundraiser.vercel.app/', // Add this line
+  url: 'https://maisha-care-nextjs.vercel.app/', // Add this line
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
 
@@ -21,11 +21,12 @@ export const config = defaultWagmiConfig({
   projectId,
   transports : {
   [mainnet.id]: http(),
+  [anvil.id] : http(),
   [sepolia.id] : http(),
   [optimismSepolia.id] : http(),
   [liskSepolia.id] : http(),
-  [baseSepolia.id] : http(),
-  [anvil.id] : http(),
+  [baseSepolia.id] : http()
+  
   },
   metadata,
   ssr: true,

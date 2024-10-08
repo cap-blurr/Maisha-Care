@@ -28,12 +28,12 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
+import ConnectButton from "@/components/buttons/connect-button";
 
 const navigation = [
-  { name: "Articles", href: "/articles", icon: UsersIcon, current: false },
-  { name: "Live Shows", href: "/live_shows", icon: FolderIcon, current: false },
-  { name: "Podcasts Episodes", href: "/podcasts_episodes", icon: CalendarIcon, current: false },
-  { name: "X Spaces", href: "/x_spaces", icon: DocumentDuplicateIcon, current: false },
+  { name: "Patient", href: "/patient", icon: UsersIcon, current: false },
+  { name: "Doctor", href: "/doctor", icon: FolderIcon, current: false },
+  { name: "Settings", href: "/settings", icon: DocumentDuplicateIcon, current: false },
 ];
 const teams = [
   { id: 1, name: "Dashboard", href: "/dashboard", initial: "H", current: false },
@@ -41,8 +41,7 @@ const teams = [
 ];
 
 const tools = [
-    { name: "Airdrop Hunters", href: "/airdrop_hunters", icon: ChartPieIcon, current: false },
-  
+    { name: "Analytics", href: "/analytics", icon: ChartPieIcon, current: false },
   ];
 
 const userNavigation = [
@@ -59,7 +58,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <div>
+      <div className=" ">
         <Transition show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -106,14 +105,14 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                       >
                         <span className="sr-only">Close sidebar</span>
                         <XMarkIcon
-                          className="h-6 w-6 text-white"
+                          className="h-6 w-6 text-black"
                           aria-hidden="true"
                         />
                       </button>
                     </div>
                   </TransitionChild>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-background px-6 pb-4 ring-1 ring-white/10">
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-background px-6 pb-4 ring-1 ring-white/10 bg-[#218B53]  text-black">
                     <div className="flex h-16 shrink-0 items-center">
                       <img
                         className="h-8 w-auto"
@@ -133,7 +132,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                                  className={classNames(
                                    team.current
                                      ? "bg-gray-800 text-white"
-                                     : "text-gray-400 hover:text-white hover:bg-gray-800",
+                                     : "text-white hover:text-white hover:bg-gray-800",
                                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                  )}
                                >
@@ -147,7 +146,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                          </ul>
                        </li>
                         <li>
-                        <div className="text-xs font-semibold leading-6 text-gray-400">
+                        <div className="text-xs font-semibold leading-6 text-gray-800">
                             Media
                           </div>
                           <ul role="list" className="-mx-2 space-y-1">
@@ -158,7 +157,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                                   className={classNames(
                                     item.current
                                       ? "bg-gray-800 text-white"
-                                      : "text-gray-400 hover:text-white hover:bg-gray-800",
+                                      : "text-white hover:text-white hover:bg-gray-800",
                                     "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                                   )}
                                 >
@@ -195,7 +194,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         </Transition>
 
         {/* Static sidebar for desktop */}
-        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+        <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col bg-[#218B53] text-white">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-background px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
@@ -212,7 +211,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                           className={classNames(
                             team.current
                               ? "bg-gray-800 text-white"
-                              : "text-gray-400 hover:text-white hover:bg-gray-800",
+                              : "text-white hover:text-white hover:bg-gray-800",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
@@ -227,7 +226,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                 </li>
                 <li>
                   <div className="text-xs font-semibold leading-6 text-gray-400">
-                    Media
+                    Modules
                   </div>
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item) => (
@@ -237,7 +236,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                           className={classNames(
                             item.current
                               ? "bg-gray-800 text-white"
-                              : "text-gray-400 hover:text-white hover:bg-gray-800",
+                              : "text-white hover:text-white hover:bg-gray-800",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
@@ -263,7 +262,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                           className={classNames(
                             item.current
                               ? "bg-gray-800 text-white"
-                              : "text-gray-400 hover:text-white hover:bg-gray-800",
+                              : "text-gray-200 hover:text-white hover:bg-gray-800",
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
                           )}
                         >
@@ -286,7 +285,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-600 bg-background px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
             <button
               type="button"
-              className="-m-2.5 p-2.5 text-white lg:hidden"
+              className="-m-2.5 p-2.5 text-black lg:hidden"
               onClick={() => setSidebarOpen(true)}
             >
               <span className="sr-only">Open sidebar</span>
@@ -330,57 +329,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                   className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/70"
                   aria-hidden="true"
                 />
+                  
 
-                {/* Profile dropdown */}
-                <Menu as="div" className="relative">
-                  <MenuButton className="-m-1.5 flex items-center p-1.5">
-                    <span className="sr-only">Open user menu</span>
-                    <img
-                      className="h-8 w-8 rounded-full bg-gray-50"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
-                    <span className="hidden lg:flex lg:items-center">
-                      <span
-                        className="ml-4 text-sm font-semibold leading-6 text-white"
-                        aria-hidden="true"
-                      >
-                        Tom Cook
-                      </span>
-                      <ChevronDownIcon
-                        className="ml-2 h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  </MenuButton>
-                  <Transition
-                    as={Fragment}
-                    enter="transition ease-out duration-100"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <MenuItems className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-background text-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-                      {userNavigation.map((item) => (
-                        <MenuItem key={item.name}>
-                          {({ active }) => (
-                            <Link
-                              href={item.href}
-                              className={classNames(
-                                active ? "bg-gray-50" : "",
-                                "block px-3 py-1 text-sm leading-6 "
-                              )}
-                            >
-                              {item.name}
-                            </Link>
-                          )}
-                        </MenuItem>
-                      ))}
-                    </MenuItems>
-                  </Transition>
-                </Menu>
               </div>
             </div>
           </div>

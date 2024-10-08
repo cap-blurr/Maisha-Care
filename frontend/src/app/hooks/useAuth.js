@@ -62,5 +62,5 @@ export function useAuth() {
     checkAuth()
   }, [isConnected, address, isPatient, isDoctor])
 
-  return { isAuthenticated, isRegistered, isLoading, address, userRole };
+  return { isAuthenticated, isRegistered, isLoading, address, userRole, isConnected };
 }

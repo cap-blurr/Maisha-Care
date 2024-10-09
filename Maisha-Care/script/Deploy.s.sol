@@ -35,7 +35,8 @@ contract DeployScript is Script {
         );
         MedicalHistory medicalHistory = new MedicalHistory(
             address(roleManager),
-            address(updateApproval)
+            address(updateApproval),
+            address(temporaryAccess)
         );
         CurrentHealth currentHealth = new CurrentHealth(
             address(roleManager),

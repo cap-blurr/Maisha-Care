@@ -4,10 +4,12 @@ pragma solidity ^0.8.19;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {RoleManager} from "./RoleManager.sol";
 import {UpdateApproval} from "./UpdateApproval.sol";
+import {TemporaryAccess} from "./TemporaryAccess.sol";
 
 contract MedicalHistory is Ownable {
     RoleManager public roleManager;
     UpdateApproval public updateApproval;
+    TemporaryAccess public temporaryAccess;
 
     struct History {
         string dataHash;
@@ -25,10 +27,12 @@ contract MedicalHistory is Ownable {
 
     constructor(
         address _roleManagerAddress,
-        address _updateApprovalAddress
+        address _updateApprovalAddress,
+        address _TemporaryAccess
     ) Ownable(msg.sender) {
         roleManager = RoleManager(_roleManagerAddress);
         updateApproval = UpdateApproval(_updateApprovalAddress);
+        temporaryAccess = TemporaryAccess(_TemporaryAccess);
     }
 
     function initiateHistoryUpdate(
@@ -65,16 +69,22 @@ contract MedicalHistory is Ownable {
         emit HistoryUpdated(patient, block.timestamp);
     }
 
-    function getHistory(
+    function getHistoryPatient(
         address _patient
     ) public view returns (string memory, uint256) {
         require(
-            roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender) ||
-                roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
-            "Must be patient or authorized doctor"
+            roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender)
+            "Must be patient"
         );
         History memory history = medicalHistories[_patient];
         return (history.dataHash, history.lastUpdated);
+    }
+
+    funtion getHistoryDoctor(
+        address _patient
+    ) public view returns(string memory, uint256){
+        require(roleManager.hasRole(roleManager.DOCTOR_ROLE(),msg.sender)
+                "Must be doctor");
     }
 
     function getAnonymizedHistory(

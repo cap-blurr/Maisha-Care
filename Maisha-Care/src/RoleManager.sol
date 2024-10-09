@@ -7,10 +7,12 @@ import {VerifiedAddressRegistry} from "./VerifiedAddressRegistry.sol";
 /// @title RoleManager - Manages role assignments with admin control
 contract RoleManager is AccessControl {
     bytes32 public constant ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
-    bytes32 public constant PATIENT_ROLE = keccak256("PATIENT_ROLE");
-    bytes32 public constant DOCTOR_ROLE = keccak256("DOCTOR_ROLE");
-    bytes32 public constant RESEARCHER_ROLE = keccak256("RESEARCHER_ROLE");
-    bytes32 public constant BUILDER_ROLE = keccak256("BUILDER_ROLE");
+    bytes32 public constant PATIENT_ROLE = keccak256("patient");
+    bytes32 public constant DOCTOR_ROLE = keccak256("doctor");
+    bytes32 public constant RESEARCHER_ROLE = keccak256("researcher");
+    bytes32 public constant BUILDER_ROLE = keccak256("builder");
+
+    event SuccesfullyRegistered(address indexed account);
 
     VerifiedAddressRegistry public verifiedRegistry;
 
@@ -26,6 +28,8 @@ contract RoleManager is AccessControl {
             "Not verified as patient"
         );
         _grantRole(PATIENT_ROLE, msg.sender);
+
+        emit SuccesfullyRegistered(msg.sender);
     }
 
     /// @notice Register as a doctor (requires verification)
@@ -35,6 +39,8 @@ contract RoleManager is AccessControl {
             "Not verified as doctor"
         );
         _grantRole(DOCTOR_ROLE, msg.sender);
+
+        emit SuccesfullyRegistered(msg.sender);
     }
 
     /// @notice Register as a researcher (requires verification)
@@ -44,6 +50,8 @@ contract RoleManager is AccessControl {
             "Not verified as researcher"
         );
         _grantRole(RESEARCHER_ROLE, msg.sender);
+
+        emit SuccesfullyRegistered(msg.sender);
     }
 
     /// @notice Register as a builder (requires verification)
@@ -53,6 +61,8 @@ contract RoleManager is AccessControl {
             "Not verified as builder"
         );
         _grantRole(BUILDER_ROLE, msg.sender);
+
+        emit SuccesfullyRegistered(msg.sender);
     }
 
     /// @notice Grant a role to an account (admin only)

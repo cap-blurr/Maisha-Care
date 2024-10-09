@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../hooks/useAuth';
 import styles from '../form.module.css';
@@ -12,37 +12,34 @@ import {
   http,
   parseAbiItem,
   getAddress,
-  keccak256
+  keccak256,
+  stringToBytes
 } from 'viem';
 import { foundry } from 'viem/chains';
 
 // Smart contract address and RPC URL for the Ethereum network
 const CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
-const RPC_URL = 'http://127.0.0.1:8545'; 
+const RPC_URL = 'http://127.0.0.1:8545';
 
 // Mapping of roles to their keccak256 hashes
-// This is used for role-based access control in the smart contract
 const roleHashes = {
-  patient: keccak256('patient'),
-  doctor: keccak256('doctor'),
-  researcher: keccak256('researcher'),
-  builder: keccak256('builder'),
+  patient: keccak256(stringToBytes('patient')),
+  doctor: keccak256(stringToBytes('doctor')),
+  researcher: keccak256(stringToBytes('researcher')),
+  builder: keccak256(stringToBytes('builder')),
 };
 
 // Reverse mapping of hashes to role names
-// This is used to decode roles from events
 const roleNamesByHash = {};
 for (const [name, hash] of Object.entries(roleHashes)) {
   roleNamesByHash[hash] = name;
 }
 
 export default function Form({ params }) {
-  // Extract ABI from the imported JSON
   const { abi } = VerifiedAddressJSON;
   const router = useRouter();
   const { setRole } = useAuth();
 
-  // State variables
   const [address, setAddress] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -54,13 +51,11 @@ export default function Form({ params }) {
   const [verificationPending, setVerificationPending] = useState(false);
   const [error, setError] = useState('');
 
-  // Initialize Viem public client for read operations
   const publicClient = createPublicClient({
     chain: foundry,
     transport: http(RPC_URL),
   });
 
-  // Initialize Viem wallet client for write operations
   let walletClient;
   try {
     walletClient = createWalletClient({
@@ -75,7 +70,9 @@ export default function Form({ params }) {
   useEffect(() => {
     async function getUserAddress() {
       if (!walletClient) {
-        setError('Wallet not connected. Please make sure MetaMask is installed and connected.');
+        setError(
+          'Wallet not connected. Please make sure MetaMask is installed and connected.'
+        );
         return;
       }
       try {
@@ -83,68 +80,13 @@ export default function Form({ params }) {
         setAddress(addr);
       } catch (error) {
         console.error('Failed to get address:', error);
-        setError('Failed to get address from wallet. Please make sure MetaMask is connected.');
+        setError(
+          'Failed to get address from wallet. Please make sure MetaMask is connected.'
+        );
       }
     }
     getUserAddress();
   }, []);
-
-  // Effect to set up event listener for AddressVerified event
-  useEffect(() => {
-    if (!address) return;
-
-    const handleAddressVerified = (logs) => {
-      console.log('Received AddressVerified event. Raw logs:', logs);
-
-      const log = logs[0];
-      const [roleTopic, verifiedAddressTopic] = log.topics.slice(1);
-      const uniqueHash = log.data;
-
-      const checksumAddress = getAddress('0x' + verifiedAddressTopic.slice(26));
-
-      console.log('Current user address:', address);
-      console.log('Checksum address from event:', checksumAddress);
-
-      // Check if the event is for the current user
-      if (checksumAddress.toLowerCase() === address.toLowerCase()) {
-        console.log('Address match confirmed');
-
-        // Decode the event log
-        const abiItem = parseAbiItem(
-          'event AddressVerified(bytes32 indexed role, address indexed account, bytes32 uniqueHash)'
-        );
-        const decodedData = publicClient.decodeEventLog({
-          abi: [abiItem],
-          data: log.data,
-          topics: log.topics,
-        });
-
-        const parsedRole = decodedData.args.role;
-        const roleName = roleNamesByHash[parsedRole];
-
-        if (roleName) {
-          setRole(roleName);
-          console.log(`Redirecting to dashboard/${roleName}`);
-          router.push(`/dashboard/${roleName}`);
-        } else {
-          console.error('Unknown role hash:', parsedRole);
-        }
-      } else {
-        console.log('Address mismatch. Event not for current user.');
-      }
-    };
-
-    // Set up event listener
-    const unwatch = publicClient.watchContractEvent({
-      address: CONTRACT_ADDRESS,
-      abi,
-      eventName: 'AddressVerified',
-      onLogs: handleAddressVerified,
-    });
-
-    // Cleanup function to remove the event listener
-    return () => unwatch();
-  }, [address]);
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -176,11 +118,25 @@ export default function Form({ params }) {
       const prepareData = await prepareResponse.json();
 
       if (!prepareData.success) {
-        throw new Error(prepareData.error || 'Failed to prepare verification data');
+        throw new Error(
+          prepareData.error || 'Failed to prepare verification data'
+        );
       }
 
-      // Step 2: Simulate the contract call
-      const { request } = await publicClient.simulateContract({
+      // Step 2: Check if address is already verified
+      const alreadyVerified = await publicClient.readContract({
+        address: CONTRACT_ADDRESS,
+        abi,
+        functionName: 'isVerified',
+        args: [prepareData.roleHash, address],
+      });
+
+      if (alreadyVerified) {
+        throw new Error('Address is already verified for this role.');
+      }
+
+      // Step 3: Send the transaction using writeContract
+      const hash = await walletClient.writeContract({
         address: CONTRACT_ADDRESS,
         abi,
         functionName: 'verifyAddress',
@@ -188,24 +144,66 @@ export default function Form({ params }) {
         account: address,
       });
 
-      console.log('Simulation successful:', request);
-
-      // Step 3: Send the transaction using writeContract
-      const hash = await walletClient.writeContract(request);
-
       console.log('Transaction sent:', hash);
       setVerificationPending(true);
 
       // Step 4: Wait for transaction receipt
-      const receipt = await publicClient.waitForTransactionReceipt({ 
-        hash,
-        timeout: 60000 // 60 seconds timeout
-      });
+      const receipt = await publicClient.waitForTransactionReceipt({ hash });
+      console.log('Transaction receipt:', receipt);
 
       if (receipt.status === 'success') {
-        console.log('Verification successful. Waiting for event...');
+        // Transaction succeeded
+        // Process logs to get event data
+        const abiItem = parseAbiItem(
+          'event AddressVerified(bytes32 indexed role, address indexed account, bytes32 uniqueHash)'
+        );
+
+        const logs = receipt.logs.filter(
+          (log) =>
+            log.address.toLowerCase() === CONTRACT_ADDRESS.toLowerCase()
+        );
+
+        let eventFound = false;
+
+        for (const log of logs) {
+          const decodedData = publicClient.decodeEventLog({
+            abi: [abiItem],
+            data: log.data,
+            topics: log.topics,
+          });
+
+          const eventAddress = decodedData.args.account;
+
+          if (eventAddress.toLowerCase() === address.toLowerCase()) {
+            const parsedRole = decodedData.args.role;
+            const roleName = roleNamesByHash[parsedRole];
+
+            if (roleName) {
+              setRole(roleName);
+              console.log(`Redirecting to dashboard/${roleName}`);
+              router.push(`/dashboard/${roleName}`);
+              eventFound = true;
+              break;
+            } else {
+              console.error('Unknown role hash:', parsedRole);
+              setError('Unknown role. Cannot proceed.');
+            }
+          }
+        }
+
+        if (!eventFound) {
+          console.error(
+            'No AddressVerified event found for the current user in the transaction receipt.'
+          );
+          setError(
+            'Verification failed. Please try again or contact support.'
+          );
+        }
       } else {
-        throw new Error('Transaction failed');
+        // Transaction failed
+        console.error('Transaction failed:', receipt);
+        setError('Transaction failed. Please try again.');
+        setVerificationPending(false);
       }
     } catch (error) {
       console.error('Verification error:', error);

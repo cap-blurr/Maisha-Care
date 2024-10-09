@@ -6,13 +6,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { PatientType } from "@/types/api-types";
+import { MedicalRecordType } from "@/types/api-types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { SealCheck } from "@phosphor-icons/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 
-export const PatientDataColumns: ColumnDef<PatientType>[] = [
+export const MedicaRecordDataColumns: ColumnDef<MedicalRecordType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -33,71 +33,54 @@ export const PatientDataColumns: ColumnDef<PatientType>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "firstName",
+    accessorKey: "patientId",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="First Name" />
+      <DataTableColumnHeader column={column} title="Patient ID" />
     ),
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "visitDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Last Name" />
+      <DataTableColumnHeader column={column} title="Visit Date" />
     ),
   },
   {
-    accessorKey: "dateOfBirth",
+    accessorKey: "diagnosis",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date" />
+      <DataTableColumnHeader column={column} title="Diagnosis" />
     ),
   },
   {
-    accessorKey: "gender",
+    accessorKey: "treatment",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Gender" />
+      <DataTableColumnHeader column={column} title="Treatment" />
     ),
   },
   {
-    accessorKey: "contactNumber",
+    accessorKey: "doctor",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Contact Number" />
+      <DataTableColumnHeader column={column} title="Doctor" />
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "notes",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title="Notes" />
     ),
   },
   {
-    accessorKey: "emergencyContact",
+    accessorKey: "followUpDate",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Emergency Contact" />
+      <DataTableColumnHeader column={column} title="Follow Up Date" />
     ),
   },
   {
-    accessorKey: "medicalHistory",
+    accessorKey: "labResults",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Medical History" />
+      <DataTableColumnHeader column={column} title="Lab Results" />
     ),
-  },
-  {
-    id: "actions",
-    accessorKey: "ACTIONS",
-    header: "Actions",
-    cell: ({ cell }) => {
-      return (
-        <button
-          onClick={handleRequestData}
-          className="py-2 px-2  bg-[#ff6f91] text-white rounded-lg font-semibold mx-1 w-max"
-        >
-          Request Data
-        </button>
-      );
-    },
   },
 ];
-
-const handleRequestData = () => {};
 
 const DropDown = ({ cell }: any) => {
   const [open, setOpen] = useState(false);
@@ -106,7 +89,7 @@ const DropDown = ({ cell }: any) => {
     <main>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
-          <button className="py-3 px-5 w-[120px] bg-[#218B531A] text-[#ff6f91] rounded-lg hover:font-semibold mx-1">
+          <button className="py-3 px-5 w-[120px] bg-[#218B531A] text-[#218B53] rounded-lg hover:font-semibold mx-1">
             View
           </button>
         </DialogTrigger>
@@ -137,6 +120,7 @@ const DropDown = ({ cell }: any) => {
                 </span>
                 <span className="flex justify-between items-center">
                   <h4 className=" mb-3">
+
                     <span className="font-semibold">
                       {cell.row.original?.leaseType}
                     </span>
@@ -154,6 +138,7 @@ const DropDown = ({ cell }: any) => {
                     </span>
                   </h4>
                   <p className=" mb-3">
+
                     <span className="font-semibold">
                       {cell.row.original?.acquistionType}
                     </span>{" "}
@@ -161,6 +146,7 @@ const DropDown = ({ cell }: any) => {
                 </span>
                 <span className="flex justify-between items-center">
                   <h4 className=" mb-3">
+
                     <span className="font-semibold">
                       {cell.row.original?.ownerName}
                     </span>

@@ -29,6 +29,10 @@ contract DeployScript is Script {
             address(roleManager)
         );
 
+        TemporaryAccess temporaryAccess = new TemporaryAccess(
+            address(roleManager)
+        );
+
         PersonalInfo personalInfo = new PersonalInfo(
             address(roleManager),
             address(updateApproval)
@@ -40,14 +44,13 @@ contract DeployScript is Script {
         );
         CurrentHealth currentHealth = new CurrentHealth(
             address(roleManager),
-            address(updateApproval)
+            address(updateApproval),
+            address(temporaryAccess)
         );
         TreatmentRecords treatmentRecords = new TreatmentRecords(
             address(roleManager),
-            address(updateApproval)
-        );
-        TemporaryAccess temporaryAccess = new TemporaryAccess(
-            address(roleManager)
+            address(updateApproval),
+            address(temporaryAccess)
         );
 
         // Deploy HealthRecordManager last

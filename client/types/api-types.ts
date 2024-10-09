@@ -171,3 +171,21 @@ export type PatientType = {
   };
   medicalHistory?: string[]; // Optional medical history of the patient
 }
+
+export type MedicalRecordType = {
+  patientId: string;         // ID of the patient
+  visitDate: Date;           // Date of the medical visit
+  diagnosis: string;         // Doctor's diagnosis
+  treatment: string;         // Treatment plan or medication prescribed
+  doctor: {
+    name: string;
+    specialty: string;
+  };
+  notes?: string;            // Optional additional notes
+  followUpDate?: Date;       // Optional follow-up appointment date
+  labResults?: {
+    testName: string;
+    result: string;
+    normalRange: string;
+  }[];    
+}

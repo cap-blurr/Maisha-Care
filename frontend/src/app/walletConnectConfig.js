@@ -1,6 +1,6 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
-import { cookieStorage, createStorage,http } from 'wagmi'
-import { mainnet, sepolia, anvil,liskSepolia,optimismSepolia,baseSepolia } from 'wagmi/chains'
+import { cookieStorage, createStorage,http,createConfig } from 'wagmi'
+import { mainnet, sepolia, anvil,baseSepolia } from 'wagmi/chains'
 import {injected} from "@wagmi/connectors"
 
 // Get projectId from https://cloud.walletconnect.com
@@ -15,7 +15,7 @@ export const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
 
-const chains = [mainnet, sepolia, optimismSepolia, anvil,liskSepolia,baseSepolia]
+const chains = [mainnet, sepolia, anvil,baseSepolia]
 export const config = defaultWagmiConfig({
   chains,
   projectId,
@@ -23,8 +23,8 @@ export const config = defaultWagmiConfig({
   [mainnet.id]: http(),
   [anvil.id] : http(),
   [sepolia.id] : http(),
-  [optimismSepolia.id] : http(),
-  [liskSepolia.id] : http(),
+  // [optimismSepolia.id] : http(),
+  // [liskSepolia.id] : http(),
   [baseSepolia.id] : http()
   
   },

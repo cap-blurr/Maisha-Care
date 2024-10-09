@@ -2,16 +2,16 @@
 pragma solidity ^0.8.19;
 
 import "forge-std/Script.sol";
-import "../src/VerifiedAddressRegistry.sol";
-import "../src/RoleManager.sol";
-import "../src/UpdateApproval.sol";
-import "../src/PersonalInfo.sol";
-import "../src/MedicalHistory.sol";
-import "../src/CurrentHealth.sol";
-import "../src/TreatmentRecords.sol";
-import "../src/TemporaryAccess.sol";
-import "../src/HealthRecordManager.sol";
-import "../src/MaishaToken.sol";
+import {VerifiedAddressRegistry} from "../src/VerifiedAddressRegistry.sol";
+import {RoleManager} from "../src/RoleManager.sol";
+import {UpdateApproval} from "../src/UpdateApproval.sol";
+import {PersonalInfo} from "../src/PersonalInfo.sol";
+import {MedicalHistory} from "../src/MedicalHistory.sol";
+import {CurrentHealth} from "../src/CurrentHealth.sol";
+import {TreatmentRecords} from "../src/TreatmentRecords.sol";
+import {TemporaryAccess} from "../src/TemporaryAccess.sol";
+import {HealthRecordManager} from "../src/HealthRecordManager.sol";
+import {MaishaToken} from "../src/MaishaToken.sol";
 
 contract DeployScript is Script {
     function setUp() public {}

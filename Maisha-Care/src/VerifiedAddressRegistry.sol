@@ -9,10 +9,10 @@ contract VerifiedAddressRegistry is AccessControl {
 
     // Role identifiers
     bytes32 public constant ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
-    bytes32 public constant PATIENT_ROLE = keccak256("PATIENT_ROLE");
-    bytes32 public constant DOCTOR_ROLE = keccak256("DOCTOR_ROLE");
-    bytes32 public constant RESEARCHER_ROLE = keccak256("RESEARCHER_ROLE");
-    bytes32 public constant BUILDER_ROLE = keccak256("BUILDER_ROLE");
+    bytes32 public constant PATIENT_ROLE = keccak256("patient");
+    bytes32 public constant DOCTOR_ROLE = keccak256("doctor");
+    bytes32 public constant RESEARCHER_ROLE = keccak256("researcher");
+    bytes32 public constant BUILDER_ROLE = keccak256("builder");
 
     event AddressVerified(
         bytes32 indexed role,

@@ -1,58 +1,30 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { createPublicClient, http, keccak256 } from 'viem';
-import { baseSepolia, foundry } from 'viem/chains';
-import { createHelia } from 'helia';
-import { json } from '@helia/json';
-import { CID } from 'multiformats/cid';
-import VerifiedAddressRegistryJSON from './abis/VerifiedAddressRegistry.json' assert { type: 'json' };
-import { EventEmitter } from 'events';
+import { keccak256 } from 'viem';
+
+
+import { walletClient } from './chain-interactions/viemclient.js';
+import { generateSymmetricKey } from './encryption/generatesymmetrickey.js';
+import { encryptData } from './encryption/encryptdata.js';
+import { encryptSymmetricKey } from './encryption/encryptsymmetrickey.js';
+import { generateSalt } from './hashing/generatesalt.js';
+import { hashData } from './hashing/hashdata.js';
+import { storeDataOnIPFS } from './ipfs/storedata.js';
+import { storeMetadata } from './chain-interactions/storemetadata.js';
+import { retrieveMetadata } from './chain-interactions/retrievemetadata.js';
+import { retrieveDataFromIPFS } from './ipfs/retrievedata.js';
+import { verifyDataIntegrity } from './verification/verifydataintegrity.js';
+import { decryptSymmetricKey } from './decryption/decryptsymmetrickey.js';
+import { decryptData } from './decryption/decryptdata.js';
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
-const { abi } = VerifiedAddressRegistryJSON;
 
-// Chain configuration
-const activeNetwork = process.env.ACTIVE_NETWORK || 'anvil';
 
-const networkConfig = {
-  anvil: {
-    rpcUrl: process.env.ANVIL_RPC_URL,
-    verifiedAddressRegistry: process.env.ANVIL_VERIFIED_ADDRESS_REGISTRY,
-    chain: foundry,
-  },
-  baseSepolia: {
-    rpcUrl: process.env.BASE_SEPOLIA_RPC_URL,
-    verifiedAddressRegistry: process.env.BASE_SEPOLIA_VERIFIED_ADDRESS_REGISTRY,
-    chain: baseSepolia,
-  },
-};
-
-const config = networkConfig[activeNetwork];
-
-const publicClient = createPublicClient({
-  chain: config.chain,
-  transport: http(config.rpcUrl),
-});
-
-const VERIFIED_ADDRESS_REGISTRY_ADDRESS = config.verifiedAddressRegistry;
-
-EventEmitter.defaultMaxListeners = 1500;
-
-// Helia setup
-let helia;
-let jsonStore;
-
-async function setupIPFS() {
-  helia = await createHelia();
-  jsonStore = json(helia);
-}
-
-setupIPFS().catch(console.error);
 
 // Middleware
 app.use(
@@ -72,11 +44,10 @@ const roleHashes = {
   builder: keccak256('builder'),
 };
 
-// Prepare Verification Data Endpoint
-app.post('/api/prepare-verification', async (req, res) => {
-  console.log('Received preparation request:', req.body);
+// store Data Endpoint
+app.post('/api/store-data', async (req, res) => {
   try {
-    const { role, address, formData } = req.body;
+    const { role, address, formData, patientPublicKey } = req.body;
 
     // Validate and get the correct role hash
     const roleHash = roleHashes[role.toLowerCase()];
@@ -84,11 +55,30 @@ app.post('/api/prepare-verification', async (req, res) => {
       throw new Error('Invalid role');
     }
 
-    // Store form data in IPFS
-    const cid = await jsonStore.add(formData);
-    console.log('Data stored in IPFS with CID:', cid.toString());
+    // Step 1: Generate Symmetric Key
+    const symmetricKey = generateSymmetricKey();
 
-    // Generate unique identifier hash
+    // Step 2: Encrypt Data
+    const encryptedDataObj = encryptData(formData, symmetricKey);
+
+    // Step 3: Encrypt Symmetric Key with Patient's Public Key
+    const encryptedSymmetricKey = encryptSymmetricKey(symmetricKey, patientPublicKey);
+
+    // Step 4: Generate Salt
+    const salt = generateSalt();
+
+    // Step 5: Hash Data
+    const dataHash = hashData(encryptedDataObj.encryptedData, salt, role);
+
+    // Step 6: Store Encrypted Data on IPFS
+    const cid = await storeDataOnIPFS({
+      encryptedData: encryptedDataObj,
+      encryptedSymmetricKey,
+      salt,
+      dataHash,
+    });
+
+    // Step 7: Generate Unique Identifier Hash
     const uniqueHash = keccak256(
       JSON.stringify({
         role,
@@ -97,25 +87,17 @@ app.post('/api/prepare-verification', async (req, res) => {
         timestamp: Date.now(),
       })
     );
-    console.log('Generated unique hash:', uniqueHash);
 
-    // Prepare transaction data
-    const { request } = await publicClient.simulateContract({
-      address: VERIFIED_ADDRESS_REGISTRY_ADDRESS,
-      abi: abi,
-      functionName: 'verifyAddress',
-      args: [roleHash, address, uniqueHash],
-      account: address, 
-    });
+    // Step 8: Prepare Transaction Data
+    const request = await storeMetadata(roleHash, address, uniqueHash, address);
 
-    // console.log('Full transaction request:', request);
+    await walletClient.writeContract(request)
 
-    console.log('Transaction data prepared for address:', address);
     res.json({
       success: true,
       message: 'Verification data prepared',
       transactionRequest: {
-        to: VERIFIED_ADDRESS_REGISTRY_ADDRESS,
+        to: request.to,
         data: request.data,
       },
       roleHash,
@@ -128,14 +110,44 @@ app.post('/api/prepare-verification', async (req, res) => {
   }
 });
 
+
 // Get Data Endpoint
-app.get('/api/get-data/:cid', async (req, res) => {
+app.post('/api/retrieve-data', async (req, res) => {
   try {
-    const cid = CID.parse(req.params.cid);
-    const data = await jsonStore.get(cid);
-    res.json({ success: true, data });
+    const { address, patientPrivateKey, role } = req.body;
+
+    // Step 1: Retrieve Metadata from Blockchain
+    const metadata = await retrieveMetadata(address);
+
+    const { cid, salt, dataHash } = metadata;
+
+    // Step 2: Retrieve Encrypted Data from IPFS
+    const encryptedDataObj = await retrieveDataFromIPFS(cid);
+
+    // Step 3: Verify Data Integrity
+    const isDataValid = verifyDataIntegrity(
+      encryptedDataObj.encryptedData.encryptedData,
+      encryptedDataObj.salt,
+      role,
+      encryptedDataObj.dataHash
+    );
+
+    if (!isDataValid) {
+      throw new Error('Data integrity verification failed');
+    }
+
+    // Step 4: Decrypt Symmetric Key
+    const symmetricKey = decryptSymmetricKey(
+      encryptedDataObj.encryptedSymmetricKey,
+      patientPrivateKey
+    );
+
+    // Step 5: Decrypt Data
+    const decryptedData = decryptData(encryptedDataObj.encryptedData, symmetricKey);
+
+    res.json({ success: true, data: decryptedData });
   } catch (error) {
-    console.error('Get data error:', error);
+    console.error('Data retrieval error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });

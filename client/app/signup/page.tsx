@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Formik, Form } from "formik";
@@ -11,7 +12,9 @@ import { useMutation } from "@tanstack/react-query";
 import LoadingDialog from "@/components/dialog/LoadingDialog";
 import ErrorDialog from "@/components/dialog/ErrorDialog";
 import Link from "next/link";
+import { useWriteContract } from "wagmi";
 import ConnectButton from "@/components/buttons/connect-button";
+import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 
 const Signup = () => {
   const router = useRouter();
@@ -21,22 +24,30 @@ const Signup = () => {
   const [openAccErr, setOpenAccErr] = useState(false); // Opens the Failed Acc Creation Loading Dialog
   const api = useAxios();
   const [userDetails, setUserDetails] = useState<SignUpFormData>({
-    fullname: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    role: "",
+    address: "",
+    formData: {
+      name: "",
+      dateOfBirth: "",
+      specialization: "",
+    },
   });
+  const { data: hash, writeContract } = useWriteContract();
 
   // Mutation to Initiate Register User
   const initiateRegisterUser = useMutation({
     mutationFn: (initiateRegisterUserPost: SignUpFormData) => {
       setOpenConfirmingOTP(true);
       return api.post(
-        "auth/register/initiate",
+        "api/prepare-verification",
         {
-          fullname: initiateRegisterUser.fullname,
-          email: initiateRegisterUser.email,
-          password: initiateRegisterUserPost.password,
+          role: initiateRegisterUser.role,
+          address: initiateRegisterUser.address,
+          formData: {
+            name: initiateRegisterUser.name,
+            dateOfBirth: initiateRegisterUser.dateOfBirth,
+            specialization: initiateRegisterUser.specialization,
+          },
         },
         {
           method: "POST",
@@ -57,64 +68,13 @@ const Signup = () => {
     },
   });
 
-  // Mutation Side Effect to Login User
-  const loginUser = useMutation({
-    mutationFn: (loginUserPost: SignUpFormData) => {
-      return api.post(
-        "auth/login",
-        {
-          fullname: loginUserPost.fullname,
-          email: loginUserPost.email,
-          password: loginUserPost.password,
-        },
-        {
-          method: "POST",
-        }
-      );
-    },
-    onSuccess: (data, variables, context) => {
-      setOpenSigningUp(false); //
-      router.replace("/home"); // Successfully logged in, navigate to home or dashboard
-    },
-    onError: (error, variables, context) => {
-      setOpenAccErr(true);
-    },
-    onSettled: (data, error, variables, context) => {},
-  });
-
-  const verifyUser = useMutation({
-    mutationFn: (verifyUserPost) => {
-      return api.post(
-        "auth/register",
-        {
-          ...userDetails,
-          otp: tillNumberParts,
-        },
-        {
-          method: "POST",
-        }
-      );
-    },
-    onSuccess: (data, variables, context) => {
-      loginUser.mutate(userDetails);
-    },
-    onError: (error, variables, context) => {
-      // Handle errors, e.g., invalid OTP
-      console.error("Failed to verify OTP.");
-      setOpenAccErr(true);
-    },
-    onSettled: (data, error, variables, context) => {
-      console.log(data);
-    },
-  });
-
-  const verifyOTP = async (otpData: OTPFormData) => {
-    if (!userDetails) return; // Ensure userDetails is not null
-    // console.log(otpData.otp);
-
-    // Call the verify API with stored user details and provided OTP
-    const promise = verifyUser.mutate();
-    console.log("promise", promise);
+  const handleClick = () => {
+    // writeContract({
+    //   address: "0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2",
+    //   abi,
+    //   functionName: "mint",
+    //   args: [BigInt(tokenId)],
+    // });
   };
 
   return (
@@ -223,9 +183,10 @@ const Signup = () => {
             </button>
           </Form>
         </Formik>
-        {/* <div className="flex flex-col items-center w-full">
-        <ConnectButton />
-        </div> */}
+        <button onClick={handleClick}></button>
+        <div className="flex flex-col items-center w-full">
+          <ConnectWallet />
+        </div>
       </article>
     </section>
   );

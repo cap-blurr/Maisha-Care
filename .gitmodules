@@ -1,0 +1,3 @@
+[submodule "Maisha-Care/lib/openzeppelin-contracts.git"]
+	path = Maisha-Care/lib/openzeppelin-contracts.git
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts.git

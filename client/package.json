@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@coinbase/onchainkit": "^0.33.5",
     "@headlessui/react": "^2.1.8",
     "@heroicons/react": "^2.1.5",
     "@lottiefiles/react-lottie-player": "^3.5.4",
@@ -26,6 +27,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dlx": "^0.2.1",
+    "dotenv": "^16.4.5",
     "formik": "^2.4.6",
     "lucide-react": "^0.445.0",
     "next": "14.2.13",

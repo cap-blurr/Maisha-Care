@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "@/styles/style.css";
 import { ThemeProvider } from "@/components/dashboard/theme-provider";
-import { headers } from "next/headers"; // added
+import { headers } from "next/headers";
 import ContextProvider from "@/context";
 
 const geistSans = localFont({
@@ -27,13 +27,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookies = headers().get('cookie')
+  const cookies = headers().get("cookie");
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ContextProvider cookies={cookies}>
+        <ContextProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"

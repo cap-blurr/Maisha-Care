@@ -1,55 +1,41 @@
-'use client'
+"use client";
 
-import { wagmiAdapter, projectId } from '@/config'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { createAppKit } from '@reown/appkit/react' 
-import { mainnet, arbitrum, avalanche, base, optimism, polygon } from '@reown/appkit/networks'
-import React, { type ReactNode } from 'react'
-import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { base } from "viem/chains";
+import { OnchainKitProvider } from "@coinbase/onchainkit";
+import "@coinbase/onchainkit/styles.css";
+import React, { useState, type ReactNode } from "react";
+import * as dotenv from "dotenv";
+import { WagmiProvider } from "wagmi";
+import { getConfig } from "@/config/wagmi";
+dotenv.config();
+
+
+
+const { NEXT_PUBLIC_ONCHAINKIT_API_KEY } = process.env;
 
 // Set up queryClient
 const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        // With SSR, we usually want to set some default staleTime
-        // above 0 to avoid refetching immediately on the client
-        staleTime: 0,
-      },
+  defaultOptions: {
+    queries: {
+      // With SSR, we usually want to set some default staleTime
+      // above 0 to avoid refetching immediately on the client
+      staleTime: 0,
     },
-  })
+  },
+});
 
-if (!projectId) {
-  throw new Error('Project ID is not defined')
-}
-
-// Set up metadata
-const metadata = {
-  name: "appkit-example-scroll",
-  description: "AppKit Example - Scroll",
-  url: "https://scrollapp.com", // origin must match your domain & subdomain
-  icons: ["https://avatars.githubusercontent.com/u/179229932"]
-}
-
-// Create the modal
-const modal = createAppKit({
-  adapters: [wagmiAdapter],
-  projectId,
-  networks: [mainnet, arbitrum, avalanche, base, optimism, polygon],
-  defaultNetwork: mainnet,
-  metadata: metadata,
-  features: {
-    analytics: true, // Optional - defaults to your Cloud configuration
-  }
-})
-
-function ContextProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
-  const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig as Config, cookies)
-
+function ContextProvider({ children }: { children: ReactNode }) {
+  const [config] = useState(() => getConfig());
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </WagmiProvider>
-  )
+    <OnchainKitProvider apiKey={NEXT_PUBLIC_ONCHAINKIT_API_KEY} chain={base}>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </WagmiProvider>
+    </OnchainKitProvider>
+  );
 }
 
-export default ContextProvider
+export default ContextProvider;

@@ -18,10 +18,13 @@ export interface ForgotPasswordFormFields {
 
 // Define the types for the form data
 export type SignUpFormData = {
-  fullname: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
+  role: string;
+  address: string;
+  formData: {
+    name: string;
+    dateOfBirth: string;
+    specialization: string;
+  },
 };
 
 export type SignUpBusinessFormData = {

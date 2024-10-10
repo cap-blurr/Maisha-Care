@@ -4,7 +4,10 @@ import cors from 'cors';
 import { keccak256 } from 'viem';
 
 import  VerifiedAddressRegistryJSON  from './abis/VerifiedAddressRegistry.json' assert { type: 'json' };
-const { abi } = VerifiedAddressRegistryJSON;
+const { verifyabi } = VerifiedAddressRegistryJSON;
+
+import RoleManagerJSON from './abis/RoleManager.json'assert { type: 'json' };
+const {rolemanagerABI} = RoleManagerJSON;
 
 import { walletClient } from './chain-interactions/viemclient.js';
 import { generateSymmetricKey } from './encryption/generatesymmetrickey.js';
@@ -14,7 +17,7 @@ import { generateSalt } from './hashing/generatesalt.js';
 import { hashData } from './hashing/hashdata.js';
 import { storeDataOnIPFS } from './ipfs/storedata.js';
 import { callContractFunction } from './chain-interactions/storemetadata.js';
-import { retrieveMetadata } from './chain-interactions/retrievemetadata.js';
+import { readContractFunction } from './chain-interactions/retrievemetadata.js';
 import { retrieveDataFromIPFS } from './ipfs/retrievedata.js';
 import { verifyDataIntegrity } from './verification/verifydataintegrity.js';
 import { decryptSymmetricKey } from './decryption/decryptsymmetrickey.js';
@@ -66,25 +69,66 @@ app.post('/api/signup', async (req, res) => {
       })
     );
 
-    const verifyaddress = await storeMetadata(ANVIL_VERIFIED_ADDRESS_REGISTRY, abi, 'verifyAddress',roleHash, address,uniqueHash);
+   // Call verifyAddress function
+const verifyAddressTx = await callContractFunction(
+  ANVIL_VERIFIED_ADDRESS_REGISTRY,
+  verifyabi,
+  'verifyAddress',
+  roleHash,
+  address,
+  uniqueHash
+);
 
-    await walletClient.writeContract(verifyaddress)
+// Send the transaction
+await walletClient.writeContract(verifyAddressTx);
 
-    res.json({
-        success: true,
-        message: 'Verification data prepared',
-        transactionRequest: {
-          to: request.to,
-          data: request.data,
-        },
-        roleHash,
-        uniqueHash,
-        cid: cid.toString(),
-      });
-    } catch (error) {
-      console.error('Preparation error:', error);
-      res.status(500).json({ success: false, error: error.message });
+    // Check verification status
+    const isVerified = await readContractFunction(
+      ANVIL_VERIFIED_ADDRESS_REGISTRY,
+      verifyabi,
+      'isVerified',
+      roleHash,
+      address
+    );
+
+    // If not verified, throw an error
+    if (!isVerified) {
+      throw new Error('Address verification failed');
     }
+
+    // Grant role based on user's role
+    if (role.toLowerCase() === 'doctor') {
+      // Call registerAsDoctor
+      const grantDoctorRoleTx = await callContractFunction(
+        ANVIL_ROLEMANAGER_ADDRESS,
+        rolemanagerABI,
+        'registerAsDoctor'
+      );
+      await walletClient.writeContract(grantDoctorRoleTx);
+    } else if (role.toLowerCase() === 'patient') {
+      // Call registerAsPatient
+      const grantPatientRoleTx = await callContractFunction(
+        ANVIL_ROLEMANAGER_ADDRESS,
+        rolemanagerABI,
+        'registerAsPatient'
+      );
+      await walletClient.writeContract(grantPatientRoleTx);
+    } else {
+      // Handle unsupported roles
+      throw new Error('Unsupported role');
+    }
+
+    // Respond to the client
+    res.json({
+      success: true,
+      message: 'User registered and role granted successfully',
+      roleHash,
+      uniqueHash,
+    });
+  } catch (error) {
+    console.error('Signup error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
 
 });
 

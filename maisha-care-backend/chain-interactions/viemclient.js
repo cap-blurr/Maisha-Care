@@ -1,4 +1,4 @@
-import { createPublicClient,createWalletClient, http,custom } from 'viem';
+import { createPublicClient,createWalletClient, http} from 'viem';
 import { foundry,baseSepolia } from 'viem/chains';
 
 // Chain configuration

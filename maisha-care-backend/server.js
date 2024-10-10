@@ -71,7 +71,7 @@ app.post('/api/signup', async (req, res) => {
 
    // Call verifyAddress function
 const verifyAddressTx = await callContractFunction(
-  ANVIL_VERIFIED_ADDRESS_REGISTRY,
+  process.env.ANVIL_VERIFIED_ADDRESS_REGISTRY,
   verifyabi,
   'verifyAddress',
   roleHash,
@@ -84,7 +84,7 @@ await walletClient.writeContract(verifyAddressTx);
 
     // Check verification status
     const isVerified = await readContractFunction(
-      ANVIL_VERIFIED_ADDRESS_REGISTRY,
+      process.env.ANVIL_VERIFIED_ADDRESS_REGISTRY,
       verifyabi,
       'isVerified',
       roleHash,
@@ -100,7 +100,7 @@ await walletClient.writeContract(verifyAddressTx);
     if (role.toLowerCase() === 'doctor') {
       // Call registerAsDoctor
       const grantDoctorRoleTx = await callContractFunction(
-        ANVIL_ROLEMANAGER_ADDRESS,
+        process.env.ANVIL_ROLEMANAGER_ADDRESS,
         rolemanagerABI,
         'registerAsDoctor'
       );
@@ -108,7 +108,7 @@ await walletClient.writeContract(verifyAddressTx);
     } else if (role.toLowerCase() === 'patient') {
       // Call registerAsPatient
       const grantPatientRoleTx = await callContractFunction(
-        ANVIL_ROLEMANAGER_ADDRESS,
+        process.env.ANVIL_ROLEMANAGER_ADDRESS,
         rolemanagerABI,
         'registerAsPatient'
       );

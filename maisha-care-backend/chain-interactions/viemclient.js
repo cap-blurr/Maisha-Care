@@ -1,5 +1,5 @@
-import { createPublicClient,createWalletClient, http } from 'viem';
-import { foundry } from 'viem/chains';
+import { createPublicClient,createWalletClient, http,custom } from 'viem';
+import { foundry,baseSepolia } from 'viem/chains';
 
 // Chain configuration
 const activeNetwork = process.env.ACTIVE_NETWORK || 'anvil';
@@ -26,5 +26,5 @@ export const publicClient = createPublicClient({
 
 export const walletClient = createWalletClient({
 chain: config.chain,
-transport: custom(window.ethereum)
+transport: http(config.rpcUrl)
 })

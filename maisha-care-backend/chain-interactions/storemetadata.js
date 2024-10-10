@@ -1,5 +1,5 @@
 import { publicClient } from './viemclient.js';
-import { VerifiedAddressRegistryJSON } from '../abis/VerifiedAddressRegistry.json' assert { type: 'json' };
+import  VerifiedAddressRegistryJSON  from '../abis/VerifiedAddressRegistry.json' assert { type: 'json' };
 
 const { abi } = VerifiedAddressRegistryJSON;
 

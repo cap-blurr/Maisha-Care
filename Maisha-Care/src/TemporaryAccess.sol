@@ -9,6 +9,7 @@ contract TemporaryAccess {
     mapping(address => mapping(address => uint256)) public accessExpiry;
     mapping(address => mapping(address => bool)) public researchAccess;
     mapping(address => mapping(address => bool)) public builderAccess;
+    mapping(address => mapping(address => bool)) public pendingAccessRequests;
 
     event AccessRequested(address indexed doctor, address indexed patient);
     event AccessApproved(address indexed patient, address indexed doctor);
@@ -27,6 +28,7 @@ contract TemporaryAccess {
             roleManager.hasRole(roleManager.PATIENT_ROLE(), _patient),
             "Invalid patient address"
         );
+        pendingAccessRequests[_patient][msg.sender] = true;
         emit AccessRequested(msg.sender, _patient);
     }
 
@@ -38,6 +40,10 @@ contract TemporaryAccess {
         require(
             roleManager.hasRole(roleManager.DOCTOR_ROLE(), _doctor),
             "Invalid doctor address"
+        );
+        require(
+            pendingAccessRequests[msg.sender][_doctor],
+            "No pending request from this doctor"
         );
         accessExpiry[msg.sender][_doctor] = block.timestamp + 5 minutes;
         emit AccessApproved(msg.sender, _doctor);

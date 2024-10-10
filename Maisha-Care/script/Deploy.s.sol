@@ -44,11 +44,13 @@ contract DeployScript is Script {
         );
         CurrentHealth currentHealth = new CurrentHealth(
             address(roleManager),
-            address(updateApproval)
+            address(updateApproval),
+            address(temporaryAccess)
         );
         TreatmentRecords treatmentRecords = new TreatmentRecords(
             address(roleManager),
-            address(updateApproval)
+            address(updateApproval),
+            address(temporaryAccess)
         );
 
         // Deploy HealthRecordManager last

@@ -28,11 +28,11 @@ contract MedicalHistory is Ownable {
     constructor(
         address _roleManagerAddress,
         address _updateApprovalAddress,
-        address _TemporaryAccess
+        address _temporaryAccessAddress
     ) Ownable(msg.sender) {
         roleManager = RoleManager(_roleManagerAddress);
         updateApproval = UpdateApproval(_updateApprovalAddress);
-        temporaryAccess = TemporaryAccess(_TemporaryAccess);
+        temporaryAccess = TemporaryAccess(_temporaryAccessAddress);
     }
 
     function initiateHistoryUpdate(
@@ -87,6 +87,12 @@ contract MedicalHistory is Ownable {
             roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
             "Must be doctor"
         );
+        require(
+            temporaryAccess.hasAccess(_patient, msg.sender),
+            "Doctor does not have temporary access"
+        );
+        History memory history = medicalHistories[_patient];
+        return (history.dataHash, history.lastUpdated);
     }
 
     function getAnonymizedHistory(

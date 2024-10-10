@@ -4,10 +4,12 @@ pragma solidity ^0.8.19;
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {RoleManager} from "./RoleManager.sol";
 import {UpdateApproval} from "./UpdateApproval.sol";
+import {TemporaryAccess} from "./TemporaryAccess.sol";
 
 contract CurrentHealth is Ownable {
     RoleManager public roleManager;
     UpdateApproval public updateApproval;
+    TemporaryAccess public temporaryAccess;
 
     struct Health {
         string dataHash;
@@ -25,10 +27,12 @@ contract CurrentHealth is Ownable {
 
     constructor(
         address _roleManagerAddress,
-        address _updateApprovalAddress
+        address _updateApprovalAddress,
+        address _temporaryAccessAddress
     ) Ownable(msg.sender) {
         roleManager = RoleManager(_roleManagerAddress);
         updateApproval = UpdateApproval(_updateApprovalAddress);
+        temporaryAccess = TemporaryAccess(_temporaryAccessAddress);
     }
 
     function initiateHealthUpdate(
@@ -65,13 +69,27 @@ contract CurrentHealth is Ownable {
         emit HealthUpdated(patient, block.timestamp);
     }
 
-    function getHealth(
+    function getHealthPatient(
         address _patient
     ) public view returns (string memory, uint256) {
         require(
-            roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender) ||
-                roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
-            "Must be patient or authorized doctor"
+            roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender),
+            "Must be patient"
+        );
+        Health memory health = currentHealths[_patient];
+        return (health.dataHash, health.lastUpdated);
+    }
+
+    function getHealthDoctor(
+        address _patient
+    ) public view returns (string memory, uint256) {
+        require(
+            roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
+            "Must be a doctor"
+        );
+        require(
+            temporaryAccess.hasAccess(_patient, msg.sender),
+            "Doctor does not have temporary access"
         );
         Health memory health = currentHealths[_patient];
         return (health.dataHash, health.lastUpdated);

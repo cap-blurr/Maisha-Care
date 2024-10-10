@@ -23,7 +23,7 @@ export type SignUpFormData = {
   formData: {
     name: string;
     dateOfBirth: string;
-    specialization: string;
+    nationalID: string;
   },
 };
 

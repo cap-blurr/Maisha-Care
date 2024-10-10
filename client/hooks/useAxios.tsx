@@ -2,7 +2,8 @@ import axios, { AxiosInstance } from "axios";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+const baseURL = "http://127.0.0.1:5000/";
+
 
 const useAxios = () => {
   const $http: AxiosInstance = axios.create({

@@ -29,6 +29,9 @@ import {
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import ConnectButton from "@/components/buttons/connect-button";
+import { Address, Avatar, Name } from '@coinbase/onchainkit/identity';
+import { color } from '@coinbase/onchainkit/theme';
+import { WalletComponents } from "@/components/buttons/wallet-components";
 
 const navigation = [
   { name: "Patient", href: "/patient", icon: UsersIcon, current: false },
@@ -324,6 +327,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
 
+                <WalletComponents />
                 {/* Separator */}
                 <div
                   className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/70"

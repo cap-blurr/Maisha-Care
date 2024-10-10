@@ -100,13 +100,13 @@ app.post('/api/prepare-verification', async (req, res) => {
     console.log('Generated unique hash:', uniqueHash);
 
     // Prepare transaction data
-    // const { request } = await publicClient.simulateContract({
-    //   address: VERIFIED_ADDRESS_REGISTRY_ADDRESS,
-    //   abi: abi,
-    //   functionName: 'verifyAddress',
-    //   args: [roleHash, address, uniqueHash],
-    //   account: address, 
-    // });
+    const { request } = await publicClient.simulateContract({
+      address: VERIFIED_ADDRESS_REGISTRY_ADDRESS,
+      abi: abi,
+      functionName: 'verifyAddress',
+      args: [roleHash, address, uniqueHash],
+      account: address, 
+    });
 
     // console.log('Full transaction request:', request);
 

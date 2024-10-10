@@ -47,7 +47,7 @@ const roleHashes = {
 // store Data Endpoint
 app.post('/api/store-data', async (req, res) => {
   try {
-    const { role, address, formData, patientPublicKey } = req.body;
+    const { role, address, formData} = req.body;
 
     // Validate and get the correct role hash
     const roleHash = roleHashes[role.toLowerCase()];
@@ -62,7 +62,7 @@ app.post('/api/store-data', async (req, res) => {
     const encryptedDataObj = encryptData(formData, symmetricKey);
 
     // Step 3: Encrypt Symmetric Key with Patient's Public Key
-    const encryptedSymmetricKey = encryptSymmetricKey(symmetricKey, patientPublicKey);
+    const encryptedSymmetricKey = encryptSymmetricKey(symmetricKey, address);
 
     // Step 4: Generate Salt
     const salt = generateSalt();

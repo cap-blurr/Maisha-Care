@@ -39,7 +39,7 @@ const navigation = [
   { name: "Settings", href: "/settings", icon: DocumentDuplicateIcon, current: false },
 ];
 const teams = [
-  { id: 1, name: "Dashboard", href: "/dashboard", initial: "H", current: false },
+  { id: 1, name: "Dashboard", href: "/signup", initial: "H", current: false },
 
 ];
 

@@ -43,6 +43,10 @@ contract TreatmentRecords is Ownable {
             roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
             "Must be a doctor"
         );
+        require(
+            temporaryAccess.hasAccess(_patient, msg.sender),
+            "Doctor does not have temporary access"
+        );
         bytes32 updateId = updateApproval.initiateUpdate(
             _patient,
             keccak256(abi.encodePacked(_dataHash))

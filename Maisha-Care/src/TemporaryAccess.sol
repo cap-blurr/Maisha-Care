@@ -45,7 +45,7 @@ contract TemporaryAccess {
             pendingAccessRequests[msg.sender][_doctor],
             "No pending request from this doctor"
         );
-        accessExpiry[msg.sender][_doctor] = block.timestamp + 5 minutes;
+        accessExpiry[msg.sender][_doctor] = block.timestamp + 10 minutes;
         emit AccessApproved(msg.sender, _doctor);
     }
 

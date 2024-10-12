@@ -43,6 +43,10 @@ contract MedicalHistory is Ownable {
             roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
             "Must be a doctor"
         );
+        require(
+            temporaryAccess.hasAccess(_patient, msg.sender),
+            "Doctor does not have temporary access"
+        );
         bytes32 updateId = updateApproval.initiateUpdate(
             _patient,
             keccak256(abi.encodePacked(_dataHash))
@@ -60,6 +64,7 @@ contract MedicalHistory is Ownable {
             ,
 
         ) = updateApproval.getPendingUpdate(_updateId);
+
         require(msg.sender == doctor, "Only initiating doctor can update");
 
         medicalHistories[patient] = History(

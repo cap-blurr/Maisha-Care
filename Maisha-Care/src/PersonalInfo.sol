@@ -36,8 +36,8 @@ contract PersonalInfo is Ownable {
         string memory _dataHash
     ) public {
         require(
-            roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
-            "Must be a doctor"
+            roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender),
+            "Must be a patient"
         );
         bytes32 updateId = updateApproval.initiateUpdate(
             _patient,

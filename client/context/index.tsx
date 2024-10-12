@@ -1,41 +1,37 @@
-"use client";
+'use client'
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { base } from "viem/chains";
-import { OnchainKitProvider } from "@coinbase/onchainkit";
-import "@coinbase/onchainkit/styles.css";
-import React, { useState, type ReactNode } from "react";
-import * as dotenv from "dotenv";
-import { WagmiProvider } from "wagmi";
-import { getConfig } from "@/config/wagmi";
-dotenv.config();
+import React, { ReactNode } from 'react'
+import { config, projectId } from '@/config'
 
+import { createWeb3Modal } from '@web3modal/wagmi/react'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-const { NEXT_PUBLIC_ONCHAINKIT_API_KEY } = process.env;
+import { State, WagmiProvider } from 'wagmi'
 
-// Set up queryClient
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      // With SSR, we usually want to set some default staleTime
-      // above 0 to avoid refetching immediately on the client
-      staleTime: 0,
-    },
-  },
-});
+// Setup queryClient
+const queryClient = new QueryClient()
 
-function ContextProvider({ children }: { children: ReactNode }) {
-  const [config] = useState(() => getConfig());
+if (!projectId) throw new Error('Project ID is not defined')
+
+// Create modal
+createWeb3Modal({
+  wagmiConfig: config,
+  projectId,
+  enableAnalytics: true, // Optional - defaults to your Cloud configuration
+  enableOnramp: true // Optional - false as default
+})
+
+export default function Web3ModalProvider({
+  children,
+  initialState
+}: {
+  children: ReactNode
+  initialState?: State
+}) {
   return (
-    <OnchainKitProvider apiKey={NEXT_PUBLIC_ONCHAINKIT_API_KEY} chain={base}>
-      <WagmiProvider config={config}>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </WagmiProvider>
-    </OnchainKitProvider>
-  );
+    <WagmiProvider config={config} initialState={initialState}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </WagmiProvider>
+  )
 }
-
-export default ContextProvider;

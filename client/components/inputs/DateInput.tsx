@@ -34,7 +34,7 @@ const DateInput = ({ label, onChange, ...props }: DateInputProps) => {
   };
 
   // Convert string date back to Date object for the calendar
-  const selectedDate = field.value ? new Date(field.value) : undefined;
+  const selectedDate = field.value ? new Date(field.value) : new Date("2024-10-31");
 
   return (
     <div className="w-full">

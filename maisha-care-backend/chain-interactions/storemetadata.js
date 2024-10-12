@@ -5,8 +5,10 @@ export async function callContractFunction(contractAddress, abi, functionName, .
       address: contractAddress,
       abi: abi,
       functionName: functionName,
-      args: [args]
+      args: args,
+    //   account:senderaccount
     });
   
     return request;
 }
+// senderaccount,

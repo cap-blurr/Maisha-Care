@@ -59,6 +59,7 @@ app.post('/api/signup', async (req, res) => {
     if (!roleHash) {
       throw new Error('Invalid role');
     }
+    
     //step 1: generate unique hash
     const uniqueHash = keccak256(
       JSON.stringify({
@@ -132,40 +133,40 @@ await walletClient.writeContract(verifyAddressTx);
 
 });
 
-  //   // Step 1: Generate Symmetric Key
-  //   const symmetricKey = generateSymmetricKey();
+    // Step 1: Generate Symmetric Key
+    const symmetricKey = generateSymmetricKey();
 
-  //   // Step 2: Encrypt Data
-  //   const encryptedDataObj = encryptData(formData, symmetricKey);
+    // Step 2: Encrypt Data
+    const encryptedDataObj = encryptData(formData, symmetricKey);
 
-  //   // Step 3: Encrypt Symmetric Key with Patient's Public Key
-  //   const encryptedSymmetricKey = encryptSymmetricKey(symmetricKey, address);
+    // Step 3: Encrypt Symmetric Key with Patient's Public Key
+    const encryptedSymmetricKey = encryptSymmetricKey(symmetricKey, address);
 
-  //   // Step 4: Generate Salt
-  //   const salt = generateSalt();
+    // Step 4: Generate Salt
+    const salt = generateSalt();
 
-  //   // Step 5: Hash Data
-  //   const dataHash = hashData(encryptedDataObj.encryptedData, salt, role);
+    // Step 5: Hash Data
+    const dataHash = hashData(encryptedDataObj.encryptedData, salt, role);
 
-  //   // Step 6: Store Encrypted Data on IPFS
-  //   const cid = await storeDataOnIPFS({
-  //     encryptedData: encryptedDataObj,
-  //     encryptedSymmetricKey,
-  //     salt,
-  //     dataHash,
-  //   });
+    // Step 6: Store Encrypted Data on IPFS
+    const cid = await storeDataOnIPFS({
+      encryptedData: encryptedDataObj,
+      encryptedSymmetricKey,
+      salt,
+      dataHash,
+    });
 
-  //   // Step 7: Generate Unique Identifier Hash
-  //   // const uniqueHash = keccak256(
-  //   //   JSON.stringify({
-  //   //     role,
-  //   //     address,
-  //   //     cid: cid.toString(),
-  //   //     timestamp: Date.now(),
-  //   //   })
-  //   // );
+    // Step 7: Generate Unique Identifier Hash
+    // const uniqueHash = keccak256(
+    //   JSON.stringify({
+    //     role,
+    //     address,
+    //     cid: cid.toString(),
+    //     timestamp: Date.now(),
+    //   })
+    // );
 
-  //   // Step 8: Prepare Transaction Data
+    // Step 8: Prepare Transaction Data
 
 
  

@@ -5,6 +5,8 @@ import "@/styles/style.css";
 import { ThemeProvider } from "@/components/dashboard/theme-provider";
 import { headers } from "next/headers";
 import ContextProvider from "@/context";
+import { cookieToInitialState } from "wagmi";
+import { getConfig } from "@/config/wagmi";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,13 +29,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookies = headers().get("cookie");
+  const initialState = cookieToInitialState(
+    getConfig(),
+    headers().get('cookie')
+  );
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ContextProvider>
+        <ContextProvider initialState={initialState}>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"

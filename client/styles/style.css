@@ -1,5 +1,5 @@
 .app-background {
-  @apply bg-black h-screen bg-no-repeat bg-cover bg-center flex flex-col items-center justify-around px-3 font-DM;
+  @apply bg-white h-screen bg-no-repeat bg-cover bg-center flex flex-col items-center justify-around px-3 font-DM;
 }
 
 .onboarding-bg {

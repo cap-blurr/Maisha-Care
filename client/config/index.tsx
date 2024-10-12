@@ -1,35 +1,24 @@
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { cookieStorage, createStorage, http } from '@wagmi/core'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { mainnet, arbitrum, sepolia } from '@reown/appkit/networks'
 
-import { cookieStorage, createStorage, http } from 'wagmi'
-import { celoAlfajores, foundry, liskSepolia, mainnet, sepolia } from 'wagmi/chains'
-import { injected } from '@wagmi/connectors'
-
-// Get projectId at https://cloud.walletconnect.com
+// Get projectId from https://cloud.reown.com
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
-if (!projectId) throw new Error('Project ID is not defined')
-
-const metadata = {
-  name: 'Minifundraiser',
-  description: 'Minifundraiser on Opera"s Minipay',
-  url: 'https://minifundraiser.vercel.app/', // origin must match your domain & subdomain
-  icons: ['https://avatars.githubusercontent.com/u/37784886']
+if (!projectId) {
+  throw new Error('Project ID is not defined')
 }
 
+export const networks = [mainnet, arbitrum, sepolia]
 
-// Create wagmiConfig
-const chains = [mainnet, sepolia, celoAlfajores, liskSepolia] as const
-export const config = defaultWagmiConfig({
-  chains,
-  connectors: [injected()],
-  transports: {
-    [foundry.id]: http(),
-  },
-  projectId,
-  metadata,
-  ssr: true,
+//Set up the Wagmi Adapter (Config)
+export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
     storage: cookieStorage
   }),
-//   ...wagmiOptions // Optional - Override createConfig parameters
+  ssr: true,
+  projectId,
+  networks
 })
+
+export const config = wagmiAdapter.wagmiConfig

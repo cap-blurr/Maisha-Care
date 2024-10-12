@@ -22,6 +22,7 @@
     "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
+    "@rainbow-me/rainbowkit": "^2.1.7",
     "@reown/appkit": "^1.0.7",
     "@reown/appkit-adapter-wagmi": "^1.0.7",
     "@reown/walletkit": "^1.1.1",

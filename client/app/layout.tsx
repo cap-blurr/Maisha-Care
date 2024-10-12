@@ -7,6 +7,8 @@ import { headers } from "next/headers";
 import ContextProvider from "@/context";
 import { cookieToInitialState } from "wagmi";
 import { getConfig } from "@/config/wagmi";
+import AppKitContextProvider from "@/context/appkit";
+import RainbowKitContainer from "@/context/rainbowkit";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,13 +33,15 @@ export default function RootLayout({
 }>) {
   const initialState = cookieToInitialState(
     getConfig(),
-    headers().get('cookie')
+    headers().get("cookie")
   );
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* <AppKitContextProvider cookies={cookies}> */}
+        {/* <RainbowKitContainer> */}
         <ContextProvider initialState={initialState}>
           <ThemeProvider
             attribute="class"
@@ -48,6 +52,8 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
         </ContextProvider>
+        {/* </RainbowKitContainer> */}
+        {/* </AppKitContextProvider> */}
       </body>
     </html>
   );

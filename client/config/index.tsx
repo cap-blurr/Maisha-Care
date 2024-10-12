@@ -1,7 +1,7 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { cookieStorage, createStorage, http } from 'wagmi'
-import { anvil, celoAlfajores,  sepolia } from 'wagmi/chains'
+import { celoAlfajores, foundry, liskSepolia, mainnet, sepolia } from 'wagmi/chains'
 import { injected } from '@wagmi/connectors'
 
 // Get projectId at https://cloud.walletconnect.com
@@ -18,12 +18,12 @@ const metadata = {
 
 
 // Create wagmiConfig
-const chains = [anvil, sepolia, celoAlfajores] as const
+const chains = [mainnet, sepolia, celoAlfajores, liskSepolia] as const
 export const config = defaultWagmiConfig({
-  chains: [chains[0]],
+  chains,
   connectors: [injected()],
   transports: {
-    [anvil.id]: http(),
+    [foundry.id]: http(),
   },
   projectId,
   metadata,

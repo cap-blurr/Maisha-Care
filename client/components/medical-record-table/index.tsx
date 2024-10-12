@@ -17,6 +17,7 @@ import {
 } from "@tanstack/react-table";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useWriteContract } from "wagmi";
 
 interface TblProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -49,9 +50,22 @@ export default function MedicalRecordTable<TData, TValue>({
     formState: { errors },
   } = useForm();
 
+  const { writeContract } = useWriteContract()
+
   const handleMonetizeData = ()=> {
-    
+    () => 
+      writeContract({ 
+        abi,
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        functionName: 'transferFrom',
+        args: [
+          '0xd2135CfB216b74109775236E36d4b433F1DF507B',
+          '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
+          '123n',
+        ],
+     })
   }
+
   return (
     <DataTable table={table} columns={columns} data={data}>
       <div  className="flex items-center justify-between my-1 p-3">
@@ -130,38 +144,9 @@ export default function MedicalRecordTable<TData, TValue>({
             </Select>
           )}
         />
-        <Controller
-          name="property type"
-          control={control}
-          render={({ field }) => (
-            <Select
-              defaultValue="all"
-              value={
-                (table.getColumn("leaseType")?.getFilterValue() as string) ?? ""
-              }
-              onValueChange={(value: string) => {
-                table.getColumn("leaseType")?.setFilterValue(value);
-                table.getColumn("county")?.setFilterValue("");
-                table.getColumn("name")?.setFilterValue("");
-                table.getColumn("sizeHa")?.setFilterValue("");
-              }}
-            >
-              <SelectTrigger className="w-[200px] bg-[#A5A5A520] text-[#808195]  outline-none m-1">
-                <SelectValue placeholder="Record Type" />
-              </SelectTrigger>
-              <SelectContent className="bg-[#ffffff] text-[#808195] bg-opacity-100">
-                <SelectItem defaultValue="" value="all">
-                  All Titles
-                </SelectItem>
-                <SelectItem value="freehold">Freehold Titles</SelectItem>
-                <SelectItem value="leasehold">Leasehold Titles</SelectItem>
-              </SelectContent>
-            </Select>
-          )}
-        />
         <button
           onClick={handleMonetizeData}
-          className="py-2 px-2  bg-[#ff6f91] text-white rounded-lg font-semibold mx-1 w-max"
+          className="py-2 px-2 bg-[#ff6f91] text-white rounded-lg font-semibold mx-1 w-max"
         >
           Monetize Data
         </button>

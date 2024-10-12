@@ -1,37 +1,35 @@
-'use client'
+"use client";
 
-import React, { ReactNode } from 'react'
-import { config, projectId } from '@/config'
-
-import { createWeb3Modal } from '@web3modal/wagmi/react'
-
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-import { State, WagmiProvider } from 'wagmi'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { base, baseSepolia } from "viem/chains";
+import { OnchainKitProvider } from "@coinbase/onchainkit";
+import "@coinbase/onchainkit/styles.css";
+import React, { useState, type ReactNode } from "react";
+import * as dotenv from "dotenv";
+import { State, WagmiProvider } from "wagmi";
+import { getConfig } from "@/config/wagmi";
+dotenv.config();
 
 // Setup queryClient
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
-if (!projectId) throw new Error('Project ID is not defined')
-
-// Create modal
-createWeb3Modal({
-  wagmiConfig: config,
-  projectId,
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration
-  enableOnramp: true // Optional - false as default
-})
+const { NEXT_PUBLIC_ONCHAINKIT_API_KEY } = process.env;
 
 export default function Web3ModalProvider({
   children,
-  initialState
+  initialState,
 }: {
-  children: ReactNode
-  initialState?: State
+  children: ReactNode;
+  initialState?: State;
 }) {
+  const [config] = useState(() => getConfig());
   return (
-    <WagmiProvider config={config} initialState={initialState}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </WagmiProvider>
-  )
+    <OnchainKitProvider apiKey={NEXT_PUBLIC_ONCHAINKIT_API_KEY} chain={baseSepolia}>
+      <WagmiProvider config={config} initialState={initialState}>
+        <QueryClientProvider client={queryClient}>
+          {children}
+        </QueryClientProvider>
+      </WagmiProvider>
+    </OnchainKitProvider>
+  );
 }

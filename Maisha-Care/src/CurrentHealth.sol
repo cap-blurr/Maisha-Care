@@ -43,6 +43,10 @@ contract CurrentHealth is Ownable {
             roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
             "Must be a doctor"
         );
+        require(
+            temporaryAccess.hasAccess(_patient, msg.sender),
+            "Doctor does not have temporary access"
+        );
         bytes32 updateId = updateApproval.initiateUpdate(
             _patient,
             keccak256(abi.encodePacked(_dataHash))
@@ -61,6 +65,10 @@ contract CurrentHealth is Ownable {
 
         ) = updateApproval.getPendingUpdate(_updateId);
         require(msg.sender == doctor, "Only initiating doctor can update");
+        require(
+            temporaryAccess.hasAccess(patient, msg.sender),
+            "Doctor does not have temporary access"
+        );
 
         currentHealths[patient] = Health(
             bytes32ToString(dataHash),

@@ -5,6 +5,10 @@ import "@/styles/style.css";
 import { ThemeProvider } from "@/components/dashboard/theme-provider";
 import { headers } from "next/headers";
 import ContextProvider from "@/context";
+import { cookieToInitialState } from "wagmi";
+import { getConfig } from "@/config/wagmi";
+import AppKitContextProvider from "@/context/appkit";
+import RainbowKitContainer from "@/context/rainbowkit";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,13 +31,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookies = headers().get("cookie");
+  const initialState = cookieToInitialState(
+    getConfig(),
+    headers().get("cookie")
+  );
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ContextProvider>
+        {/* <AppKitContextProvider cookies={cookies}> */}
+        {/* <RainbowKitContainer> */}
+        <ContextProvider initialState={initialState}>
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -43,6 +52,8 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
         </ContextProvider>
+        {/* </RainbowKitContainer> */}
+        {/* </AppKitContextProvider> */}
       </body>
     </html>
   );

@@ -8,6 +8,7 @@ import { keccak256, encodePacked } from "viem";
 import { VerifiedAddressRegistry } from "@/abi/VerifiedAddressRegistry";
 import { RoleManager } from "@/abi/RoleManager";
 import { ROLE_MANAGER_ADDRESS, VERIFIED_ADDRESS_REGISTRY_ADDRESS } from "@/constants";
+import { log } from "console";
 
 // Define the role hashes
 const roleHashes = {
@@ -34,14 +35,25 @@ export function useSignUp() {
   const [error, setError] = useState<string | null>(null);
 
   // Contract write hook for verifyAddress
-  const {  writeContract } = useWriteContract();
+  const {  data: hash, writeContract } = useWriteContract();
 
   const { data: isVerifiedData, refetch: refetchIsVerified } = useReadContract({
     address: VERIFIED_ADDRESS_REGISTRY_ADDRESS,
     abi: VerifiedAddressRegistry,
     functionName: 'isVerified',
-    args:[]
+    args: ["0xec03945fa2196716a09674e2cd6a57153479ecb05ea91e189e2688f793ab5381", "0xBd41795def27c74870364e2e1Ed9aC7A4166A68A"] 
   });
+
+  console.log("verifiedData:", isVerifiedData)
+
+  const { data, isError, isLoading } = useReadContract({
+    abi: VerifiedAddressRegistry,
+    address: VERIFIED_ADDRESS_REGISTRY_ADDRESS,
+    functionName: 'isVerified',
+    args: ["0xec03945fa2196716a09674e2cd6a57153479ecb05ea91e189e2688f793ab5381", "0xBd41795def27c74870364e2e1Ed9aC7A4166A68A"] 
+  })
+
+  console.log("data", data, isError, isLoading);
 
   const signUp = async (data: SignUpData) => {
     try {
@@ -62,12 +74,19 @@ export function useSignUp() {
 
       // Step 2: Call verifyAddress function
       try {
+        console.log("roleHash:",roleHash, "data.address:",data.address, "uniqueHash:",uniqueHash);
+        
         writeContract({
           abi: VerifiedAddressRegistry,
           address: VERIFIED_ADDRESS_REGISTRY_ADDRESS,
           functionName: 'verifyAddress',
           args: [roleHash, data.address, uniqueHash],
         });
+
+
+        console.log("Hash:", hash);
+        
+
       } catch (verifyError) {
         throw new Error(`Failed to verify address: ${(verifyError as Error).message}`);
       }

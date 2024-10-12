@@ -10,12 +10,9 @@ import { State, WagmiProvider } from "wagmi";
 import { getConfig } from "@/config/wagmi";
 dotenv.config();
 
-// Setup queryClient
-const queryClient = new QueryClient();
-
 const { NEXT_PUBLIC_ONCHAINKIT_API_KEY } = process.env;
 
-export default function Web3ModalProvider({
+export default function ContextProvider({
   children,
   initialState,
 }: {
@@ -23,13 +20,17 @@ export default function Web3ModalProvider({
   initialState?: State;
 }) {
   const [config] = useState(() => getConfig());
+  const [queryClient] = useState(() => new QueryClient());
   return (
-    <OnchainKitProvider apiKey={NEXT_PUBLIC_ONCHAINKIT_API_KEY} chain={baseSepolia}>
-      <WagmiProvider config={config} initialState={initialState}>
-        <QueryClientProvider client={queryClient}>
+    <WagmiProvider config={config} initialState={initialState}>
+      <QueryClientProvider client={queryClient}>
+        <OnchainKitProvider
+          apiKey={NEXT_PUBLIC_ONCHAINKIT_API_KEY}
+          chain={baseSepolia}
+        >
           {children}
-        </QueryClientProvider>
-      </WagmiProvider>
-    </OnchainKitProvider>
+        </OnchainKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }

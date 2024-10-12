@@ -8,11 +8,11 @@ const TextInput = ({ label, ...props }: any) => {
     const [field, meta] = useField(props);
     return (
       <article className="my-5">
-        <label htmlFor={props.id || props.name} className="text-white">
+        <label htmlFor={props.id || props.name} className="text-black">
           {label}
         </label>
         <input
-          className="text-input py-3 px-6 rounded-md w-full"
+          className="text-input py-3 px-6 rounded-md w-full border border-black"
           {...field}
           {...props}
         />

@@ -16,6 +16,7 @@ import { ConnectWallet } from "@coinbase/onchainkit/wallet";
 import DateInput from "@/components/inputs/DateInput";
 import { format } from "date-fns";
 import { useSignUp, SignUpData } from "@/hooks/useSignUp";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Signup = () => {
   const router = useRouter();
@@ -71,7 +72,7 @@ const Signup = () => {
       // Handle successful signup (e.g., show success message, redirect)
       router.push("/patient");
     } else {
-      setOpenAccErr(true);
+      // setOpenAccErr(true);
     }
   };
 
@@ -88,10 +89,10 @@ const Signup = () => {
         setOpenError={setOpenAccErr}
       />
       <article>
-        <h2 className="text-4xl text-white font-bold">
+        <h2 className="text-4xl text-black font-bold">
           Create a Patient Account
         </h2>
-        <h4 className="text-white my-5">
+        <h4 className="text-black my-5">
           Enter your Details to Sign Up to MaishaCare
         </h4>
 
@@ -133,7 +134,8 @@ const Signup = () => {
 
               <div className="flex flex-col items-center w-full my-4">
                 <ConnectWallet />
-                {/* <w3m-button /> */}
+                <w3m-button />
+                {/* <ConnectButton /> */}
                 {!isConnected && (
                   <p className="text-red-500 mt-2">
                     Please connect your wallet to continue
@@ -146,13 +148,13 @@ const Signup = () => {
                   Have an account?{" "}
                   <Link
                     href="/login"
-                    className="hover:text-white text-gray-300"
+                    className="hover:text-black text-gray-300"
                   >
                     Login
                   </Link>
                 </p>
                 <p className="text-[#909090] p-1 text-sm font-semibold">
-                  <Link href="/signup/doctor" className="hover:text-white">
+                  <Link href="/signup/doctor" className="hover:text-black">
                     Create a Doctor's Account?
                   </Link>
                 </p>
@@ -163,7 +165,7 @@ const Signup = () => {
               <button
                 type="submit"
                 disabled={!isConnected}
-                className={`bg-white text-black mt-5 p-3 rounded-md font-bold w-full 
+                className={`bg-black text-white mt-5 p-3 rounded-md font-bold w-full 
                   ${
                     !isConnected
                       ? "opacity-50 cursor-not-allowed"

@@ -52,19 +52,19 @@ export default function MedicalRecordTable<TData, TValue>({
 
   const { writeContract } = useWriteContract()
 
-  const handleMonetizeData = ()=> {
-    () => 
-      writeContract({ 
-        abi,
-        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-        functionName: 'transferFrom',
-        args: [
-          '0xd2135CfB216b74109775236E36d4b433F1DF507B',
-          '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
-          '123n',
-        ],
-     })
-  }
+  // const handleMonetizeData = ()=> {
+  //   () => 
+  //     writeContract({ 
+  //       abi,
+  //       address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  //       functionName: 'transferFrom',
+  //       args: [
+  //         '0xd2135CfB216b74109775236E36d4b433F1DF507B',
+  //         '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
+  //         '123n',
+  //       ],
+  //    })
+  // }
 
   return (
     <DataTable table={table} columns={columns} data={data}>
@@ -145,7 +145,7 @@ export default function MedicalRecordTable<TData, TValue>({
           )}
         />
         <button
-          onClick={handleMonetizeData}
+         
           className="py-2 px-2 bg-[#ff6f91] text-white rounded-lg font-semibold mx-1 w-max"
         >
           Monetize Data

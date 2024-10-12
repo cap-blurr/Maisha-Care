@@ -157,14 +157,14 @@ await walletClient.writeContract(verifyAddressTx);
     });
 
     // Step 7: Generate Unique Identifier Hash
-    // const uniqueHash = keccak256(
-    //   JSON.stringify({
-    //     role,
-    //     address,
-    //     cid: cid.toString(),
-    //     timestamp: Date.now(),
-    //   })
-    // );
+    const uniqueHash = keccak256(
+      JSON.stringify({
+        role,
+        address,
+        cid: cid.toString(),
+        timestamp: Date.now(),
+      })
+    );
 
     // Step 8: Prepare Transaction Data
 

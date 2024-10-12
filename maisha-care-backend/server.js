@@ -50,7 +50,7 @@ const roleHashes = {
 };
 
 // signup endpoint
-app.post('/api/signup', async (req, res) => {
+app.post('/api/send', async (req, res) => {
   try {
     const { role, address, formData} = req.body;
 

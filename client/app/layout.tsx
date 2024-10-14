@@ -41,8 +41,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <AppKitContextProvider cookies={cookies}> */}
-        {/* <RainbowKitContainer> */}
-        <ContextProvider initialState={initialState}>
+        <RainbowKitContainer>
+        {/* <ContextProvider initialState={initialState}> */}
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -51,8 +51,8 @@ export default function RootLayout({
           >
             {children}
           </ThemeProvider>
-        </ContextProvider>
-        {/* </RainbowKitContainer> */}
+        {/* </ContextProvider> */}
+        </RainbowKitContainer>
         {/* </AppKitContextProvider> */}
       </body>
     </html>

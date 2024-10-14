@@ -12,7 +12,7 @@ export function Basenames({ address }) {
     >
       <Avatar address={address} chain={base} />
       <Name address={address} chain={base} />
-      <Address />
+      <Address address={address} />
     </Identity>
   );
 }

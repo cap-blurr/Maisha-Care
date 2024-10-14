@@ -14,11 +14,11 @@ export function WalletComponents() {
     <div className="flex justify-end">
       <Wallet>
         <ConnectWallet>
-          <Avatar className="h-6 w-6" />
-          <Name />
+          <Avatar address={address} className="h-6 w-6" />
+          <Name address={address} />
         </ConnectWallet>
         <WalletDropdown>
-          <Identity className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
+          <Identity address={address} className="px-4 pt-3 pb-2" hasCopyAddressOnClick>
             <Avatar address={address} />
             <Name address={address} />
             <Address address={address} className={color.foregroundMuted} />

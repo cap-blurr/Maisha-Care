@@ -133,9 +133,9 @@ const Signup = () => {
               />
 
               <div className="flex flex-col items-center w-full my-4">
-                <ConnectWallet />
-                <w3m-button />
-                {/* <ConnectButton /> */}
+                {/* <ConnectWallet /> */}
+                {/* <w3m-button /> */}
+                <ConnectButton />
                 {!isConnected && (
                   <p className="text-red-500 mt-2">
                     Please connect your wallet to continue

@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/dashboard/theme-provider";
 import { headers } from "next/headers";
 import ContextProvider from "@/context";
 import { cookieToInitialState } from "wagmi";
-import { getConfig } from "@/config/wagmi";
+
 import AppKitContextProvider from "@/context/appkit";
 import RainbowKitContainer from "@/context/rainbowkit";
 
@@ -31,10 +31,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const initialState = cookieToInitialState(
-    getConfig(),
-    headers().get("cookie")
-  );
+
   return (
     <html lang="en">
       <body

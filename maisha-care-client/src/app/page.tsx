@@ -31,7 +31,7 @@ function App() {
         setChainId(network.chainId);
   
         // Read contract data once connected
-        readContractData(newProvider);
+        // readContractData(newProvider);
       } catch (err) {
         console.error(err);
         setError('Failed to connect wallet');
@@ -67,15 +67,18 @@ function App() {
       );
       try {
         const data = await contract.isVerified(
-          "0xec03945fa2196716a09674e2cd6a57153479ecb05ea91e189e2688f793ab5381",
+          roleHash,
           "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
         );
         setIsVerifiedData(data);
         console.log('verifiedData:', data);
+        setError(null);
       } catch (err) {
-        console.error(err);
-        setError('Failed to read contract data');
+        console.error('Error:', err);
+        setError(`Failed to read contract data: ${err}`);
       }
+    } else {
+      setError('Provider is not available');
     }
   };
 
@@ -104,8 +107,16 @@ function App() {
     }
   };
 
-  const handleClick = () => {
+  const handleWriteClick = () => {
     writeContractData();
+  };
+
+  const handleReadClick = () => {
+    if (provider) {
+      readContractData(provider);
+    } else {
+      setError('Please connect your wallet');
+    }
   };
 
   useEffect(() => {
@@ -114,7 +125,7 @@ function App() {
         if (accounts.length > 0) {
           setAccount(accounts[0]);
           if (provider) {
-            readContractData(provider);
+            // readContractData(provider);
           }
         } else {
           disconnectWallet();
@@ -163,13 +174,26 @@ function App() {
         </div>
     
         <div>
-          <h2>Contract Interaction</h2>
-          <div>
-            isVerifiedData: {JSON.stringify(isVerifiedData)}
-          </div>
-          <button onClick={handleClick}>Sign Up</button>
-          {error && <div>Error: {error}</div>}
+        <h2>Contract Interaction</h2>
+
+        {/* Buttons */}
+        <button onClick={handleWriteClick}>Sign Up</button>
+        <button onClick={handleReadClick}>Check Verification</button>
+
+        {/* Display isVerifiedData below the buttons */}
+        <div>
+          <h3>Verification Result:</h3>
+          <pre>{JSON.stringify(isVerifiedData, null, 2)}</pre>
         </div>
+
+        {/* Conditionally render the error message below isVerifiedData */}
+        {error && (
+          <div style={{ color: 'red' }}>
+            <h3>Error:</h3>
+            <p>{error}</p>
+          </div>
+        )}
+      </div>
       </>
     ); 
 }

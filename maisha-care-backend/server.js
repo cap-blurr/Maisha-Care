@@ -1,217 +1,94 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { keccak256 } from 'viem';
+import IPFSMedicalStorage from './IPFSMedicalStorage.js';
 
-import  VerifiedAddressRegistryJSON  from './abis/VerifiedAddressRegistry.json' assert { type: 'json' };
-const { verifyabi } = VerifiedAddressRegistryJSON;
-
-import RoleManagerJSON from './abis/RoleManager.json'assert { type: 'json' };
-const {rolemanagerABI} = RoleManagerJSON;
-
-import { walletClient } from './chain-interactions/viemclient.js';
-import { generateSymmetricKey } from './encryption/generatesymmetrickey.js';
-import { encryptData } from './encryption/encryptdata.js';
-import { encryptSymmetricKey } from './encryption/encryptsymmetrickey.js';
-import { generateSalt } from './hashing/generatesalt.js';
-import { hashData } from './hashing/hashdata.js';
-import { storeDataOnIPFS } from './ipfs/storedata.js';
-import { callContractFunction } from './chain-interactions/storemetadata.js';
-import { readContractFunction } from './chain-interactions/retrievemetadata.js';
-import { retrieveDataFromIPFS } from './ipfs/retrievedata.js';
-import { verifyDataIntegrity } from './verification/verifydataintegrity.js';
-import { decryptSymmetricKey } from './decryption/decryptsymmetrickey.js';
-import { decryptData } from './decryption/decryptdata.js';
-
-// Load environment variables
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-
+// Initialize IPFSMedicalStorage
+const ipfsMedicalStorage = new IPFSMedicalStorage(
+  process.env.PINATA_API_KEY,
+  process.env.PINATA_API_SECRET
+);
 
 // Middleware
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST'],
+  credentials: true,
+}));
 app.use(express.json());
 
-// Role hashes mapping
-const roleHashes = {
-  patient: keccak256('patient'),
-  doctor: keccak256('doctor'),
-  researcher: keccak256('researcher'),
-  builder: keccak256('builder'),
-};
-
-// signup endpoint
-app.post('/api/send', async (req, res) => {
+// Initialize IPFS storage
+(async () => {
   try {
-    const { role, address, formData} = req.body;
+    await ipfsMedicalStorage.initialize();
+    console.log('IPFS Medical Storage initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize IPFS Medical Storage:', error);
+    process.exit(1);
+  }
+})();
 
-    // Validate and get the correct role hash
-    const roleHash = roleHashes[role.toLowerCase()];
-    if (!roleHash) {
-      throw new Error('Invalid role');
-    }
-    
-    //step 1: generate unique hash
-    const uniqueHash = keccak256(
-      JSON.stringify({
-        role,
-        address,
-        formData,
-        timestamp: Date.now(),
-      })
-    );
+app.post('/api/store-data', async (req, res) => {
+  try {
+    const { patientId, dataType, encryptedDataPackage, identifier } = req.body;
 
-   // Call verifyAddress function
-const verifyAddressTx = await callContractFunction(
-  process.env.ANVIL_VERIFIED_ADDRESS_REGISTRY,
-  verifyabi,
-  'verifyAddress',
-  roleHash,
-  address,
-  uniqueHash
-);
-
-// Send the transaction
-await walletClient.writeContract(verifyAddressTx);
-
-    // Check verification status
-    const isVerified = await readContractFunction(
-      process.env.ANVIL_VERIFIED_ADDRESS_REGISTRY,
-      verifyabi,
-      'isVerified',
-      roleHash,
-      address
-    );
-
-    // If not verified, throw an error
-    if (!isVerified) {
-      throw new Error('Address verification failed');
-    }
-
-    // Grant role based on user's role
-    if (role.toLowerCase() === 'doctor') {
-      // Call registerAsDoctor
-      const grantDoctorRoleTx = await callContractFunction(
-        process.env.ANVIL_ROLEMANAGER_ADDRESS,
-        rolemanagerABI,
-        'registerAsDoctor'
-      );
-      await walletClient.writeContract(grantDoctorRoleTx);
-    } else if (role.toLowerCase() === 'patient') {
-      // Call registerAsPatient
-      const grantPatientRoleTx = await callContractFunction(
-        process.env.ANVIL_ROLEMANAGER_ADDRESS,
-        rolemanagerABI,
-        'registerAsPatient'
-      );
-      await walletClient.writeContract(grantPatientRoleTx);
+    let result;
+    if (dataType === 'attachment') {
+      const { attachmentId, encryptedFile, extension } = encryptedDataPackage;
+      result = await ipfsMedicalStorage.storeAttachment(patientId, attachmentId, encryptedFile, extension);
     } else {
-      // Handle unsupported roles
-      throw new Error('Unsupported role');
+      result = await ipfsMedicalStorage.storeEncryptedData(patientId, dataType, encryptedDataPackage, identifier);
     }
 
-    // Respond to the client
     res.json({
       success: true,
-      message: 'User registered and role granted successfully',
-      roleHash,
-      uniqueHash,
+      message: 'Data stored successfully on IPFS',
+      cid: result
     });
   } catch (error) {
-    console.error('Signup error:', error);
+    console.error('Data storage error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
-
 });
 
-    // Step 1: Generate Symmetric Key
-    const symmetricKey = generateSymmetricKey();
-
-    // Step 2: Encrypt Data
-    const encryptedDataObj = encryptData(formData, symmetricKey);
-
-    // Step 3: Encrypt Symmetric Key with Patient's Public Key
-    const encryptedSymmetricKey = encryptSymmetricKey(symmetricKey, address);
-
-    // Step 4: Generate Salt
-    const salt = generateSalt();
-
-    // Step 5: Hash Data
-    const dataHash = hashData(encryptedDataObj.encryptedData, salt, role);
-
-    // Step 6: Store Encrypted Data on IPFS
-    const cid = await storeDataOnIPFS({
-      encryptedData: encryptedDataObj,
-      encryptedSymmetricKey,
-      salt,
-      dataHash,
-    });
-
-    // Step 7: Generate Unique Identifier Hash
-    const uniqueHash = keccak256(
-      JSON.stringify({
-        role,
-        address,
-        cid: cid.toString(),
-        timestamp: Date.now(),
-      })
-    );
-
-    // Step 8: Prepare Transaction Data
-
-
- 
-// Get Data Endpoint
 app.post('/api/retrieve-data', async (req, res) => {
   try {
-    const { address, patientPrivateKey, role } = req.body;
+    const { patientId, dataType, identifier } = req.body;
 
-    // Step 1: Retrieve Metadata from Blockchain
-    const metadata = await retrieveMetadata(address);
-
-    const { cid, salt, dataHash } = metadata;
-
-    // Step 2: Retrieve Encrypted Data from IPFS
-    const encryptedDataObj = await retrieveDataFromIPFS(cid);
-
-    // Step 3: Verify Data Integrity
-    const isDataValid = verifyDataIntegrity(
-      encryptedDataObj.encryptedData.encryptedData,
-      encryptedDataObj.salt,
-      role,
-      encryptedDataObj.dataHash
-    );
-
-    if (!isDataValid) {
-      throw new Error('Data integrity verification failed');
+    let encryptedDataPackage;
+    if (dataType === 'attachment') {
+      const { attachmentId, extension } = req.body;
+      encryptedDataPackage = await ipfsMedicalStorage.retrieveAttachment(patientId, attachmentId, extension);
+    } else {
+      encryptedDataPackage = await ipfsMedicalStorage.retrieveEncryptedData(patientId, dataType, identifier);
     }
 
-    // Step 4: Decrypt Symmetric Key
-    const symmetricKey = decryptSymmetricKey(
-      encryptedDataObj.encryptedSymmetricKey,
-      patientPrivateKey
-    );
+    if (!encryptedDataPackage) {
+      throw new Error('Data not found');
+    }
 
-    // Step 5: Decrypt Data
-    const decryptedData = decryptData(encryptedDataObj.encryptedData, symmetricKey);
-
-    res.json({ success: true, data: decryptedData });
+    res.json({ 
+      success: true, 
+      message: 'Data retrieved successfully from IPFS',
+      encryptedDataPackage 
+    });
   } catch (error) {
     console.error('Data retrieval error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// Start Server
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Unhandled error:', error);
+  res.status(500).json({ success: false, error: 'An unexpected error occurred' });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

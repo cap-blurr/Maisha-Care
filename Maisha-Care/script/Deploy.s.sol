@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 import {VerifiedAddressRegistry} from "../src/VerifiedAddressRegistry.sol";
 import {RoleManager} from "../src/RoleManager.sol";
 import {UpdateApproval} from "../src/UpdateApproval.sol";
-import {BaseMedicalData} from "../src/BaseMedicalData.sol";
+import {BaseMedicalData} from "../lib/BaseContracts/BaseMedicalData.sol";
 import {PersonalInfo} from "../src/PersonalInfo.sol";
 import {MedicalHistory} from "../src/MedicalHistory.sol";
 import {CurrentHealth} from "../src/CurrentHealth.sol";
@@ -15,11 +15,22 @@ import {HealthRecordManager} from "../src/HealthRecordManager.sol";
 import {MaishaToken} from "../src/MaishaToken.sol";
 
 contract DeployScript is Script {
+    VerifiedAddressRegistry public verifiedRegistry;
+    RoleManager public roleManager;
+    UpdateApproval public updateApproval;
+    PersonalInfo public personalInfo;
+    MedicalHistory public medicalHistory;
+    CurrentHealth public currentHealth;
+    TreatmentRecords public treatmentRecords;
+    TemporaryAccess public temporaryAccess;
+    HealthRecordManager public healthRecordManager;
+    MaishaToken public maishaToken;
+
     function setUp() public {}
 
     function run() public {
         // Start broadcasting transactions
-        vm.startBroadcast(deployerPrivateKey);
+        vm.startBroadcast();
 
         // Deploy contracts in order
         deployContracts();
@@ -53,7 +64,8 @@ contract DeployScript is Script {
         );
         personalInfo = new PersonalInfo(
             address(roleManager),
-            address(updateApproval)
+            address(updateApproval),
+            address(temporaryAccess)
         );
 
         console.log(

@@ -1,94 +1,162 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
-import {VerifiedAddressRegistry} from "./VerifiedAddressRegistry.sol";
+import {RoleManager} from "./RoleManager.sol";
 
-/// @title RoleManager
-/// @notice Manages role assignments with admin control and verification
-/// @dev Inherits from OpenZeppelin's AccessControl for role management
-contract RoleManager is AccessControl {
+/// @title TemporaryAccess
+/// @notice Manages temporary access rights for doctors to patient data
+/// @dev Uses RoleManager for role-based access control
+contract TemporaryAccess {
     // Custom errors
-    error NotVerified(bytes32 role);
-    error AlreadyRegistered(bytes32 role);
+    error NotAuthorized();
+    error InvalidAddress();
+    error NoPendingRequest();
+    error AccessNotGranted();
 
-    // Constants for roles
-    bytes32 public constant ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
-    bytes32 public constant PATIENT_ROLE = keccak256("patient");
-    bytes32 public constant DOCTOR_ROLE = keccak256("doctor");
-    bytes32 public constant RESEARCHER_ROLE = keccak256("researcher");
-    bytes32 public constant BUILDER_ROLE = keccak256("builder");
+    // Constants
+    uint256 private constant ACCESS_DURATION = 10 minutes;
 
-    // Immutable variable for VerifiedAddressRegistry
-    VerifiedAddressRegistry public immutable verifiedRegistry;
+    // Immutable variables
+    RoleManager public immutable roleManager;
+
+    // State variables
+    mapping(address => mapping(address => uint256)) public accessExpiry;
+    mapping(address => mapping(address => bool)) public researchAccess;
+    mapping(address => mapping(address => bool)) public builderAccess;
+    mapping(address => mapping(address => bool)) public pendingAccessRequests;
 
     // Events
-    event SuccessfullyRegistered(address indexed account, bytes32 indexed role);
+    event AccessRequested(address indexed doctor, address indexed patient);
+    event AccessApproved(
+        address indexed patient,
+        address indexed doctor,
+        uint256 expiryTime
+    );
+    event AccessDenied(address indexed patient, address indexed doctor);
+    event AccessRevoked(address indexed patient, address indexed doctor);
+    event ResearchAccessGranted(
+        address indexed patient,
+        address indexed researcher
+    );
+    event BuilderAccessGranted(
+        address indexed patient,
+        address indexed builder
+    );
 
     /// @notice Contract constructor
-    /// @param _verifiedRegistry Address of the VerifiedAddressRegistry contract
-    constructor(address _verifiedRegistry) {
-        _grantRole(ADMIN_ROLE, msg.sender);
-        verifiedRegistry = VerifiedAddressRegistry(_verifiedRegistry);
+    /// @param _roleManager Address of the RoleManager contract
+    constructor(address _roleManager) {
+        roleManager = RoleManager(_roleManager);
     }
 
-    /// @notice Register as a patient
-    /// @dev Requires verification in VerifiedAddressRegistry
-    function registerAsPatient() external {
-        _registerRole(PATIENT_ROLE);
-    }
-
-    /// @notice Register as a doctor
-    /// @dev Requires verification in VerifiedAddressRegistry
-    function registerAsDoctor() external {
-        _registerRole(DOCTOR_ROLE);
-    }
-
-    /// @notice Register as a researcher
-    /// @dev Requires verification in VerifiedAddressRegistry
-    function registerAsResearcher() external {
-        _registerRole(RESEARCHER_ROLE);
-    }
-
-    /// @notice Register as a builder
-    /// @dev Requires verification in VerifiedAddressRegistry
-    function registerAsBuilder() external {
-        _registerRole(BUILDER_ROLE);
-    }
-
-    /// @notice Internal function to register a role
-    /// @param role The role to register
-    function _registerRole(bytes32 role) internal {
-        if (!verifiedRegistry.isVerified(role, msg.sender)) {
-            revert NotVerified(role);
+    /// @notice Request access to a patient's data
+    /// @param _patient Address of the patient
+    function requestAccess(address _patient) external {
+        if (!roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender)) {
+            revert NotAuthorized();
         }
-        if (hasRole(role, msg.sender)) {
-            revert AlreadyRegistered(role);
+        if (!roleManager.hasRole(roleManager.PATIENT_ROLE(), _patient)) {
+            revert InvalidAddress();
         }
-        _grantRole(role, msg.sender);
-        emit SuccessfullyRegistered(msg.sender, role);
+        pendingAccessRequests[_patient][msg.sender] = true;
+        emit AccessRequested(msg.sender, _patient);
     }
 
-    /// @notice Grant a role to an account (admin only)
-    /// @param role The role identifier
-    /// @param account The address to grant the role to
-    function grantRole(
-        bytes32 role,
-        address account
-    ) public override onlyRole(ADMIN_ROLE) {
-        if (!verifiedRegistry.isVerified(role, account)) {
-            revert NotVerified(role);
+    /// @notice Approve access for a doctor
+    /// @param _doctor Address of the doctor
+    function approveAccess(address _doctor) external {
+        if (!roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender)) {
+            revert NotAuthorized();
         }
-        _grantRole(role, account);
+        if (!roleManager.hasRole(roleManager.DOCTOR_ROLE(), _doctor)) {
+            revert InvalidAddress();
+        }
+        if (!pendingAccessRequests[msg.sender][_doctor]) {
+            revert NoPendingRequest();
+        }
+        uint256 expiryTime = block.timestamp + ACCESS_DURATION;
+        accessExpiry[msg.sender][_doctor] = expiryTime;
+        delete pendingAccessRequests[msg.sender][_doctor];
+        emit AccessApproved(msg.sender, _doctor, expiryTime);
     }
 
-    /// @notice Revoke a role from an account (admin only)
-    /// @param role The role identifier
-    /// @param account The address to revoke the role from
-    function revokeRole(
-        bytes32 role,
-        address account
-    ) public override onlyRole(ADMIN_ROLE) {
-        _revokeRole(role, account);
+    /// @notice Deny access for a doctor
+    /// @param _doctor Address of the doctor
+    function denyAccess(address _doctor) external {
+        if (!roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender)) {
+            revert NotAuthorized();
+        }
+        delete accessExpiry[msg.sender][_doctor];
+        delete pendingAccessRequests[msg.sender][_doctor];
+        emit AccessDenied(msg.sender, _doctor);
+    }
+
+    /// @notice Revoke access for a doctor
+    /// @param _doctor Address of the doctor
+    function revokeAccess(address _doctor) external {
+        if (!roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender)) {
+            revert NotAuthorized();
+        }
+        delete accessExpiry[msg.sender][_doctor];
+        emit AccessRevoked(msg.sender, _doctor);
+    }
+
+    /// @notice Check if a doctor has access to a patient's data
+    /// @param _patient Address of the patient
+    /// @param _doctor Address of the doctor
+    /// @return bool True if the doctor has access, false otherwise
+    function hasAccess(
+        address _patient,
+        address _doctor
+    ) public view returns (bool) {
+        return block.timestamp < accessExpiry[_patient][_doctor];
+    }
+
+    /// @notice Grant research access to a researcher
+    /// @param _researcher Address of the researcher
+    function grantResearchAccess(address _researcher) external {
+        if (!roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender)) {
+            revert NotAuthorized();
+        }
+        if (!roleManager.hasRole(roleManager.RESEARCHER_ROLE(), _researcher)) {
+            revert InvalidAddress();
+        }
+        researchAccess[msg.sender][_researcher] = true;
+        emit ResearchAccessGranted(msg.sender, _researcher);
+    }
+
+    /// @notice Grant builder access to a builder
+    /// @param _builder Address of the builder
+    function grantBuilderAccess(address _builder) external {
+        if (!roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender)) {
+            revert NotAuthorized();
+        }
+        if (!roleManager.hasRole(roleManager.BUILDER_ROLE(), _builder)) {
+            revert InvalidAddress();
+        }
+        builderAccess[msg.sender][_builder] = true;
+        emit BuilderAccessGranted(msg.sender, _builder);
+    }
+
+    /// @notice Check if a researcher has access to a patient's data
+    /// @param _patient Address of the patient
+    /// @param _researcher Address of the researcher
+    /// @return bool True if the researcher has access, false otherwise
+    function hasResearchAccess(
+        address _patient,
+        address _researcher
+    ) public view returns (bool) {
+        return researchAccess[_patient][_researcher];
+    }
+
+    /// @notice Check if a builder has access to a patient's data
+    /// @param _patient Address of the patient
+    /// @param _builder Address of the builder
+    /// @return bool True if the builder has access, false otherwise
+    function hasBuilderAccess(
+        address _patient,
+        address _builder
+    ) public view returns (bool) {
+        return builderAccess[_patient][_builder];
     }
 }

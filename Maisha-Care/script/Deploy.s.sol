@@ -5,6 +5,7 @@ import "forge-std/Script.sol";
 import {VerifiedAddressRegistry} from "../src/VerifiedAddressRegistry.sol";
 import {RoleManager} from "../src/RoleManager.sol";
 import {UpdateApproval} from "../src/UpdateApproval.sol";
+import {BaseMedicalData} from "../src/BaseMedicalData.sol";
 import {PersonalInfo} from "../src/PersonalInfo.sol";
 import {MedicalHistory} from "../src/MedicalHistory.sol";
 import {CurrentHealth} from "../src/CurrentHealth.sol";
@@ -47,27 +48,35 @@ contract DeployScript is Script {
         console.log("Deploying TemporaryAccess...");
         temporaryAccess = new TemporaryAccess(address(roleManager));
 
-        console.log("Deploying PersonalInfo...");
+        console.log(
+            "Deploying PersonalInfo (inherits from BaseMedicalData)..."
+        );
         personalInfo = new PersonalInfo(
             address(roleManager),
             address(updateApproval)
         );
 
-        console.log("Deploying MedicalHistory...");
+        console.log(
+            "Deploying MedicalHistory (inherits from BaseMedicalData)..."
+        );
         medicalHistory = new MedicalHistory(
             address(roleManager),
             address(updateApproval),
             address(temporaryAccess)
         );
 
-        console.log("Deploying CurrentHealth...");
+        console.log(
+            "Deploying CurrentHealth (inherits from BaseMedicalData)..."
+        );
         currentHealth = new CurrentHealth(
             address(roleManager),
             address(updateApproval),
             address(temporaryAccess)
         );
 
-        console.log("Deploying TreatmentRecords...");
+        console.log(
+            "Deploying TreatmentRecords (inherits from BaseMedicalData)..."
+        );
         treatmentRecords = new TreatmentRecords(
             address(roleManager),
             address(updateApproval),

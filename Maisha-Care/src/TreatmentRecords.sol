@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {BaseMedicalData} from "./BaseMedicalData.sol";
+import {BaseMedicalData} from "@BaseContracts/BaseMedicalData.sol";
 
 /// @title TreatmentRecords
 /// @notice Manages treatment records for patients

@@ -1,85 +1,94 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {RoleManager} from "./RoleManager.sol";
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {VerifiedAddressRegistry} from "./VerifiedAddressRegistry.sol";
 
-contract TemporaryAccess {
-    RoleManager public roleManager;
+/// @title RoleManager
+/// @notice Manages role assignments with admin control and verification
+/// @dev Inherits from OpenZeppelin's AccessControl for role management
+contract RoleManager is AccessControl {
+    // Custom errors
+    error NotVerified(bytes32 role);
+    error AlreadyRegistered(bytes32 role);
 
-    mapping(address => mapping(address => uint256)) public accessExpiry;
-    mapping(address => mapping(address => bool)) public researchAccess;
-    mapping(address => mapping(address => bool)) public builderAccess;
-    mapping(address => mapping(address => bool)) public pendingAccessRequests;
+    // Constants for roles
+    bytes32 public constant ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
+    bytes32 public constant PATIENT_ROLE = keccak256("patient");
+    bytes32 public constant DOCTOR_ROLE = keccak256("doctor");
+    bytes32 public constant RESEARCHER_ROLE = keccak256("researcher");
+    bytes32 public constant BUILDER_ROLE = keccak256("builder");
 
-    event AccessRequested(address indexed doctor, address indexed patient);
-    event AccessApproved(address indexed patient, address indexed doctor);
-    event AccessDenied(address indexed patient, address indexed doctor);
+    // Immutable variable for VerifiedAddressRegistry
+    VerifiedAddressRegistry public immutable verifiedRegistry;
 
-    constructor(address _roleManager) {
-        roleManager = RoleManager(_roleManager);
+    // Events
+    event SuccessfullyRegistered(address indexed account, bytes32 indexed role);
+
+    /// @notice Contract constructor
+    /// @param _verifiedRegistry Address of the VerifiedAddressRegistry contract
+    constructor(address _verifiedRegistry) {
+        _grantRole(ADMIN_ROLE, msg.sender);
+        verifiedRegistry = VerifiedAddressRegistry(_verifiedRegistry);
     }
 
-    function requestAccess(address _patient) public {
-        require(
-            roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender),
-            "Must be a doctor"
-        );
-        require(
-            roleManager.hasRole(roleManager.PATIENT_ROLE(), _patient),
-            "Invalid patient address"
-        );
-        pendingAccessRequests[_patient][msg.sender] = true;
-        emit AccessRequested(msg.sender, _patient);
+    /// @notice Register as a patient
+    /// @dev Requires verification in VerifiedAddressRegistry
+    function registerAsPatient() external {
+        _registerRole(PATIENT_ROLE);
     }
 
-    function approveAccess(address _doctor) public {
-        require(
-            roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender),
-            "Must be a patient"
-        );
-        require(
-            roleManager.hasRole(roleManager.DOCTOR_ROLE(), _doctor),
-            "Invalid doctor address"
-        );
-        require(
-            pendingAccessRequests[msg.sender][_doctor],
-            "No pending request from this doctor"
-        );
-        accessExpiry[msg.sender][_doctor] = block.timestamp + 10 minutes;
-        emit AccessApproved(msg.sender, _doctor);
+    /// @notice Register as a doctor
+    /// @dev Requires verification in VerifiedAddressRegistry
+    function registerAsDoctor() external {
+        _registerRole(DOCTOR_ROLE);
     }
 
-    function denyAccess(address _doctor) public {
-        require(
-            roleManager.hasRole(roleManager.PATIENT_ROLE(), msg.sender),
-            "Must be a patient"
-        );
-        require(
-            roleManager.hasRole(roleManager.DOCTOR_ROLE(), _doctor),
-            "Invalid doctor address"
-        );
-        delete accessExpiry[msg.sender][_doctor];
-        emit AccessDenied(msg.sender, _doctor);
+    /// @notice Register as a researcher
+    /// @dev Requires verification in VerifiedAddressRegistry
+    function registerAsResearcher() external {
+        _registerRole(RESEARCHER_ROLE);
     }
 
-    function hasAccess(
-        address _patient,
-        address _accessor
-    ) public view returns (bool) {
-        return block.timestamp < accessExpiry[_patient][_accessor];
+    /// @notice Register as a builder
+    /// @dev Requires verification in VerifiedAddressRegistry
+    function registerAsBuilder() external {
+        _registerRole(BUILDER_ROLE);
     }
 
-    function hasResearchAccess(
-        address _patient,
-        address _researcher
-    ) public view returns (bool) {
-        return researchAccess[_patient][_researcher];
+    /// @notice Internal function to register a role
+    /// @param role The role to register
+    function _registerRole(bytes32 role) internal {
+        if (!verifiedRegistry.isVerified(role, msg.sender)) {
+            revert NotVerified(role);
+        }
+        if (hasRole(role, msg.sender)) {
+            revert AlreadyRegistered(role);
+        }
+        _grantRole(role, msg.sender);
+        emit SuccessfullyRegistered(msg.sender, role);
     }
 
-    function hasBuilderAccess(
-        address _patient,
-        address _builder
-    ) public view returns (bool) {
-        return builderAccess[_patient][_builder];
+    /// @notice Grant a role to an account (admin only)
+    /// @param role The role identifier
+    /// @param account The address to grant the role to
+    function grantRole(
+        bytes32 role,
+        address account
+    ) public override onlyRole(ADMIN_ROLE) {
+        if (!verifiedRegistry.isVerified(role, account)) {
+            revert NotVerified(role);
+        }
+        _grantRole(role, account);
+    }
+
+    /// @notice Revoke a role from an account (admin only)
+    /// @param role The role identifier
+    /// @param account The address to revoke the role from
+    function revokeRole(
+        bytes32 role,
+        address account
+    ) public override onlyRole(ADMIN_ROLE) {
+        _revokeRole(role, account);
     }
 }

@@ -17,44 +17,68 @@ contract DeployScript is Script {
     function setUp() public {}
 
     function run() public {
-        vm.startBroadcast();
+        // Start broadcasting transactions
+        vm.startBroadcast(deployerPrivateKey);
 
         // Deploy contracts in order
-        VerifiedAddressRegistry verifiedRegistry = new VerifiedAddressRegistry();
-        MaishaToken maishaToken = new MaishaToken();
+        deployContracts();
 
-        RoleManager roleManager = new RoleManager(address(verifiedRegistry));
+        // Set up contract relationships and transfer ownership
+        setupContractRelationships();
 
-        UpdateApproval updateApproval = new UpdateApproval(
-            address(roleManager)
-        );
+        // Stop broadcasting transactions
+        vm.stopBroadcast();
 
-        TemporaryAccess temporaryAccess = new TemporaryAccess(
-            address(roleManager)
-        );
+        // Log deployed addresses
+        logDeployedAddresses();
+    }
 
-        PersonalInfo personalInfo = new PersonalInfo(
+    /// @notice Deploy all contracts in the correct order
+    function deployContracts() private {
+        console.log("Deploying VerifiedAddressRegistry...");
+        verifiedRegistry = new VerifiedAddressRegistry();
+
+        console.log("Deploying RoleManager...");
+        roleManager = new RoleManager(address(verifiedRegistry));
+
+        console.log("Deploying UpdateApproval...");
+        updateApproval = new UpdateApproval(address(roleManager));
+
+        console.log("Deploying TemporaryAccess...");
+        temporaryAccess = new TemporaryAccess(address(roleManager));
+
+        console.log("Deploying PersonalInfo...");
+        personalInfo = new PersonalInfo(
             address(roleManager),
             address(updateApproval)
         );
-        MedicalHistory medicalHistory = new MedicalHistory(
-            address(roleManager),
-            address(updateApproval),
-            address(temporaryAccess)
-        );
-        CurrentHealth currentHealth = new CurrentHealth(
-            address(roleManager),
-            address(updateApproval),
-            address(temporaryAccess)
-        );
-        TreatmentRecords treatmentRecords = new TreatmentRecords(
+
+        console.log("Deploying MedicalHistory...");
+        medicalHistory = new MedicalHistory(
             address(roleManager),
             address(updateApproval),
             address(temporaryAccess)
         );
 
-        // Deploy HealthRecordManager last
-        HealthRecordManager healthRecordManager = new HealthRecordManager(
+        console.log("Deploying CurrentHealth...");
+        currentHealth = new CurrentHealth(
+            address(roleManager),
+            address(updateApproval),
+            address(temporaryAccess)
+        );
+
+        console.log("Deploying TreatmentRecords...");
+        treatmentRecords = new TreatmentRecords(
+            address(roleManager),
+            address(updateApproval),
+            address(temporaryAccess)
+        );
+
+        console.log("Deploying MaishaToken...");
+        maishaToken = new MaishaToken();
+
+        console.log("Deploying HealthRecordManager...");
+        healthRecordManager = new HealthRecordManager(
             address(maishaToken),
             address(personalInfo),
             address(medicalHistory),
@@ -64,17 +88,27 @@ contract DeployScript is Script {
             address(temporaryAccess),
             address(updateApproval)
         );
+    }
 
-        // Ownership transfer
+    /// @notice Set up relationships between contracts and transfer ownership where necessary
+    function setupContractRelationships() private {
+        console.log(
+            "Setting up contract relationships and transferring ownership..."
+        );
+
+        // Transfer ownership of data contracts to HealthRecordManager
         personalInfo.transferOwnership(address(healthRecordManager));
         medicalHistory.transferOwnership(address(healthRecordManager));
         currentHealth.transferOwnership(address(healthRecordManager));
         treatmentRecords.transferOwnership(address(healthRecordManager));
+
+        // Transfer ownership of MaishaToken to HealthRecordManager
         maishaToken.transferOwnership(address(healthRecordManager));
+    }
 
-        vm.stopBroadcast();
-
-        // Log deployed addresses
+    /// @notice Log the addresses of all deployed contracts
+    function logDeployedAddresses() private view {
+        console.log("Deployed contract addresses:");
         console.log(
             "VerifiedAddressRegistry deployed to:",
             address(verifiedRegistry)

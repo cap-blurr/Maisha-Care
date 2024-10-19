@@ -25,27 +25,35 @@ async function testStoreEncryptedData() {
   return result;
 }
 
-async function testRetrieveEncryptedData() {
+async function testRetrieveEncryptedData(ipfsHash) {
   console.log('Testing retrieveEncryptedData method...');
-  const patientId = 'test-patient-001';
-  const dataType = 'personal_info';
-  const result = await ipfsMedicalStorage.retrieveEncryptedData(patientId, dataType);
+  const result = await ipfsMedicalStorage.retrieveEncryptedData(ipfsHash);
   console.log('Retrieved encrypted data:', result);
   return result;
 }
 
 async function runTests() {
   try {
-    const storedData = await testStoreEncryptedData();
+    const storedDataResult = await testStoreEncryptedData();
     // Small delay to ensure data is stored before retrieval
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const retrievedData = await testRetrieveEncryptedData();
+    const retrievedData = await testRetrieveEncryptedData(storedDataResult.ipfsHash);
     
     console.log('Comparing stored and retrieved data:');
-    console.log('Stored data:', JSON.stringify(storedData));
+    console.log('Stored data (original):', JSON.stringify({
+      patientId: 'test-patient-001',
+      dataType: 'personal_info',
+      ...mockEncryptedDataPackage
+    }));
     console.log('Retrieved data:', JSON.stringify(retrievedData));
 
-    if (JSON.stringify(mockEncryptedDataPackage) !== JSON.stringify(retrievedData)) {
+    const originalData = {
+      patientId: 'test-patient-001',
+      dataType: 'personal_info',
+      ...mockEncryptedDataPackage
+    };
+
+    if (JSON.stringify(originalData) !== JSON.stringify(retrievedData)) {
       throw new Error('Stored and retrieved data do not match');
     } else {
       console.log('Stored and retrieved data match successfully.');

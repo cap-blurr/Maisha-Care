@@ -9,12 +9,11 @@ class IPFSMedicalStorage {
   }
 
   async storeEncryptedData(patientId, dataType, encryptedDataPackage) {
-    const key = this.generateKey(patientId, dataType);
-    
     try {
       const result = await this.pinata.upload.json({
-        key,
-        data: encryptedDataPackage
+        patientId,
+        dataType,
+        ...encryptedDataPackage
       });
       
       return {
@@ -28,29 +27,14 @@ class IPFSMedicalStorage {
     }
   }
 
-  async retrieveEncryptedData(patientId, dataType) {
-    const key = this.generateKey(patientId, dataType);
-    
+  async retrieveEncryptedData(ipfsHash) {
     try {
-      const result = await this.pinata.files.list({
-        metadata: { key }
-      });
-      
-      if (result.count > 0) {
-        const file = result.items[0];
-        const content = await this.pinata.gateway.getFileById(file.id);
-        return JSON.parse(content);
-      } else {
-        return null;
-      }
+      const content = await this.pinata.gateways.get(ipfsHash);
+      return content.data;
     } catch (error) {
       console.error('Error retrieving encrypted data:', error);
       return null;
     }
-  }
-
-  generateKey(patientId, dataType) {
-    return `${patientId}-${dataType}-${Date.now()}`;
   }
 }
 

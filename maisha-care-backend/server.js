@@ -10,8 +10,8 @@ const port = process.env.PORT || 5000;
 
 // Initialize IPFSMedicalStorage
 const ipfsMedicalStorage = new IPFSMedicalStorage(
-  process.env.PINATA_API_KEY,
-  process.env.PINATA_API_SECRET
+  process.env.JWT,
+  process.env.PINATA_GATEWAY
 );
 
 // Middleware
@@ -22,73 +22,70 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Initialize IPFS storage
-(async () => {
-  try {
-    await ipfsMedicalStorage.initialize();
-    console.log('IPFS Medical Storage initialized successfully');
-  } catch (error) {
-    console.error('Failed to initialize IPFS Medical Storage:', error);
-    process.exit(1);
-  }
-})();
-
 app.post('/api/store-data', async (req, res) => {
   try {
-    const { patientId, dataType, encryptedDataPackage, identifier } = req.body;
+    const { patientId, dataType, encryptedDataPackage } = req.body;
 
-    let result;
-    if (dataType === 'attachment') {
-      const { attachmentId, encryptedFile, extension } = encryptedDataPackage;
-      result = await ipfsMedicalStorage.storeAttachment(patientId, attachmentId, encryptedFile, extension);
-    } else {
-      result = await ipfsMedicalStorage.storeEncryptedData(patientId, dataType, encryptedDataPackage, identifier);
+    // Input validation
+    if (!patientId || !dataType || !encryptedDataPackage) {
+      return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    res.json({
-      success: true,
-      message: 'Data stored successfully on IPFS',
-      cid: result
-    });
+    if (typeof patientId !== 'string' || typeof dataType !== 'string' || typeof encryptedDataPackage !== 'object') {
+      return res.status(400).json({ error: 'Invalid data types' });
+    }
+
+    const result = await ipfsMedicalStorage.storeEncryptedData(patientId, dataType, encryptedDataPackage);
+
+    // Return only the ipfsHash
+    res.status(201).json({ ipfsHash: result.ipfsHash });
   } catch (error) {
     console.error('Data storage error:', error);
-    res.status(500).json({ success: false, error: error.message });
+    if (error.message.includes('Pinata API Error')) {
+      return res.status(503).json({ error: 'Storage service unavailable' });
+    }
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 app.post('/api/retrieve-data', async (req, res) => {
   try {
-    const { patientId, dataType, identifier } = req.body;
+    const { ipfsHash } = req.body;
 
-    let encryptedDataPackage;
-    if (dataType === 'attachment') {
-      const { attachmentId, extension } = req.body;
-      encryptedDataPackage = await ipfsMedicalStorage.retrieveAttachment(patientId, attachmentId, extension);
-    } else {
-      encryptedDataPackage = await ipfsMedicalStorage.retrieveEncryptedData(patientId, dataType, identifier);
+    // Input validation
+    if (!ipfsHash) {
+      return res.status(400).json({ error: 'IPFS hash is required' });
     }
+
+    if (typeof ipfsHash !== 'string') {
+      return res.status(400).json({ error: 'Invalid IPFS hash format' });
+    }
+
+    const encryptedDataPackage = await ipfsMedicalStorage.retrieveEncryptedData(ipfsHash);
 
     if (!encryptedDataPackage) {
-      throw new Error('Data not found');
+      return res.status(404).json({ error: 'Data not found' });
     }
 
-    res.json({ 
-      success: true, 
-      message: 'Data retrieved successfully from IPFS',
-      encryptedDataPackage 
-    });
+    // Return the retrieved data directly
+    res.json(encryptedDataPackage);
   } catch (error) {
     console.error('Data retrieval error:', error);
-    res.status(500).json({ success: false, error: error.message });
+    if (error.message.includes('Pinata API Error')) {
+      return res.status(503).json({ error: 'Retrieval service unavailable' });
+    }
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// Error handling middleware
+// Global error handling middleware
 app.use((error, req, res, next) => {
   console.error('Unhandled error:', error);
-  res.status(500).json({ success: false, error: 'An unexpected error occurred' });
+  res.status(500).json({ error: 'An unexpected error occurred' });
 });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+export default app;

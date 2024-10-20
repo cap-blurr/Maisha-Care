@@ -8,27 +8,27 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 /// @dev Inherits from OpenZeppelin's AccessControl for role management
 contract VerifiedAddressRegistry is AccessControl {
     // Custom errors
-    error InvalidUniqueHash();
     error AddressAlreadyVerified();
     error AddressNotVerified();
-    error Unauthorized();
 
-    // Constants for roles
+    /// @notice Constants for predefined roles
     bytes32 public constant ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
     bytes32 public constant PATIENT_ROLE = keccak256("patient");
     bytes32 public constant DOCTOR_ROLE = keccak256("doctor");
     bytes32 public constant RESEARCHER_ROLE = keccak256("researcher");
     bytes32 public constant BUILDER_ROLE = keccak256("builder");
 
-    // Mapping to store verified addresses
-    mapping(bytes32 => mapping(address => bytes32)) private verifiedAddresses;
+    /// @notice Mapping to store verified addresses: role => address => isVerified
+    mapping(bytes32 => mapping(address => bool)) private verifiedAddresses;
 
-    // Events
-    event AddressVerified(
-        bytes32 indexed role,
-        address indexed account,
-        bytes32 uniqueHash
-    );
+    /// @notice Emitted when an address is verified for a role
+    /// @param role The role for which the address is verified
+    /// @param account The address that was verified
+    event AddressVerified(bytes32 indexed role, address indexed account);
+
+    /// @notice Emitted when an address is unverified for a role
+    /// @param role The role for which the address is unverified
+    /// @param account The address that was unverified
     event AddressUnverified(bytes32 indexed role, address indexed account);
 
     /// @notice Contract constructor
@@ -38,33 +38,28 @@ contract VerifiedAddressRegistry is AccessControl {
     }
 
     /// @notice Verify an address for a specific role
+    /// @dev Reverts if the address is already verified for the given role
     /// @param role The role to verify the address for
     /// @param account The address to be verified
-    /// @param uniqueHash A unique hash associated with the verification
-    function verifyAddress(
-        bytes32 role,
-        address account,
-        bytes32 uniqueHash
-    ) public {
-        if (uniqueHash == bytes32(0)) revert InvalidUniqueHash();
-        if (verifiedAddresses[role][account] != bytes32(0))
-            revert AddressAlreadyVerified();
+    function verifyAddress(bytes32 role, address account) public {
+        if (verifiedAddresses[role][account]) revert AddressAlreadyVerified();
 
-        verifiedAddresses[role][account] = uniqueHash;
-        emit AddressVerified(role, account, uniqueHash);
+        verifiedAddresses[role][account] = true;
+        emit AddressVerified(role, account);
     }
 
-    /// @notice Unverify an address for a specific role (admin only)
+    /// @notice Unverify an address for a specific role
+    /// @dev Only callable by addresses with the ADMIN_ROLE
+    /// @dev Reverts if the address is not verified for the given role
     /// @param role The role to unverify the address for
     /// @param account The address to be unverified
     function unverifyAddress(
         bytes32 role,
         address account
     ) public onlyRole(ADMIN_ROLE) {
-        if (verifiedAddresses[role][account] == bytes32(0))
-            revert AddressNotVerified();
+        if (!verifiedAddresses[role][account]) revert AddressNotVerified();
 
-        delete verifiedAddresses[role][account];
+        verifiedAddresses[role][account] = false;
         emit AddressUnverified(role, account);
     }
 
@@ -76,33 +71,29 @@ contract VerifiedAddressRegistry is AccessControl {
         bytes32 role,
         address account
     ) public view returns (bool) {
-        return verifiedAddresses[role][account] != bytes32(0);
-    }
-
-    /// @notice Get the unique hash for a verified address
-    /// @param role The role to get the unique hash for
-    /// @param account The address to get the unique hash for
-    /// @return bytes32 The unique hash associated with the verified address
-    function getUniqueHash(
-        bytes32 role,
-        address account
-    ) public view returns (bytes32) {
         return verifiedAddresses[role][account];
     }
 
-    // Getter functions for role identifiers
+    /// @notice Get the bytes32 representation of the PATIENT_ROLE
+    /// @return bytes32 The PATIENT_ROLE identifier
     function getPatientRole() public pure returns (bytes32) {
         return PATIENT_ROLE;
     }
 
+    /// @notice Get the bytes32 representation of the DOCTOR_ROLE
+    /// @return bytes32 The DOCTOR_ROLE identifier
     function getDoctorRole() public pure returns (bytes32) {
         return DOCTOR_ROLE;
     }
 
+    /// @notice Get the bytes32 representation of the RESEARCHER_ROLE
+    /// @return bytes32 The RESEARCHER_ROLE identifier
     function getResearcherRole() public pure returns (bytes32) {
         return RESEARCHER_ROLE;
     }
 
+    /// @notice Get the bytes32 representation of the BUILDER_ROLE
+    /// @return bytes32 The BUILDER_ROLE identifier
     function getBuilderRole() public pure returns (bytes32) {
         return BUILDER_ROLE;
     }

@@ -110,8 +110,6 @@ Here are the addresses for the deployed smart contracts:
 - TemporaryAccess: `0x9012...3456`
 - HealthRecordManager: `0x0123...4567`
 
-Note: These are placeholder addresses. Replace them with the actual deployed contract addresses.
-
 ## Project Structure
 
 ```

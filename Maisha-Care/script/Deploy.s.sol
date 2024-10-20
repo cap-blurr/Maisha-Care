@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 import {VerifiedAddressRegistry} from "../src/VerifiedAddressRegistry.sol";
 import {RoleManager} from "../src/RoleManager.sol";
 import {UpdateApproval} from "../src/UpdateApproval.sol";
-import {BaseMedicalData} from "../lib/BaseContracts/BaseMedicalData.sol";
+import {BaseMedicalData} from "../src/BaseContracts/BaseMedicalData.sol";
 import {PersonalInfo} from "../src/PersonalInfo.sol";
 import {MedicalHistory} from "../src/MedicalHistory.sol";
 import {CurrentHealth} from "../src/CurrentHealth.sol";

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {BaseMedicalData} from "@BaseContracts/BaseMedicalData.sol";
+import {BaseMedicalData} from "./BaseContracts/BaseMedicalData.sol";
 
 /// @title CurrentHealth
 /// @notice Manages current health data for patients

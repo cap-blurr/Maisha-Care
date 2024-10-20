@@ -1,3 +1,6 @@
 [submodule "Maisha-Care/lib/openzeppelin-contracts.git"]
 	path = Maisha-Care/lib/openzeppelin-contracts.git
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts.git
+[submodule "Maisha-Care/lib/chainlink-brownie-contracts"]
+	path = Maisha-Care/lib/chainlink-brownie-contracts
+	url = https://github.com/smartcontractkit/chainlink-brownie-contracts

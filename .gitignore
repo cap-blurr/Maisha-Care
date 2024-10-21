@@ -1,9 +1,4 @@
 node_modules
 
-frontend
 
-maisha-care-client
-
-pnpm-lock.yaml
-
-package.json
+tester.js

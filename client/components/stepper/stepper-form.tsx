@@ -3,6 +3,8 @@ import { Steps, Button, Row, Col } from 'antd';
 import { Formik, Form, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import TextInput from '../inputs/TextInput';
+import MedicalRecordWrapper from '../wrapper/medical-wrapper';
+import { useAccount } from 'wagmi';
 
 const { Step } = Steps;
 
@@ -34,6 +36,7 @@ const BodyMeasurements = ({ prefix }: { prefix: string }) => (
 );
 
 const StepperForm: React.FC = () => {
+  const { address, isConnected } = useAccount();
   const [current, setCurrent] = useState(0);
 
   const steps = [
@@ -52,80 +55,77 @@ const StepperForm: React.FC = () => {
   ];
 
   const initialValues = {
+    patientAddress: "", // Initialize this with the patient's address
     currentHealth: {
       vitalSigns: {
-        bloodPressureSystolic: '',
-        bloodPressureDiastolic: '',
-        heartRate: '',
-        respiratoryRate: '',
-        bodyTemperature: '',
-        oxygenSaturation: '',
+        bloodPressureSystolic: "",
+        bloodPressureDiastolic: "",
+        heartRate: "",
+        respiratoryRate: "",
+        bodyTemperature: "",
+        oxygenSaturation: "",
       },
-      bodyMeasurements: {
-        height: '',
-        weight: '',
-      },
+      bodyMeasurements: { height: "", weight: "" },
       generalHealth: {
-        generalAppearance: '',
-        levelOfConsciousness: '',
-        painScore: '',
+        generalAppearance: "",
+        levelOfConsciousness: "",
+        painScore: "",
       },
       currentSymptoms: {
-        primaryComplaint: '',
-        durationOfSymptoms: '',
-        severityOfSymptoms: '',
+        primaryComplaint: "",
+        durationOfSymptoms: "",
+        severityOfSymptoms: "",
       },
-      currentMedications: [{ name: '', dosage: '', frequency: '' }],
-      allergies: [{ allergy: '', severity: '' }],
+      currentMedications: [], // Initialize as an empty array
+      allergies: [], // Initialize as an empty array
       lifestyleFactors: {
-        smokingStatus: '',
-        alcoholConsumption: '',
-        exerciseHabits: '',
-        dietOverview: '',
+        smokingStatus: "",
+        alcoholConsumption: "",
+        exerciseHabits: "",
+        dietOverview: "",
       },
     },
     medicalHistory: {
-      pastMedicalConditions: [{ condition: '', yearDiagnosed: '', currentStatus: '' }],
-      surgicalHistory: [{ surgery: '', date: '', complications: '' }],
-      familyMedicalHistory: [{ condition: '', relationship: '' }],
-      immunizationRecords: [{ vaccination: '', dateAdministered: '' }],
-      majorInjuries: [{ description: '', dateOccurred: '', treatmentReceived: '' }],
-      chronicMedications: [{ medication: '', durationOfUse: '' }],
-      pastHospitalizations: [{ reason: '', dateAndDuration: '' }],
+      pastMedicalConditions: [], // Initialize as an empty array
+      surgicalHistory: [], // Initialize as an empty array
+      familyMedicalHistory: [], // Initialize as an empty array
+      immunizationRecords: [], // Initialize as an empty array
+      majorInjuries: [], // Initialize as an empty array
+      chronicMedications: [], // Initialize as an empty array
+      pastHospitalizations: [], // Initialize as an empty array
       mentalHealthHistory: {
-        diagnosedConditions: '',
-        treatmentsReceived: '',
+        diagnosedConditions: "",
+        treatmentsReceived: "",
       },
       reproductiveHistory: {
-        pregnancies: '',
-        childbirthDetails: '',
+        pregnancies: "",
+        childbirthDetails: "",
       },
     },
     treatmentRecords: {
       visitInformation: {
-        dateOfVisit: '',
-        reasonForVisit: '',
-        treatingPhysician: '',
+        dateOfVisit: "",
+        reasonForVisit: "",
+        treatingPhysician: "",
       },
       diagnosis: {
-        primaryDiagnosis: '',
-        secondaryDiagnoses: '',
-        icdCodes: '',
+        primaryDiagnosis: "",
+        secondaryDiagnoses: "",
+        icdCodes: "",
       },
       treatmentPlan: {
-        prescribedMedications: [{ medication: '', dosage: '', instructions: '' }],
-        nonPharmacologicalInterventions: '',
+        prescribedMedications: [], // Initialize as an empty array
+        nonPharmacologicalInterventions: "",
       },
-      proceduresPerformed: [{ name: '', date: '', outcome: '' }],
-      laboratoryTests: [{ test: '', results: '', dateOfResults: '' }],
-      imagingStudies: [{ type: '', date: '', resultsSummary: '' }],
-      referrals: [{ specialist: '', reasonForReferral: '' }],
+      proceduresPerformed: [], // Initialize as an empty array
+      laboratoryTests: [], // Initialize as an empty array
+      imagingStudies: [], // Initialize as an empty array
+      referrals: [], // Initialize as an empty array
       followUpInstructions: {
-        nextAppointmentDate: '',
-        specificInstructions: '',
+        nextAppointmentDate: "",
+        specificInstructions: "",
       },
-      progressNotes: '',
-    },
+      progressNotes: ""}
   };
 
   const validationSchema = Yup.object({
@@ -163,12 +163,14 @@ const StepperForm: React.FC = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}
+        onSubmit={() => {}}
       >
         {({ errors, touched, isValid, values }) => (
           <Form className="mt-8">
             {current === 0 && (
               <div>
+                <h3>Patient Address</h3>
+                <TextInput label="Patient Address" name="patientAddress" type="text" />
                 <h3>Current Health</h3>
                 <VitalSigns prefix="currentHealth.vitalSigns" />
                 <BodyMeasurements prefix="currentHealth.bodyMeasurements" />
@@ -249,10 +251,14 @@ const StepperForm: React.FC = () => {
                   Next
                 </Button>
               )}
-              {current === steps.length - 1 && (
-                <Button type="primary" htmlType="submit" disabled={!isValid} className='text-black'>
-                  Submit
-                </Button>
+              {isConnected && address && current === steps.length - 1 ? (
+                <MedicalRecordWrapper
+                doctorAddress={address}
+                patientAddress={values.patientAddress as `0x${string}`}
+                formData={values}
+              />
+              ) : (
+                <p className="text-red-500 mt-2">Please connect your wallet to continue</p>
               )}
             </div>
           </Form>

@@ -1,0 +1,811 @@
+{
+  "abi": [
+    { "type": "constructor", "inputs": [], "stateMutability": "nonpayable" },
+    {
+      "type": "function",
+      "name": "ADMIN_ROLE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "BUILDER_ROLE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "DEFAULT_ADMIN_ROLE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "DOCTOR_ROLE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "PATIENT_ROLE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "RESEARCHER_ROLE",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getBuilderRole",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "pure"
+    },
+    {
+      "type": "function",
+      "name": "getDoctorRole",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "pure"
+    },
+    {
+      "type": "function",
+      "name": "getPatientRole",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "pure"
+    },
+    {
+      "type": "function",
+      "name": "getResearcherRole",
+      "inputs": [],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "pure"
+    },
+    {
+      "type": "function",
+      "name": "getRoleAdmin",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" }
+      ],
+      "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "grantRole",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "hasRole",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "isVerified",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "renounceRole",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        {
+          "name": "callerConfirmation",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "revokeRole",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "supportsInterface",
+      "inputs": [
+        { "name": "interfaceId", "type": "bytes4", "internalType": "bytes4" }
+      ],
+      "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "unverifyAddress",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "verifyAddress",
+      "inputs": [
+        { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+        { "name": "account", "type": "address", "internalType": "address" }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "event",
+      "name": "AddressUnverified",
+      "inputs": [
+        {
+          "name": "role",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "account",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "AddressVerified",
+      "inputs": [
+        {
+          "name": "role",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "account",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "RoleAdminChanged",
+      "inputs": [
+        {
+          "name": "role",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "previousAdminRole",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "newAdminRole",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "RoleGranted",
+      "inputs": [
+        {
+          "name": "role",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "account",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "sender",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "RoleRevoked",
+      "inputs": [
+        {
+          "name": "role",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        },
+        {
+          "name": "account",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "sender",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    { "type": "error", "name": "AccessControlBadConfirmation", "inputs": [] },
+    {
+      "type": "error",
+      "name": "AccessControlUnauthorizedAccount",
+      "inputs": [
+        { "name": "account", "type": "address", "internalType": "address" },
+        { "name": "neededRole", "type": "bytes32", "internalType": "bytes32" }
+      ]
+    },
+    { "type": "error", "name": "AddressAlreadyVerified", "inputs": [] },
+    { "type": "error", "name": "AddressNotVerified", "inputs": [] }
+  ],
+  "bytecode": {
+    "object": "0x6080604052348015600f57600080fd5b506019600033601e565b5060c7565b6000828152602081815260408083206001600160a01b038516845290915281205460ff1660bd576000838152602081815260408083206001600160a01b03861684529091529020805460ff1916600117905560763390565b6001600160a01b0316826001600160a01b0316847f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a450600160c1565b5060005b92915050565b61079b806100d66000396000f3fe608060405234801561001057600080fd5b50600436106101215760003560e01c806391d14854116100ad578063ce3d78d611610071578063ce3d78d6146102ca578063d547741f146102f1578063e403a3f614610304578063f57f2dc014610317578063fec331f21461033d57600080fd5b806391d1485414610231578063a217fddf14610203578063ac5cb97d14610244578063bc4912681461026b578063bf9fb97f1461029157600080fd5b80632f2ff15d116100f45780632f2ff15d146101b657806336568abe146101c957806350f2aab3146101dc57806375b238fc14610203578063849eb7221461020b57600080fd5b806301ffc9a71461012657806305e3425f1461014e5780631a89ce7914610163578063248a9ca314610193575b600080fd5b6101396101343660046106df565b610364565b60405190151581526020015b60405180910390f35b61016161015c366004610710565b61039b565b005b7f7ac30656051904e06bc0ef5fc0aa1a3334e6d6824b83fe5f4a7dd1b39218ba285b604051908152602001610145565b6101856101a136600461074c565b60009081526020819052604090206001015490565b6101616101c4366004610710565b610442565b6101616101d7366004610710565b61046d565b6101857fdfdf2b841d0cbc21071a9d98f0c6e4896c80bf338d769ddf545f871d7af9ef1181565b610185600081565b7fdc3b9d7fd28cfc7a70a999f2eb4b60672e6b88c8ed3280f4fb467b501b62b92e610185565b61013961023f366004610710565b6104a5565b6101857fdc3b9d7fd28cfc7a70a999f2eb4b60672e6b88c8ed3280f4fb467b501b62b92e81565b7fdfdf2b841d0cbc21071a9d98f0c6e4896c80bf338d769ddf545f871d7af9ef11610185565b61013961029f366004610710565b60009182526001602090815260408084206001600160a01b0393909316845291905290205460ff1690565b6101857f7ac30656051904e06bc0ef5fc0aa1a3334e6d6824b83fe5f4a7dd1b39218ba2881565b6101616102ff366004610710565b6104ce565b610161610312366004610710565b6104f3565b7fec03945fa2196716a09674e2cd6a57153479ecb05ea91e189e2688f793ab5381610185565b6101857fec03945fa2196716a09674e2cd6a57153479ecb05ea91e189e2688f793ab538181565b60006001600160e01b03198216637965db0b60e01b148061039557506301ffc9a760e01b6001600160e01b03198316145b92915050565b60006103a681610594565b60008381526001602090815260408083206001600160a01b038616845290915290205460ff166103e95760405163209d285360e01b815260040160405180910390fd5b60008381526001602090815260408083206001600160a01b0386168085529252808320805460ff1916905551909185917fb9287755f7ae96fd76abd9d374c8ff330a7c555d53849996b81018878e77ddec9190a3505050565b60008281526020819052604090206001015461045d81610594565b61046783836105a1565b50505050565b6001600160a01b03811633146104965760405163334bd91960e11b815260040160405180910390fd5b6104a08282610633565b505050565b6000918252602082815260408084206001600160a01b0393909316845291905290205460ff1690565b6000828152602081905260409020600101546104e981610594565b6104678383610633565b60008281526001602090815260408083206001600160a01b038516845290915290205460ff1615610537576040516332b9621d60e01b815260040160405180910390fd5b60008281526001602081815260408084206001600160a01b0386168086529252808420805460ff19169093179092559051909184917f1353421a36e407ea0bcc8250922eb1540d98dad2af2c79f094e8986bffb97e849190a35050565b61059e813361069e565b50565b60006105ad83836104a5565b61062b576000838152602081815260408083206001600160a01b03861684529091529020805460ff191660011790556105e33390565b6001600160a01b0316826001600160a01b0316847f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a4506001610395565b506000610395565b600061063f83836104a5565b1561062b576000838152602081815260408083206001600160a01b0386168085529252808320805460ff1916905551339286917ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9190a4506001610395565b6106a882826104a5565b6106db5760405163e2517d3f60e01b81526001600160a01b03821660048201526024810183905260440160405180910390fd5b5050565b6000602082840312156106f157600080fd5b81356001600160e01b03198116811461070957600080fd5b9392505050565b6000806040838503121561072357600080fd5b8235915060208301356001600160a01b038116811461074157600080fd5b809150509250929050565b60006020828403121561075e57600080fd5b503591905056fea264697066735822122045e1243a6f58599a64f9790ae2e30f2dd317ed89e43d807f944e6a6a9e11389c64736f6c63430008190033",
+    "sourceMap": "314:3718:32:-:0;;;1606:65;;;;;;;;;-1:-1:-1;1630:34:32;2232:4:0;1653:10:32;1630;:34::i;:::-;;314:3718;;6179:316:0;6256:4;2954:12;;;;;;;;;;;-1:-1:-1;;;;;2954:29:0;;;;;;;;;;;;6272:217;;6315:6;:12;;;;;;;;;;;-1:-1:-1;;;;;6315:29:0;;;;;;;;;:36;;-1:-1:-1;;6315:36:0;6347:4;6315:36;;;6397:12;735:10:7;;656:96;6397:12:0;-1:-1:-1;;;;;6370:40:0;6388:7;-1:-1:-1;;;;;6370:40:0;6382:4;6370:40;;;;;;;;;;-1:-1:-1;6431:4:0;6424:11;;6272:217;-1:-1:-1;6473:5:0;6272:217;6179:316;;;;:::o;314:3718:32:-;;;;;;;",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x608060405234801561001057600080fd5b50600436106101215760003560e01c806391d14854116100ad578063ce3d78d611610071578063ce3d78d6146102ca578063d547741f146102f1578063e403a3f614610304578063f57f2dc014610317578063fec331f21461033d57600080fd5b806391d1485414610231578063a217fddf14610203578063ac5cb97d14610244578063bc4912681461026b578063bf9fb97f1461029157600080fd5b80632f2ff15d116100f45780632f2ff15d146101b657806336568abe146101c957806350f2aab3146101dc57806375b238fc14610203578063849eb7221461020b57600080fd5b806301ffc9a71461012657806305e3425f1461014e5780631a89ce7914610163578063248a9ca314610193575b600080fd5b6101396101343660046106df565b610364565b60405190151581526020015b60405180910390f35b61016161015c366004610710565b61039b565b005b7f7ac30656051904e06bc0ef5fc0aa1a3334e6d6824b83fe5f4a7dd1b39218ba285b604051908152602001610145565b6101856101a136600461074c565b60009081526020819052604090206001015490565b6101616101c4366004610710565b610442565b6101616101d7366004610710565b61046d565b6101857fdfdf2b841d0cbc21071a9d98f0c6e4896c80bf338d769ddf545f871d7af9ef1181565b610185600081565b7fdc3b9d7fd28cfc7a70a999f2eb4b60672e6b88c8ed3280f4fb467b501b62b92e610185565b61013961023f366004610710565b6104a5565b6101857fdc3b9d7fd28cfc7a70a999f2eb4b60672e6b88c8ed3280f4fb467b501b62b92e81565b7fdfdf2b841d0cbc21071a9d98f0c6e4896c80bf338d769ddf545f871d7af9ef11610185565b61013961029f366004610710565b60009182526001602090815260408084206001600160a01b0393909316845291905290205460ff1690565b6101857f7ac30656051904e06bc0ef5fc0aa1a3334e6d6824b83fe5f4a7dd1b39218ba2881565b6101616102ff366004610710565b6104ce565b610161610312366004610710565b6104f3565b7fec03945fa2196716a09674e2cd6a57153479ecb05ea91e189e2688f793ab5381610185565b6101857fec03945fa2196716a09674e2cd6a57153479ecb05ea91e189e2688f793ab538181565b60006001600160e01b03198216637965db0b60e01b148061039557506301ffc9a760e01b6001600160e01b03198316145b92915050565b60006103a681610594565b60008381526001602090815260408083206001600160a01b038616845290915290205460ff166103e95760405163209d285360e01b815260040160405180910390fd5b60008381526001602090815260408083206001600160a01b0386168085529252808320805460ff1916905551909185917fb9287755f7ae96fd76abd9d374c8ff330a7c555d53849996b81018878e77ddec9190a3505050565b60008281526020819052604090206001015461045d81610594565b61046783836105a1565b50505050565b6001600160a01b03811633146104965760405163334bd91960e11b815260040160405180910390fd5b6104a08282610633565b505050565b6000918252602082815260408084206001600160a01b0393909316845291905290205460ff1690565b6000828152602081905260409020600101546104e981610594565b6104678383610633565b60008281526001602090815260408083206001600160a01b038516845290915290205460ff1615610537576040516332b9621d60e01b815260040160405180910390fd5b60008281526001602081815260408084206001600160a01b0386168086529252808420805460ff19169093179092559051909184917f1353421a36e407ea0bcc8250922eb1540d98dad2af2c79f094e8986bffb97e849190a35050565b61059e813361069e565b50565b60006105ad83836104a5565b61062b576000838152602081815260408083206001600160a01b03861684529091529020805460ff191660011790556105e33390565b6001600160a01b0316826001600160a01b0316847f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d60405160405180910390a4506001610395565b506000610395565b600061063f83836104a5565b1561062b576000838152602081815260408083206001600160a01b0386168085529252808320805460ff1916905551339286917ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9190a4506001610395565b6106a882826104a5565b6106db5760405163e2517d3f60e01b81526001600160a01b03821660048201526024810183905260440160405180910390fd5b5050565b6000602082840312156106f157600080fd5b81356001600160e01b03198116811461070957600080fd5b9392505050565b6000806040838503121561072357600080fd5b8235915060208301356001600160a01b038116811461074157600080fd5b809150509250929050565b60006020828403121561075e57600080fd5b503591905056fea264697066735822122045e1243a6f58599a64f9790ae2e30f2dd317ed89e43d807f944e6a6a9e11389c64736f6c63430008190033",
+    "sourceMap": "314:3718:32:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;2565:202:0;;;;;;:::i;:::-;;:::i;:::-;;;470:14:33;;463:22;445:41;;433:2;418:18;2565:202:0;;;;;;;;2455:287:32;;;;;;:::i;:::-;;:::i;:::-;;3938:92;806:20;3938:92;;;1002:25:33;;;990:2;975:18;3938:92:32;856:177:33;3810:120:0;;;;;;:::i;:::-;3875:7;3901:12;;;;;;;;;;:22;;;;3810:120;4226:136;;;;;;:::i;:::-;;:::i;5328:245::-;;;;;;:::i;:::-;;:::i;696:65:32:-;;738:23;696:65;;507:55;;2232:4:0;507:55:32;;3279:92;607:20;3279:92;;2854:136:0;;;;;;:::i;:::-;;:::i;568:59:32:-;;607:20;568:59;;3715:98;738:23;3715:98;;2998:156;;;;;;:::i;:::-;3092:4;3115:23;;;:17;:23;;;;;;;;-1:-1:-1;;;;;3115:32:32;;;;;;;;;;;;;;;2998:156;767:59;;806:20;767:59;;4642:138:0;;;;;;:::i;:::-;;:::i;1911:242:32:-;;;;;;:::i;:::-;;:::i;3494:90::-;671:19;3494:90;;633:57;;671:19;633:57;;2565:202:0;2650:4;-1:-1:-1;;;;;;2673:47:0;;-1:-1:-1;;;2673:47:0;;:87;;-1:-1:-1;;;;;;;;;;861:40:8;;;2724:36:0;2666:94;2565:202;-1:-1:-1;;2565:202:0:o;2455:287:32:-;2232:4:0;2464:16;2232:4;2464:10;:16::i;:::-;2576:23:32::1;::::0;;;:17:::1;:23;::::0;;;;;;;-1:-1:-1;;;;;2576:32:32;::::1;::::0;;;;;;;;::::1;;2571:66;;2617:20;;-1:-1:-1::0;;;2617:20:32::1;;;;;;;;;;;2571:66;2683:5;2648:23:::0;;;:17:::1;:23;::::0;;;;;;;-1:-1:-1;;;;;2648:32:32;::::1;::::0;;;;;;;;:40;;-1:-1:-1;;2648:40:32::1;::::0;;2703:32;2648;;2666:4;;2703:32:::1;::::0;2683:5;2703:32:::1;2455:287:::0;;;:::o;4226:136:0:-;3875:7;3901:12;;;;;;;;;;:22;;;2464:16;2475:4;2464:10;:16::i;:::-;4330:25:::1;4341:4;4347:7;4330:10;:25::i;:::-;;4226:136:::0;;;:::o;5328:245::-;-1:-1:-1;;;;;5421:34:0;;735:10:7;5421:34:0;5417:102;;5478:30;;-1:-1:-1;;;5478:30:0;;;;;;;;;;;5417:102;5529:37;5541:4;5547:18;5529:11;:37::i;:::-;;5328:245;;:::o;2854:136::-;2931:4;2954:12;;;;;;;;;;;-1:-1:-1;;;;;2954:29:0;;;;;;;;;;;;;;;2854:136::o;4642:138::-;3875:7;3901:12;;;;;;;;;;:22;;;2464:16;2475:4;2464:10;:16::i;:::-;4747:26:::1;4759:4;4765:7;4747:11;:26::i;1911:242:32:-:0;1986:23;;;;:17;:23;;;;;;;;-1:-1:-1;;;;;1986:32:32;;;;;;;;;;;;1982:69;;;2027:24;;-1:-1:-1;;;2027:24:32;;;;;;;;;;;1982:69;2062:23;;;;2097:4;2062:23;;;;;;;;-1:-1:-1;;;;;2062:32:32;;;;;;;;;;:39;;-1:-1:-1;;2062:39:32;;;;;;;2116:30;;2062:32;;2080:4;;2116:30;;2062:23;2116:30;1911:242;;:::o;3199:103:0:-;3265:30;3276:4;735:10:7;3265::0;:30::i;:::-;3199:103;:::o;6179:316::-;6256:4;6277:22;6285:4;6291:7;6277;:22::i;:::-;6272:217;;6315:6;:12;;;;;;;;;;;-1:-1:-1;;;;;6315:29:0;;;;;;;;;:36;;-1:-1:-1;;6315:36:0;6347:4;6315:36;;;6397:12;735:10:7;;656:96;6397:12:0;-1:-1:-1;;;;;6370:40:0;6388:7;-1:-1:-1;;;;;6370:40:0;6382:4;6370:40;;;;;;;;;;-1:-1:-1;6431:4:0;6424:11;;6272:217;-1:-1:-1;6473:5:0;6466:12;;6730:317;6808:4;6828:22;6836:4;6842:7;6828;:22::i;:::-;6824:217;;;6898:5;6866:12;;;;;;;;;;;-1:-1:-1;;;;;6866:29:0;;;;;;;;;;:37;;-1:-1:-1;;6866:37:0;;;6922:40;735:10:7;;6866:12:0;;6922:40;;6898:5;6922:40;-1:-1:-1;6983:4:0;6976:11;;3432:197;3520:22;3528:4;3534:7;3520;:22::i;:::-;3515:108;;3565:47;;-1:-1:-1;;;3565:47:0;;-1:-1:-1;;;;;1415:32:33;;3565:47:0;;;1397:51:33;1464:18;;;1457:34;;;1370:18;;3565:47:0;;;;;;;3515:108;3432:197;;:::o;14:286:33:-;72:6;125:2;113:9;104:7;100:23;96:32;93:52;;;141:1;138;131:12;93:52;167:23;;-1:-1:-1;;;;;;219:32:33;;209:43;;199:71;;266:1;263;256:12;199:71;289:5;14:286;-1:-1:-1;;;14:286:33:o;497:354::-;565:6;573;626:2;614:9;605:7;601:23;597:32;594:52;;;642:1;639;632:12;594:52;665:23;;;-1:-1:-1;738:2:33;723:18;;710:32;-1:-1:-1;;;;;771:31:33;;761:42;;751:70;;817:1;814;807:12;751:70;840:5;830:15;;;497:354;;;;;:::o;1038:180::-;1097:6;1150:2;1138:9;1129:7;1125:23;1121:32;1118:52;;;1166:1;1163;1156:12;1118:52;-1:-1:-1;1189:23:33;;1038:180;-1:-1:-1;1038:180:33:o",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "ADMIN_ROLE()": "75b238fc",
+    "BUILDER_ROLE()": "ce3d78d6",
+    "DEFAULT_ADMIN_ROLE()": "a217fddf",
+    "DOCTOR_ROLE()": "fec331f2",
+    "PATIENT_ROLE()": "ac5cb97d",
+    "RESEARCHER_ROLE()": "50f2aab3",
+    "getBuilderRole()": "1a89ce79",
+    "getDoctorRole()": "f57f2dc0",
+    "getPatientRole()": "849eb722",
+    "getResearcherRole()": "bc491268",
+    "getRoleAdmin(bytes32)": "248a9ca3",
+    "grantRole(bytes32,address)": "2f2ff15d",
+    "hasRole(bytes32,address)": "91d14854",
+    "isVerified(bytes32,address)": "bf9fb97f",
+    "renounceRole(bytes32,address)": "36568abe",
+    "revokeRole(bytes32,address)": "d547741f",
+    "supportsInterface(bytes4)": "01ffc9a7",
+    "unverifyAddress(bytes32,address)": "05e3425f",
+    "verifyAddress(bytes32,address)": "e403a3f6"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.25+commit.b61c2a91\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"AccessControlBadConfirmation\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"neededRole\",\"type\":\"bytes32\"}],\"name\":\"AccessControlUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"AddressAlreadyVerified\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"AddressNotVerified\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"AddressUnverified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"AddressVerified\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"BUILDER_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"DOCTOR_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"PATIENT_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"RESEARCHER_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBuilderRole\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getDoctorRole\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPatientRole\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getResearcherRole\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"isVerified\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"callerConfirmation\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"unverifyAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"verifyAddress\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Inherits from OpenZeppelin's AccessControl for role management\",\"errors\":{\"AccessControlBadConfirmation()\":[{\"details\":\"The caller of a function is not the expected one. NOTE: Don't confuse with {AccessControlUnauthorizedAccount}.\"}],\"AccessControlUnauthorizedAccount(address,bytes32)\":[{\"details\":\"The `account` is missing a role.\"}]},\"events\":{\"AddressUnverified(bytes32,address)\":{\"params\":{\"account\":\"The address that was unverified\",\"role\":\"The role for which the address is unverified\"}},\"AddressVerified(bytes32,address)\":{\"params\":{\"account\":\"The address that was verified\",\"role\":\"The role for which the address is verified\"}},\"RoleAdminChanged(bytes32,bytes32,bytes32)\":{\"details\":\"Emitted when `newAdminRole` is set as ``role``'s admin role, replacing `previousAdminRole` `DEFAULT_ADMIN_ROLE` is the starting admin for all roles, despite {RoleAdminChanged} not being emitted signaling this.\"},\"RoleGranted(bytes32,address,address)\":{\"details\":\"Emitted when `account` is granted `role`. `sender` is the account that originated the contract call, an admin role bearer except when using {AccessControl-_setupRole}.\"},\"RoleRevoked(bytes32,address,address)\":{\"details\":\"Emitted when `account` is revoked `role`. `sender` is the account that originated the contract call:   - if using `revokeRole`, it is the admin role bearer   - if using `renounceRole`, it is the role bearer (i.e. `account`)\"}},\"kind\":\"dev\",\"methods\":{\"constructor\":{\"details\":\"Grants the ADMIN_ROLE to the contract deployer\"},\"getBuilderRole()\":{\"returns\":{\"_0\":\"bytes32 The BUILDER_ROLE identifier\"}},\"getDoctorRole()\":{\"returns\":{\"_0\":\"bytes32 The DOCTOR_ROLE identifier\"}},\"getPatientRole()\":{\"returns\":{\"_0\":\"bytes32 The PATIENT_ROLE identifier\"}},\"getResearcherRole()\":{\"returns\":{\"_0\":\"bytes32 The RESEARCHER_ROLE identifier\"}},\"getRoleAdmin(bytes32)\":{\"details\":\"Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.\"},\"grantRole(bytes32,address)\":{\"details\":\"Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleGranted} event.\"},\"hasRole(bytes32,address)\":{\"details\":\"Returns `true` if `account` has been granted `role`.\"},\"isVerified(bytes32,address)\":{\"params\":{\"account\":\"The address to check\",\"role\":\"The role to check verification for\"},\"returns\":{\"_0\":\"bool True if the address is verified for the role, false otherwise\"}},\"renounceRole(bytes32,address)\":{\"details\":\"Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `callerConfirmation`. May emit a {RoleRevoked} event.\"},\"revokeRole(bytes32,address)\":{\"details\":\"Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleRevoked} event.\"},\"supportsInterface(bytes4)\":{\"details\":\"See {IERC165-supportsInterface}.\"},\"unverifyAddress(bytes32,address)\":{\"details\":\"Only callable by addresses with the ADMIN_ROLEReverts if the address is not verified for the given role\",\"params\":{\"account\":\"The address to be unverified\",\"role\":\"The role to unverify the address for\"}},\"verifyAddress(bytes32,address)\":{\"details\":\"Reverts if the address is already verified for the given role\",\"params\":{\"account\":\"The address to be verified\",\"role\":\"The role to verify the address for\"}}},\"title\":\"VerifiedAddressRegistry\",\"version\":1},\"userdoc\":{\"events\":{\"AddressUnverified(bytes32,address)\":{\"notice\":\"Emitted when an address is unverified for a role\"},\"AddressVerified(bytes32,address)\":{\"notice\":\"Emitted when an address is verified for a role\"}},\"kind\":\"user\",\"methods\":{\"ADMIN_ROLE()\":{\"notice\":\"Constants for predefined roles\"},\"constructor\":{\"notice\":\"Contract constructor\"},\"getBuilderRole()\":{\"notice\":\"Get the bytes32 representation of the BUILDER_ROLE\"},\"getDoctorRole()\":{\"notice\":\"Get the bytes32 representation of the DOCTOR_ROLE\"},\"getPatientRole()\":{\"notice\":\"Get the bytes32 representation of the PATIENT_ROLE\"},\"getResearcherRole()\":{\"notice\":\"Get the bytes32 representation of the RESEARCHER_ROLE\"},\"isVerified(bytes32,address)\":{\"notice\":\"Check if an address is verified for a specific role\"},\"unverifyAddress(bytes32,address)\":{\"notice\":\"Unverify an address for a specific role\"},\"verifyAddress(bytes32,address)\":{\"notice\":\"Verify an address for a specific role\"}},\"notice\":\"Manages verified addresses for roles with admin control\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/VerifiedAddressRegistry.sol\":\"VerifiedAddressRegistry\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/\",\":@openzeppelin/contracts/=lib/openzeppelin-contracts.git/contracts/\",\":ds-test/=lib/openzeppelin-contracts.git/lib/forge-std/lib/ds-test/src/\",\":erc4626-tests/=lib/openzeppelin-contracts.git/lib/erc4626-tests/\",\":forge-std/=lib/openzeppelin-contracts.git/lib/forge-std/src/\",\":openzeppelin-contracts.git/=lib/openzeppelin-contracts.git/\"]},\"sources\":{\"lib/openzeppelin-contracts.git/contracts/access/AccessControl.sol\":{\"keccak256\":\"0xa0e92d42942f4f57c5be50568dac11e9d00c93efcb458026e18d2d9b9b2e7308\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://46326c0bb1e296b67185e81c918e0b40501b8b6386165855df0a3f3c634b6a80\",\"dweb:/ipfs/QmTwyrDYtsxsk6pymJTK94PnEpzsmkpUxFuzEiakDopy4Z\"]},\"lib/openzeppelin-contracts.git/contracts/access/IAccessControl.sol\":{\"keccak256\":\"0xb6b36edd6a2999fd243ff226d6cbf84bd71af2432bbd0dfe19392996a1d9cb41\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1fd2f35495652e57e3f99bc6c510bc5f7dd398a176ea2e72d8ed730aebc6ca26\",\"dweb:/ipfs/QmTQV6X4gkikTib49cho5iDX3JvSQbdsoEChoDwrk3CbbH\"]},\"lib/openzeppelin-contracts.git/contracts/utils/Context.sol\":{\"keccak256\":\"0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12\",\"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF\"]},\"lib/openzeppelin-contracts.git/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0x9e8778b14317ba9e256c30a76fd6c32b960af621987f56069e1e819c77c6a133\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1777404f1dcd0fac188e55a288724ec3c67b45288e49cc64723e95e702b49ab8\",\"dweb:/ipfs/QmZFdC626GButBApwDUvvTnUzdinevC3B24d7yyh57XkiA\"]},\"lib/openzeppelin-contracts.git/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x4296879f55019b23e135000eb36896057e7101fb7fb859c5ef690cf14643757b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://87b3541437c8c443ccd36795e56a338ed12855eec17f8da624511b8d1a7e14df\",\"dweb:/ipfs/QmeJQCtZrQjtJLr6u7ZHWeH3pBnjtLWzvRrKViAi7UZqxL\"]},\"src/VerifiedAddressRegistry.sol\":{\"keccak256\":\"0xf24a49af2187b9fb4d3f3e5076abc95c5e94c3c1b64bdd3477a614e60da32146\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9e3e904628ebf4f2cf49d60ba62dfbf4ec3bae010d25e64d32a0191043ea44f9\",\"dweb:/ipfs/QmTVXGKYrbYmZrjToozmEAvoSAv4efBiJ3NJz6kYgQjvQ4\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": { "version": "0.8.25+commit.b61c2a91" },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [],
+          "stateMutability": "nonpayable",
+          "type": "constructor"
+        },
+        {
+          "inputs": [],
+          "type": "error",
+          "name": "AccessControlBadConfirmation"
+        },
+        {
+          "inputs": [
+            { "internalType": "address", "name": "account", "type": "address" },
+            {
+              "internalType": "bytes32",
+              "name": "neededRole",
+              "type": "bytes32"
+            }
+          ],
+          "type": "error",
+          "name": "AccessControlUnauthorizedAccount"
+        },
+        { "inputs": [], "type": "error", "name": "AddressAlreadyVerified" },
+        { "inputs": [], "type": "error", "name": "AddressNotVerified" },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "AddressUnverified",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "AddressVerified",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "bytes32",
+              "name": "previousAdminRole",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "bytes32",
+              "name": "newAdminRole",
+              "type": "bytes32",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "RoleAdminChanged",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "RoleGranted",
+          "anonymous": false
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "sender",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "RoleRevoked",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "ADMIN_ROLE",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "BUILDER_ROLE",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "DEFAULT_ADMIN_ROLE",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "DOCTOR_ROLE",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "PATIENT_ROLE",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "RESEARCHER_ROLE",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "getBuilderRole",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "getDoctorRole",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "getPatientRole",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [],
+          "stateMutability": "pure",
+          "type": "function",
+          "name": "getResearcherRole",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "getRoleAdmin",
+          "outputs": [
+            { "internalType": "bytes32", "name": "", "type": "bytes32" }
+          ]
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "grantRole"
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "hasRole",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "isVerified",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            {
+              "internalType": "address",
+              "name": "callerConfirmation",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "renounceRole"
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "revokeRole"
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "bytes4",
+              "name": "interfaceId",
+              "type": "bytes4"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "supportsInterface",
+          "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "unverifyAddress"
+        },
+        {
+          "inputs": [
+            { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+            { "internalType": "address", "name": "account", "type": "address" }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "verifyAddress"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "constructor": {
+            "details": "Grants the ADMIN_ROLE to the contract deployer"
+          },
+          "getBuilderRole()": {
+            "returns": { "_0": "bytes32 The BUILDER_ROLE identifier" }
+          },
+          "getDoctorRole()": {
+            "returns": { "_0": "bytes32 The DOCTOR_ROLE identifier" }
+          },
+          "getPatientRole()": {
+            "returns": { "_0": "bytes32 The PATIENT_ROLE identifier" }
+          },
+          "getResearcherRole()": {
+            "returns": { "_0": "bytes32 The RESEARCHER_ROLE identifier" }
+          },
+          "getRoleAdmin(bytes32)": {
+            "details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
+          },
+          "grantRole(bytes32,address)": {
+            "details": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleGranted} event."
+          },
+          "hasRole(bytes32,address)": {
+            "details": "Returns `true` if `account` has been granted `role`."
+          },
+          "isVerified(bytes32,address)": {
+            "params": {
+              "account": "The address to check",
+              "role": "The role to check verification for"
+            },
+            "returns": {
+              "_0": "bool True if the address is verified for the role, false otherwise"
+            }
+          },
+          "renounceRole(bytes32,address)": {
+            "details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `callerConfirmation`. May emit a {RoleRevoked} event."
+          },
+          "revokeRole(bytes32,address)": {
+            "details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleRevoked} event."
+          },
+          "supportsInterface(bytes4)": {
+            "details": "See {IERC165-supportsInterface}."
+          },
+          "unverifyAddress(bytes32,address)": {
+            "details": "Only callable by addresses with the ADMIN_ROLEReverts if the address is not verified for the given role",
+            "params": {
+              "account": "The address to be unverified",
+              "role": "The role to unverify the address for"
+            }
+          },
+          "verifyAddress(bytes32,address)": {
+            "details": "Reverts if the address is already verified for the given role",
+            "params": {
+              "account": "The address to be verified",
+              "role": "The role to verify the address for"
+            }
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {
+          "ADMIN_ROLE()": { "notice": "Constants for predefined roles" },
+          "constructor": { "notice": "Contract constructor" },
+          "getBuilderRole()": {
+            "notice": "Get the bytes32 representation of the BUILDER_ROLE"
+          },
+          "getDoctorRole()": {
+            "notice": "Get the bytes32 representation of the DOCTOR_ROLE"
+          },
+          "getPatientRole()": {
+            "notice": "Get the bytes32 representation of the PATIENT_ROLE"
+          },
+          "getResearcherRole()": {
+            "notice": "Get the bytes32 representation of the RESEARCHER_ROLE"
+          },
+          "isVerified(bytes32,address)": {
+            "notice": "Check if an address is verified for a specific role"
+          },
+          "unverifyAddress(bytes32,address)": {
+            "notice": "Unverify an address for a specific role"
+          },
+          "verifyAddress(bytes32,address)": {
+            "notice": "Verify an address for a specific role"
+          }
+        },
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/",
+        "@openzeppelin/contracts/=lib/openzeppelin-contracts.git/contracts/",
+        "ds-test/=lib/openzeppelin-contracts.git/lib/forge-std/lib/ds-test/src/",
+        "erc4626-tests/=lib/openzeppelin-contracts.git/lib/erc4626-tests/",
+        "forge-std/=lib/openzeppelin-contracts.git/lib/forge-std/src/",
+        "openzeppelin-contracts.git/=lib/openzeppelin-contracts.git/"
+      ],
+      "optimizer": { "enabled": true, "runs": 200 },
+      "metadata": { "bytecodeHash": "ipfs" },
+      "compilationTarget": {
+        "src/VerifiedAddressRegistry.sol": "VerifiedAddressRegistry"
+      },
+      "evmVersion": "paris",
+      "libraries": {}
+    },
+    "sources": {
+      "lib/openzeppelin-contracts.git/contracts/access/AccessControl.sol": {
+        "keccak256": "0xa0e92d42942f4f57c5be50568dac11e9d00c93efcb458026e18d2d9b9b2e7308",
+        "urls": [
+          "bzz-raw://46326c0bb1e296b67185e81c918e0b40501b8b6386165855df0a3f3c634b6a80",
+          "dweb:/ipfs/QmTwyrDYtsxsk6pymJTK94PnEpzsmkpUxFuzEiakDopy4Z"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts.git/contracts/access/IAccessControl.sol": {
+        "keccak256": "0xb6b36edd6a2999fd243ff226d6cbf84bd71af2432bbd0dfe19392996a1d9cb41",
+        "urls": [
+          "bzz-raw://1fd2f35495652e57e3f99bc6c510bc5f7dd398a176ea2e72d8ed730aebc6ca26",
+          "dweb:/ipfs/QmTQV6X4gkikTib49cho5iDX3JvSQbdsoEChoDwrk3CbbH"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts.git/contracts/utils/Context.sol": {
+        "keccak256": "0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2",
+        "urls": [
+          "bzz-raw://6a708e8a5bdb1011c2c381c9a5cfd8a9a956d7d0a9dc1bd8bcdaf52f76ef2f12",
+          "dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts.git/contracts/utils/introspection/ERC165.sol": {
+        "keccak256": "0x9e8778b14317ba9e256c30a76fd6c32b960af621987f56069e1e819c77c6a133",
+        "urls": [
+          "bzz-raw://1777404f1dcd0fac188e55a288724ec3c67b45288e49cc64723e95e702b49ab8",
+          "dweb:/ipfs/QmZFdC626GButBApwDUvvTnUzdinevC3B24d7yyh57XkiA"
+        ],
+        "license": "MIT"
+      },
+      "lib/openzeppelin-contracts.git/contracts/utils/introspection/IERC165.sol": {
+        "keccak256": "0x4296879f55019b23e135000eb36896057e7101fb7fb859c5ef690cf14643757b",
+        "urls": [
+          "bzz-raw://87b3541437c8c443ccd36795e56a338ed12855eec17f8da624511b8d1a7e14df",
+          "dweb:/ipfs/QmeJQCtZrQjtJLr6u7ZHWeH3pBnjtLWzvRrKViAi7UZqxL"
+        ],
+        "license": "MIT"
+      },
+      "src/VerifiedAddressRegistry.sol": {
+        "keccak256": "0xf24a49af2187b9fb4d3f3e5076abc95c5e94c3c1b64bdd3477a614e60da32146",
+        "urls": [
+          "bzz-raw://9e3e904628ebf4f2cf49d60ba62dfbf4ec3bae010d25e64d32a0191043ea44f9",
+          "dweb:/ipfs/QmTVXGKYrbYmZrjToozmEAvoSAv4efBiJ3NJz6kYgQjvQ4"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "id": 32
+}

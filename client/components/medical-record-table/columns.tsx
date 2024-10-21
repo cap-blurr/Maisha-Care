@@ -61,6 +61,9 @@ export const MedicaRecordDataColumns: ColumnDef<MedicalRecordType>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Doctor" />
     ),
+    cell: ({ cell }) => {
+      return cell.row.original.doctor.name;
+    },
   },
   {
     accessorKey: "notes",
@@ -79,6 +82,17 @@ export const MedicaRecordDataColumns: ColumnDef<MedicalRecordType>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Lab Results" />
     ),
+    cell: ({ cell }) => {
+      return cell.row.original.labResults?.map((element) => {
+        return (
+          <ul>
+            <li>{element.testName}</li>
+            <li>{element.normalRange}</li>
+            <li>{element.result}</li>
+          </ul>
+        );
+      });
+    },
   },
 ];
 
@@ -120,7 +134,6 @@ const DropDown = ({ cell }: any) => {
                 </span>
                 <span className="flex justify-between items-center">
                   <h4 className=" mb-3">
-
                     <span className="font-semibold">
                       {cell.row.original?.leaseType}
                     </span>
@@ -138,7 +151,6 @@ const DropDown = ({ cell }: any) => {
                     </span>
                   </h4>
                   <p className=" mb-3">
-
                     <span className="font-semibold">
                       {cell.row.original?.acquistionType}
                     </span>{" "}
@@ -146,7 +158,6 @@ const DropDown = ({ cell }: any) => {
                 </span>
                 <span className="flex justify-between items-center">
                   <h4 className=" mb-3">
-
                     <span className="font-semibold">
                       {cell.row.original?.ownerName}
                     </span>

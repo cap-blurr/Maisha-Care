@@ -1,343 +1,289 @@
 export const VerifiedAddressRegistry = [
+  { "type": "constructor", "inputs": [], "stateMutability": "nonpayable" },
   {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [],
-    "type": "error",
-    "name": "AccessControlBadConfirmation"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" },
-      {
-        "internalType": "bytes32",
-        "name": "neededRole",
-        "type": "bytes32"
-      }
-    ],
-    "type": "error",
-    "name": "AccessControlUnauthorizedAccount"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32",
-        "indexed": true
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address",
-        "indexed": true
-      }
-    ],
-    "type": "event",
-    "name": "AddressUnverified",
-    "anonymous": false
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32",
-        "indexed": true
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address",
-        "indexed": true
-      },
-      {
-        "internalType": "bytes32",
-        "name": "uniqueHash",
-        "type": "bytes32",
-        "indexed": false
-      }
-    ],
-    "type": "event",
-    "name": "AddressVerified",
-    "anonymous": false
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32",
-        "indexed": true
-      },
-      {
-        "internalType": "bytes32",
-        "name": "previousAdminRole",
-        "type": "bytes32",
-        "indexed": true
-      },
-      {
-        "internalType": "bytes32",
-        "name": "newAdminRole",
-        "type": "bytes32",
-        "indexed": true
-      }
-    ],
-    "type": "event",
-    "name": "RoleAdminChanged",
-    "anonymous": false
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32",
-        "indexed": true
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address",
-        "indexed": true
-      },
-      {
-        "internalType": "address",
-        "name": "sender",
-        "type": "address",
-        "indexed": true
-      }
-    ],
-    "type": "event",
-    "name": "RoleGranted",
-    "anonymous": false
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "role",
-        "type": "bytes32",
-        "indexed": true
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address",
-        "indexed": true
-      },
-      {
-        "internalType": "address",
-        "name": "sender",
-        "type": "address",
-        "indexed": true
-      }
-    ],
-    "type": "event",
-    "name": "RoleRevoked",
-    "anonymous": false
-  },
-  {
-    "inputs": [],
-    "stateMutability": "view",
     "type": "function",
     "name": "ADMIN_ROLE",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
-    "stateMutability": "view",
     "type": "function",
     "name": "BUILDER_ROLE",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
-    "stateMutability": "view",
     "type": "function",
     "name": "DEFAULT_ADMIN_ROLE",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
-    "stateMutability": "view",
     "type": "function",
     "name": "DOCTOR_ROLE",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
-    "stateMutability": "view",
     "type": "function",
     "name": "PATIENT_ROLE",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
-    "stateMutability": "view",
     "type": "function",
     "name": "RESEARCHER_ROLE",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
-    "stateMutability": "pure",
     "type": "function",
     "name": "getBuilderRole",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "pure"
   },
   {
-    "inputs": [],
-    "stateMutability": "pure",
     "type": "function",
     "name": "getDoctorRole",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "pure"
   },
   {
-    "inputs": [],
-    "stateMutability": "pure",
     "type": "function",
     "name": "getPatientRole",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "pure"
   },
   {
-    "inputs": [],
-    "stateMutability": "pure",
     "type": "function",
     "name": "getResearcherRole",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "pure"
   },
   {
-    "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" }
-    ],
-    "stateMutability": "view",
     "type": "function",
     "name": "getRoleAdmin",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
-    ],
-    "stateMutability": "view",
     "type": "function",
-    "name": "getUniqueHash",
-    "outputs": [
-      { "internalType": "bytes32", "name": "", "type": "bytes32" }
-    ]
+    "name": "grantRole",
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function",
-    "name": "grantRole"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
-    ],
-    "stateMutability": "view",
     "type": "function",
     "name": "hasRole",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
-    ],
-    "stateMutability": "view",
     "type": "function",
     "name": "isVerified",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
   },
   {
+    "type": "function",
+    "name": "renounceRole",
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
       {
-        "internalType": "address",
         "name": "callerConfirmation",
-        "type": "address"
+        "type": "address",
+        "internalType": "address"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function",
-    "name": "renounceRole"
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
-    ],
-    "stateMutability": "nonpayable",
     "type": "function",
-    "name": "revokeRole"
+    "name": "revokeRole",
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes4",
-        "name": "interfaceId",
-        "type": "bytes4"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function",
     "name": "supportsInterface",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }]
-  },
-  {
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" }
+      { "name": "interfaceId", "type": "bytes4", "internalType": "bytes4" }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function",
-    "name": "unverifyAddress"
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
   },
   {
+    "type": "function",
+    "name": "unverifyAddress",
     "inputs": [
-      { "internalType": "bytes32", "name": "role", "type": "bytes32" },
-      { "internalType": "address", "name": "account", "type": "address" },
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "verifyAddress",
+    "inputs": [
+      { "name": "role", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "AddressUnverified",
+    "inputs": [
       {
-        "internalType": "bytes32",
-        "name": "uniqueHash",
-        "type": "bytes32"
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
       }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function",
-    "name": "verifyAddress"
-  }
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "AddressVerified",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleAdminChanged",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "previousAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "newAdminRole",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleGranted",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "RoleRevoked",
+    "inputs": [
+      {
+        "name": "role",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "sender",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  { "type": "error", "name": "AccessControlBadConfirmation", "inputs": [] },
+  {
+    "type": "error",
+    "name": "AccessControlUnauthorizedAccount",
+    "inputs": [
+      { "name": "account", "type": "address", "internalType": "address" },
+      { "name": "neededRole", "type": "bytes32", "internalType": "bytes32" }
+    ]
+  },
+  { "type": "error", "name": "AddressAlreadyVerified", "inputs": [] },
+  { "type": "error", "name": "AddressNotVerified", "inputs": [] }
 ] as const;

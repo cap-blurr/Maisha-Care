@@ -85,19 +85,50 @@ export const PatientDataColumns: ColumnDef<PatientType>[] = [
     accessorKey: "ACTIONS",
     header: "Actions",
     cell: ({ cell }) => {
-      return (
-        <button
-          onClick={handleRequestData}
-          className="py-2 px-2  bg-[#ff6f91] text-white rounded-lg font-semibold mx-1 w-max"
-        >
-          Request Data
-        </button>
-      );
+      return <RequestData />;
     },
   },
 ];
 
-const handleRequestData = () => {};
+import React from "react";
+import LoadingDialog from "../dialog/LoadingDialog";
+import SuccessDialog from "../dialog/SuccessDialog";
+
+const RequestData = () => {
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleRequestData = async () => {
+    setLoading(true);
+    await setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+    }, 2000);
+    await setTimeout(() => {
+      setSuccess(false);
+    }, 5000);
+  };
+  return (
+    <>
+      <button
+        onClick={handleRequestData}
+        className="py-2 px-2  bg-[#ff6f91] text-white rounded-lg font-semibold mx-1 w-max"
+      >
+        Request Data
+      </button>
+      <LoadingDialog
+        openLoading={loading}
+        setOpenLoading={setLoading}
+        message={"Requesting Read Access to Data"}
+      />
+      <SuccessDialog
+        openSuccess={success}
+        setOpenSuccess={setSuccess}
+        message={"Access Granted"}
+      />
+    </>
+  );
+};
 
 const DropDown = ({ cell }: any) => {
   const [open, setOpen] = useState(false);

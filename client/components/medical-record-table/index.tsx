@@ -144,12 +144,6 @@ export default function MedicalRecordTable<TData, TValue>({
             </Select>
           )}
         />
-        <button
-         
-          className="py-2 px-2 bg-[#ff6f91] text-white rounded-lg font-semibold mx-1 w-max"
-        >
-          Monetize Data
-        </button>
         {/* <Controller
           name="periods"
           control={control}

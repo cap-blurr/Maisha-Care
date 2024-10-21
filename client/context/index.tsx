@@ -8,6 +8,7 @@ import React, { useState, type ReactNode } from "react";
 import * as dotenv from "dotenv";
 import { State, WagmiProvider } from "wagmi";
 import { getConfig } from "@/config/wagmi";
+
 dotenv.config();
 
 const { NEXT_PUBLIC_ONCHAINKIT_API_KEY } = process.env;

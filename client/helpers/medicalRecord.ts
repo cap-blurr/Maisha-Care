@@ -73,7 +73,18 @@ export const medicalRecordSource: MedicalRecordType[] = [
       specialty: "Allergist"
     },
     notes: "Patient advised to avoid known allergens and use nasal sprays.",
-    labResults: []
+    labResults: [
+      {
+        testName: "Complete Blood Count (CBC)",
+        result: "Normal",
+        normalRange: "4,500 to 11,000 white blood cells per microliter"
+      },
+      {
+        testName: "Throat Culture",
+        result: "Positive for Streptococcus",
+        normalRange: "Negative"
+      }
+    ]
   },
   {
     patientId: "P005",
@@ -105,7 +116,18 @@ export const medicalRecordSource: MedicalRecordType[] = [
     },
     notes: "Patient advised to track triggers and avoid stress.",
     followUpDate: new Date("2024-08-17"),
-    labResults: []
+    labResults: [
+      {
+        testName: "Complete Blood Count (CBC)",
+        result: "Normal",
+        normalRange: "4,500 to 11,000 white blood cells per microliter"
+      },
+      {
+        testName: "Throat Culture",
+        result: "Positive for Streptococcus",
+        normalRange: "Negative"
+      }
+    ]
   },
   {
     patientId: "P007",
@@ -135,7 +157,18 @@ export const medicalRecordSource: MedicalRecordType[] = [
       specialty: "Pulmonologist"
     },
     notes: "Patient to avoid irritants and rest. Symptoms should clear within two weeks.",
-    labResults: []
+    labResults: [
+      {
+        testName: "Complete Blood Count (CBC)",
+        result: "Normal",
+        normalRange: "4,500 to 11,000 white blood cells per microliter"
+      },
+      {
+        testName: "Throat Culture",
+        result: "Positive for Streptococcus",
+        normalRange: "Negative"
+      }
+    ]
   },
   {
     patientId: "P009",
@@ -148,7 +181,18 @@ export const medicalRecordSource: MedicalRecordType[] = [
     },
     notes: "Post-op recovery monitored, no complications.",
     followUpDate: new Date("2024-07-16"),
-    labResults: []
+    labResults: [
+      {
+        testName: "Complete Blood Count (CBC)",
+        result: "Normal",
+        normalRange: "4,500 to 11,000 white blood cells per microliter"
+      },
+      {
+        testName: "Throat Culture",
+        result: "Positive for Streptococcus",
+        normalRange: "Negative"
+      }
+    ]
   },
   {
     patientId: "P010",
@@ -160,6 +204,17 @@ export const medicalRecordSource: MedicalRecordType[] = [
       specialty: "Gastroenterologist"
     },
     notes: "Patient advised to avoid spicy foods and elevate head during sleep.",
-    labResults: []
+    labResults: [
+      {
+        testName: "Complete Blood Count (CBC)",
+        result: "Normal",
+        normalRange: "4,500 to 11,000 white blood cells per microliter"
+      },
+      {
+        testName: "Throat Culture",
+        result: "Positive for Streptococcus",
+        normalRange: "Negative"
+      }
+    ]
   }
 ];

@@ -5,10 +5,10 @@ const SelectInput = ({ label, ...props }:any) => {
   const [field, meta] = useField(props);
   return (
     <>
-      <div>
+      <div className="flex flex-col">
         <label htmlFor={props.id || props.name}>{label}</label>
         <select
-          className="border border-[#0795B0] rounded-lg px-4 py-6 bg-transparent text-white text-sm outline-none"
+          className="border border-black rounded-lg px-4 py-2 bg-transparent text-black text-sm outline-none"
           {...field}
           {...props}
         />

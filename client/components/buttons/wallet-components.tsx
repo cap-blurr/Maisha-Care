@@ -13,7 +13,7 @@ export function WalletComponents() {
   return (
     <div className="flex justify-end">
       <Wallet>
-        <ConnectWallet>
+        <ConnectWallet className="text-black">
           <Avatar address={address} className="h-6 w-6" />
           <Name address={address} />
         </ConnectWallet>

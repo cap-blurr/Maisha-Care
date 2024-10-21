@@ -9,6 +9,14 @@ import { cookieToInitialState } from "wagmi";
 
 import AppKitContextProvider from "@/context/appkit";
 import RainbowKitContainer from "@/context/rainbowkit";
+import { useState } from "react";
+import "@coinbase/onchainkit/styles.css";
+import "@rainbow-me/rainbowkit/styles.css";
+import dynamic from "next/dynamic";
+
+const OnchainProviders = dynamic(() => import("../context/onchain-provider"), {
+  ssr: false,
+});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,25 +39,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <AppKitContextProvider cookies={cookies}> */}
-        <RainbowKitContainer>
-        {/* <ContextProvider initialState={initialState}> */}
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        {/* </ContextProvider> */}
-        </RainbowKitContainer>
+        {/* <RainbowKitContainer> */}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <OnchainProviders>{children}</OnchainProviders>
+        </ThemeProvider>
+        {/* </RainbowKitContainer> */}
         {/* </AppKitContextProvider> */}
       </body>
     </html>

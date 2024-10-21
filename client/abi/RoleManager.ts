@@ -228,13 +228,19 @@ export const RoleManager = [
   },
   {
     type: "event",
-    name: "SuccesfullyRegistered",
+    name: "SuccessfullyRegistered",
     inputs: [
       {
         name: "account",
         type: "address",
         indexed: true,
         internalType: "address",
+      },
+      {
+        name: "role",
+        type: "bytes32",
+        indexed: true,
+        internalType: "bytes32",
       },
     ],
     anonymous: false,
@@ -248,4 +254,14 @@ export const RoleManager = [
       { name: "neededRole", type: "bytes32", internalType: "bytes32" },
     ],
   },
-];
+  {
+    type: "error",
+    name: "AlreadyRegistered",
+    inputs: [{ name: "role", type: "bytes32", internalType: "bytes32" }],
+  },
+  {
+    type: "error",
+    name: "NotVerified",
+    inputs: [{ name: "role", type: "bytes32", internalType: "bytes32" }],
+  },
+] as const;

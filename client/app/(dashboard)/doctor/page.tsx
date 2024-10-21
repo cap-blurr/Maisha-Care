@@ -3,21 +3,21 @@
 import { verifyABI } from "@/abi/verify-abi";
 import DashboardAdmin from "@/components/dashboard/DashboardAdmin";
 import PatientTableContainer from "@/components/patient-table/patient-table-container";
-import { config } from "@/config";
+// import { config } from "@/config";
 import React from "react";
 import { useWriteContract, useReadContract, useWaitForTransactionReceipt } from "wagmi";
 
 const Doctor = () => {
-  const {
-    status,
-    data: hash,
-    writeContract,
-    isPending,
-    error,
-    writeContractAsync,
-  } = useWriteContract({
-    config,
-  });
+  // const {
+  //   status,
+  //   data: hash,
+  //   writeContract,
+  //   isPending,
+  //   error,
+  //   writeContractAsync,
+  // } = useWriteContract({
+  //   config,
+  // });
 
   // const { isLoading: isConfirming, isSuccess: isConfirmed } =
   //   useWaitForTransactionReceipt({
@@ -43,7 +43,7 @@ const Doctor = () => {
   return (
     <div>
       <DashboardAdmin />
-      {/* <PatientTableContainer /> */}
+      <PatientTableContainer />
       <button>WriteContract</button>
     </div>
   );

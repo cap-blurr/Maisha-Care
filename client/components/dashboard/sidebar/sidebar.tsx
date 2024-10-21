@@ -32,10 +32,12 @@ import ConnectButton from "@/components/buttons/connect-button";
 import { Address, Avatar, Name } from '@coinbase/onchainkit/identity';
 import { color } from '@coinbase/onchainkit/theme';
 import { WalletComponents } from "@/components/buttons/wallet-components";
+import { ShoppingBasketIcon } from "lucide-react";
 
 const navigation = [
   { name: "Patient", href: "/patient", icon: UsersIcon, current: false },
   { name: "Doctor", href: "/doctor", icon: FolderIcon, current: false },
+  { name: "Marketplace", href: "/market", icon: ShoppingBasketIcon, current: false },
   { name: "Settings", href: "/settings", icon: DocumentDuplicateIcon, current: false },
 ];
 const teams = [

@@ -5,11 +5,7 @@ import "forge-std/Script.sol";
 import {VerifiedAddressRegistry} from "../src/VerifiedAddressRegistry.sol";
 import {RoleManager} from "../src/RoleManager.sol";
 import {UpdateApproval} from "../src/UpdateApproval.sol";
-import {BaseMedicalData} from "../src/BaseContracts/BaseMedicalData.sol";
-import {PersonalInfo} from "../src/PersonalInfo.sol";
-import {MedicalHistory} from "../src/MedicalHistory.sol";
-import {CurrentHealth} from "../src/CurrentHealth.sol";
-import {TreatmentRecords} from "../src/TreatmentRecords.sol";
+import {MedicalRecords} from "../src/MedicalRecords.sol";
 import {TemporaryAccess} from "../src/TemporaryAccess.sol";
 import {HealthRecordManager} from "../src/HealthRecordManager.sol";
 import {MaishaToken} from "../src/MaishaToken.sol";
@@ -18,10 +14,7 @@ contract DeployScript is Script {
     VerifiedAddressRegistry public verifiedRegistry;
     RoleManager public roleManager;
     UpdateApproval public updateApproval;
-    PersonalInfo public personalInfo;
-    MedicalHistory public medicalHistory;
-    CurrentHealth public currentHealth;
-    TreatmentRecords public treatmentRecords;
+    MedicalRecords public medicalRecords;
     TemporaryAccess public temporaryAccess;
     HealthRecordManager public healthRecordManager;
     MaishaToken public maishaToken;
@@ -59,37 +52,8 @@ contract DeployScript is Script {
         console.log("Deploying TemporaryAccess...");
         temporaryAccess = new TemporaryAccess(address(roleManager));
 
-        console.log(
-            "Deploying PersonalInfo (inherits from BaseMedicalData)..."
-        );
-        personalInfo = new PersonalInfo(
-            address(roleManager),
-            address(updateApproval),
-            address(temporaryAccess)
-        );
-
-        console.log(
-            "Deploying MedicalHistory (inherits from BaseMedicalData)..."
-        );
-        medicalHistory = new MedicalHistory(
-            address(roleManager),
-            address(updateApproval),
-            address(temporaryAccess)
-        );
-
-        console.log(
-            "Deploying CurrentHealth (inherits from BaseMedicalData)..."
-        );
-        currentHealth = new CurrentHealth(
-            address(roleManager),
-            address(updateApproval),
-            address(temporaryAccess)
-        );
-
-        console.log(
-            "Deploying TreatmentRecords (inherits from BaseMedicalData)..."
-        );
-        treatmentRecords = new TreatmentRecords(
+        console.log("Deploying MedicalRecords...");
+        medicalRecords = new MedicalRecords(
             address(roleManager),
             address(updateApproval),
             address(temporaryAccess)
@@ -101,10 +65,7 @@ contract DeployScript is Script {
         console.log("Deploying HealthRecordManager...");
         healthRecordManager = new HealthRecordManager(
             address(maishaToken),
-            address(personalInfo),
-            address(medicalHistory),
-            address(currentHealth),
-            address(treatmentRecords),
+            address(medicalRecords),
             address(roleManager),
             address(temporaryAccess),
             address(updateApproval)
@@ -117,11 +78,8 @@ contract DeployScript is Script {
             "Setting up contract relationships and transferring ownership..."
         );
 
-        // Transfer ownership of data contracts to HealthRecordManager
-        personalInfo.transferOwnership(address(healthRecordManager));
-        medicalHistory.transferOwnership(address(healthRecordManager));
-        currentHealth.transferOwnership(address(healthRecordManager));
-        treatmentRecords.transferOwnership(address(healthRecordManager));
+        // Transfer ownership of MedicalRecords to HealthRecordManager
+        medicalRecords.transferOwnership(address(healthRecordManager));
 
         // Transfer ownership of MaishaToken to HealthRecordManager
         maishaToken.transferOwnership(address(healthRecordManager));
@@ -137,10 +95,7 @@ contract DeployScript is Script {
         console.log("RoleManager deployed to:", address(roleManager));
         console.log("UpdateApproval deployed to:", address(updateApproval));
         console.log("MaishaToken deployed to:", address(maishaToken));
-        console.log("PersonalInfo deployed to:", address(personalInfo));
-        console.log("MedicalHistory deployed to:", address(medicalHistory));
-        console.log("CurrentHealth deployed to:", address(currentHealth));
-        console.log("TreatmentRecords deployed to:", address(treatmentRecords));
+        console.log("MedicalRecords deployed to:", address(medicalRecords));
         console.log("TemporaryAccess deployed to:", address(temporaryAccess));
         console.log(
             "HealthRecordManager deployed to:",

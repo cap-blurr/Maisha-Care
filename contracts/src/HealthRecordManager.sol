@@ -4,11 +4,8 @@ pragma solidity ^0.8.19;
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {RoleManager} from "./RoleManager.sol";
-import {CurrentHealth} from "./CurrentHealth.sol";
+import {MedicalRecords} from "./MedicalRecords.sol";
 import {TemporaryAccess} from "./TemporaryAccess.sol";
-import {MedicalHistory} from "./MedicalHistory.sol";
-import {PersonalInfo} from "./PersonalInfo.sol";
-import {TreatmentRecords} from "./TreatmentRecords.sol";
 import {UpdateApproval} from "./UpdateApproval.sol";
 import {MaishaToken} from "./MaishaToken.sol";
 
@@ -26,10 +23,7 @@ contract HealthRecordManager is AccessControl, Ownable {
 
     // Immutable variables
     MaishaToken public immutable maishaToken;
-    PersonalInfo public immutable personalInfo;
-    MedicalHistory public immutable medicalHistory;
-    CurrentHealth public immutable currentHealth;
-    TreatmentRecords public immutable treatmentRecords;
+    MedicalRecords public immutable medicalRecords;
     RoleManager public immutable roleManager;
     TemporaryAccess public immutable temporaryAccess;
     UpdateApproval public immutable updateApproval;
@@ -42,35 +36,29 @@ contract HealthRecordManager is AccessControl, Ownable {
     event DataUpdateInitiated(
         address indexed patient,
         address indexed initiator,
-        string dataType,
         bytes32 updateId
+    );
+    event DataUpdateCompleted(
+        address indexed patient,
+        bytes32 indexed updateId
     );
 
     /// @notice Contract constructor
     /// @param _maishaToken Address of the MaishaToken contract
-    /// @param _personalInfo Address of the PersonalInfo contract
-    /// @param _medicalHistory Address of the MedicalHistory contract
-    /// @param _currentHealth Address of the CurrentHealth contract
-    /// @param _treatmentRecords Address of the TreatmentRecords contract
+    /// @param _medicalRecords Address of the MedicalRecords contract
     /// @param _roleManager Address of the RoleManager contract
     /// @param _temporaryAccess Address of the TemporaryAccess contract
     /// @param _updateApproval Address of the UpdateApproval contract
     constructor(
         address _maishaToken,
-        address _personalInfo,
-        address _medicalHistory,
-        address _currentHealth,
-        address _treatmentRecords,
+        address _medicalRecords,
         address _roleManager,
         address _temporaryAccess,
         address _updateApproval
     ) Ownable(msg.sender) {
         if (
             _maishaToken == address(0) ||
-            _personalInfo == address(0) ||
-            _medicalHistory == address(0) ||
-            _currentHealth == address(0) ||
-            _treatmentRecords == address(0) ||
+            _medicalRecords == address(0) ||
             _roleManager == address(0) ||
             _temporaryAccess == address(0) ||
             _updateApproval == address(0)
@@ -79,10 +67,7 @@ contract HealthRecordManager is AccessControl, Ownable {
         }
 
         maishaToken = MaishaToken(_maishaToken);
-        personalInfo = PersonalInfo(_personalInfo);
-        medicalHistory = MedicalHistory(_medicalHistory);
-        currentHealth = CurrentHealth(_currentHealth);
-        treatmentRecords = TreatmentRecords(_treatmentRecords);
+        medicalRecords = MedicalRecords(_medicalRecords);
         roleManager = RoleManager(_roleManager);
         temporaryAccess = TemporaryAccess(_temporaryAccess);
         updateApproval = UpdateApproval(_updateApproval);
@@ -109,168 +94,71 @@ contract HealthRecordManager is AccessControl, Ownable {
         }
     }
 
-    /// @notice Initiate a personal info update
+    /// @notice Initiate a medical record update
     /// @param _patient Address of the patient
-    /// @param _dataHash Hash of the new personal info
-    function initiatePersonalInfoUpdate(
+    /// @param _dataHash Hash of the new data
+    function initiateMedicalRecordUpdate(
         address _patient,
         string memory _dataHash
     ) public {
-        bytes32 updateId = personalInfo.initiateInfoUpdate(_patient, _dataHash);
-        emit DataUpdateInitiated(
-            _patient,
-            msg.sender,
-            "PersonalInfo",
-            updateId
-        );
-    }
-
-    /// @notice Initiate a medical history update
-    /// @param _patient Address of the patient
-    /// @param _dataHash Hash of the new medical history
-    function initiateMedicalHistoryUpdate(
-        address _patient,
-        string memory _dataHash
-    ) public {
-        bytes32 updateId = medicalHistory.initiateHistoryUpdate(
-            _patient,
-            _dataHash
-        );
-        emit DataUpdateInitiated(
-            _patient,
-            msg.sender,
-            "MedicalHistory",
-            updateId
-        );
-    }
-
-    /// @notice Initiate a current health update
-    /// @param _patient Address of the patient
-    /// @param _dataHash Hash of the new current health data
-    function initiateCurrentHealthUpdate(
-        address _patient,
-        string memory _dataHash
-    ) public {
-        bytes32 updateId = currentHealth.initiateHealthUpdate(
-            _patient,
-            _dataHash
-        );
-        emit DataUpdateInitiated(
-            _patient,
-            msg.sender,
-            "CurrentHealth",
-            updateId
-        );
-    }
-
-    /// @notice Initiate adding a treatment record
-    /// @param _patient Address of the patient
-    /// @param _dataHash Hash of the new treatment record
-    function initiateTreatmentRecordAdd(
-        address _patient,
-        string memory _dataHash
-    ) public {
-        bytes32 updateId = treatmentRecords.initiateAddRecord(
-            _patient,
-            _dataHash
-        );
-        emit DataUpdateInitiated(
-            _patient,
-            msg.sender,
-            "TreatmentRecord",
-            updateId
-        );
+        bytes32 updateId = medicalRecords.initiateUpdate(_patient, _dataHash);
+        emit DataUpdateInitiated(_patient, msg.sender, updateId);
     }
 
     /// @notice Approve an update
     /// @param _updateId Unique identifier of the update to be approved
     function approveUpdate(bytes32 _updateId) public {
         updateApproval.approveUpdate(_updateId);
+
+        // Get the update details
+        (, address patient, bytes32 dataHash, , , ) = updateApproval
+            .getPendingUpdate(_updateId);
+
+        // Convert bytes32 to string
+        string memory dataHashString = bytes32ToString(dataHash);
+
+        // Add the new medical record
+        medicalRecords.addMedicalRecord(patient, dataHashString);
+
+        emit DataUpdateCompleted(patient, _updateId);
     }
 
-    /// @notice Get personal info for a patient
+    /// @notice Get medical records for a patient (patient access)
     /// @param _patient Address of the patient
-    /// @return string The personal info data hash
-    /// @return uint256 The last update timestamp
-    function getPersonalInfo(
-        address _patient
-    ) public view returns (string memory, uint256) {
-        return personalInfo.getInfo(_patient);
-    }
-
-    /// @notice Get medical history for a patient (patient access)
-    /// @param _patient Address of the patient
-    /// @return string The medical history data hash
-    /// @return uint256 The last update timestamp
-    function getMedicalHistoryPatient(
-        address _patient
-    ) public view returns (string memory, uint256) {
-        if (msg.sender != _patient) revert NotAuthorized();
-        return medicalHistory.getHistoryPatient(_patient);
-    }
-
-    /// @notice Get medical history for a patient (doctor access)
-    /// @param _patient Address of the patient
-    /// @return string The medical history data hash
-    /// @return uint256 The last update timestamp
-    function getMedicalHistoryDoctor(
-        address _patient
-    ) public view returns (string memory, uint256) {
-        if (!roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender))
-            revert NotAuthorized();
-        if (!temporaryAccess.hasAccess(_patient, msg.sender))
-            revert NotAuthorized();
-        return medicalHistory.getHistoryDoctor(_patient);
-    }
-
-    /// @notice Get current health for a patient (patient access)
-    /// @param _patient Address of the patient
-    /// @return string The current health data hash
-    /// @return uint256 The last update timestamp
-    function getCurrentHealthPatient(
-        address _patient
-    ) public view returns (string memory, uint256) {
-        if (msg.sender != _patient) revert NotAuthorized();
-        return currentHealth.getHealthPatient(_patient);
-    }
-
-    /// @notice Get current health for a patient (doctor access)
-    /// @param _patient Address of the patient
-    /// @return string The current health data hash
-    /// @return uint256 The last update timestamp
-    function getCurrentHealthDoctor(
-        address _patient
-    ) public view returns (string memory, uint256) {
-        if (!roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender))
-            revert NotAuthorized();
-        if (!temporaryAccess.hasAccess(_patient, msg.sender))
-            revert NotAuthorized();
-        return currentHealth.getHealthDoctor(_patient);
-    }
-
-    /// @notice Get treatment records for a patient (patient access)
-    /// @param _patient Address of the patient
-    /// @return string[] Array of treatment record hashes
+    /// @return string[] Array of data hashes
     /// @return uint256[] Array of update timestamps
-    function getTreatmentRecordsPatient(
+    function getMedicalRecordsPatient(
         address _patient
-    ) public view returns (string[] memory, uint256[] memory) {
-        if (msg.sender != _patient) revert NotAuthorized();
-        return treatmentRecords.getRecordsPatient(_patient);
+    ) public returns (string[] memory, uint256[] memory) {
+        return medicalRecords.getRecordsPatient(_patient);
     }
 
-    /// @notice Get treatment records for a patient (doctor access)
+    /// @notice Get medical records for a patient (doctor access)
     /// @param _patient Address of the patient
-    /// @return string[] Array of treatment record hashes
+    /// @return string[] Array of data hashes
     /// @return uint256[] Array of update timestamps
-    function getTreatmentRecordsDoctor(
+    function getMedicalRecordsDoctor(
         address _patient
-    ) public view returns (string[] memory, uint256[] memory) {
-        if (!roleManager.hasRole(roleManager.DOCTOR_ROLE(), msg.sender))
-            revert NotAuthorized();
-        if (!temporaryAccess.hasAccess(_patient, msg.sender))
-            revert NotAuthorized();
-        return treatmentRecords.getRecordsDoctor(_patient);
+    ) public returns (string[] memory, uint256[] memory) {
+        return medicalRecords.getRecordsDoctor(_patient);
+    }
+
+    /// @notice Get anonymized medical records for a patient (researcher access)
+    /// @param _patient Address of the patient
+    /// @return uint256[] Array of update timestamps
+    function getAnonymizedMedicalRecords(
+        address _patient
+    ) public returns (uint256[] memory) {
+        return medicalRecords.getAnonymizedRecords(_patient);
+    }
+
+    /// @notice Get anonymized medical records for a patient (builder access)
+    /// @param _patient Address of the patient
+    /// @return uint256[] Array of update timestamps
+    function getBuilderMedicalRecords(
+        address _patient
+    ) public returns (uint256[] memory) {
+        return medicalRecords.getBuilderRecords(_patient);
     }
 
     /// @notice Opt in for data monetization
@@ -282,5 +170,22 @@ contract HealthRecordManager is AccessControl, Ownable {
         dataMonetizationOptIn[msg.sender] = true;
         maishaToken.mint(msg.sender, OPT_IN_REWARD);
         emit DataMonetizationOptIn(msg.sender);
+    }
+
+    /// @notice Convert bytes32 to string
+    /// @param _bytes32 The bytes32 to convert
+    /// @return string The resulting string
+    function bytes32ToString(
+        bytes32 _bytes32
+    ) internal pure returns (string memory) {
+        uint8 i = 0;
+        while (i < 32 && _bytes32[i] != 0) {
+            i++;
+        }
+        bytes memory bytesArray = new bytes(i);
+        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
+            bytesArray[i] = _bytes32[i];
+        }
+        return string(bytesArray);
     }
 }

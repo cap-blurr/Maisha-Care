@@ -16,100 +16,13 @@ import {
   type ContractFunctionParameters,
   toBytes,
 } from "viem";
-
+import CryptoJS from 'crypto-js';
 import { TEMPORARY_ACCESS_ADDRESS, HEALTH_RECORD_MANAGER_ADDRESS } from "../../constants";
 import { TemporaryAccess } from '@/abi/TemporaryAccess';
-import CryptoJS from 'crypto-js';
 import { HealthRecordManager } from '@/abi/HealthRecordManager';
+import axios from 'axios';
+import { MedicalFormData } from '@/types/api-types';
 
-export type MedicalFormData = {
-  currentHealth: {
-    vitalSigns: {
-      bloodPressureSystolic: string;
-      bloodPressureDiastolic: string;
-      heartRate: string;
-      respiratoryRate: string;
-      bodyTemperature: string;
-      oxygenSaturation: string;
-    };
-    bodyMeasurements: {
-      height: string;
-      weight: string;
-    };
-    generalHealth: {
-      generalAppearance: string;
-      levelOfConsciousness: string;
-      painScore: string;
-    };
-    currentSymptoms: {
-      primaryComplaint: string;
-      durationOfSymptoms: string;
-      severityOfSymptoms: string;
-    };
-    currentMedications: Array<{ name: string; dosage: string; frequency: string }>;
-    allergies: Array<{ allergy: string; severity: string }>;
-    lifestyleFactors: {
-      smokingStatus: string;
-      alcoholConsumption: string;
-      exerciseHabits: string;
-      dietOverview: string;
-    };
-  };
-  medicalHistory: {
-    pastMedicalConditions: Array<{
-      condition: string;
-      yearDiagnosed: string;
-      currentStatus: string;
-    }>;
-    surgicalHistory: Array<{ surgery: string; date: string; complications: string }>;
-    familyMedicalHistory: Array<{ condition: string; relationship: string }>;
-    immunizationRecords: Array<{ vaccination: string; dateAdministered: string }>;
-    majorInjuries: Array<{
-      description: string;
-      dateOccurred: string;
-      treatmentReceived: string;
-    }>;
-    chronicMedications: Array<{ medication: string; durationOfUse: string }>;
-    pastHospitalizations: Array<{ reason: string; dateAndDuration: string }>;
-    mentalHealthHistory: {
-      diagnosedConditions: string;
-      treatmentsReceived: string;
-    };
-    reproductiveHistory: {
-      pregnancies: string;
-      childbirthDetails: string;
-    };
-  };
-  treatmentRecords: {
-    visitInformation: {
-      dateOfVisit: string;
-      reasonForVisit: string;
-      treatingPhysician: string;
-    };
-    diagnosis: {
-      primaryDiagnosis: string;
-      secondaryDiagnoses: string;
-      icdCodes: string;
-    };
-    treatmentPlan: {
-      prescribedMedications: Array<{
-        medication: string;
-        dosage: string;
-        instructions: string;
-      }>;
-      nonPharmacologicalInterventions: string;
-    };
-    proceduresPerformed: Array<{ name: string; date: string; outcome: string }>;
-    laboratoryTests: Array<{ test: string; results: string; dateOfResults: string }>;
-    imagingStudies: Array<{ type: string; date: string; resultsSummary: string }>;
-    referrals: Array<{ specialist: string; reasonForReferral: string }>;
-    followUpInstructions: {
-      nextAppointmentDate: string;
-      specificInstructions: string;
-    };
-    progressNotes: string;
-  };
-};
 
 export default function MedicalRecordWrapper({
   doctorAddress,
@@ -121,16 +34,27 @@ export default function MedicalRecordWrapper({
   formData: MedicalFormData;
 }) {
   const [accessGranted, setAccessGranted] = useState(false);
-  
-  
+  const [ipfsHash, setIpfsHash] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
   const encryptData = (data: MedicalFormData) => {
     const secretKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY || 'defaultSecretKey';
     return CryptoJS.AES.encrypt(JSON.stringify(data), secretKey).toString();
   };
 
-  const encryptedData = encryptData(formData);
-  const dataHash = keccak256(toBytes(encryptedData));
-  console.log("datahash:", dataHash, "patientAddress:", patientAddress);
+  const storeDataOnIPFS = async (encryptedData: string) => {
+    try {
+      const response = await axios.post('/api/store-data', {
+        patientId: patientAddress,
+        dataType: 'currentHealth',
+        encryptedDataPackage: { data: encryptedData }
+      });
+      return response.data.ipfsHash;
+    } catch (error) {
+      console.error('Error storing data on IPFS:', error);
+      throw error;
+    }
+  };
 
   const requestAccessContract = {
     address: TEMPORARY_ACCESS_ADDRESS,
@@ -143,22 +67,33 @@ export default function MedicalRecordWrapper({
     address: HEALTH_RECORD_MANAGER_ADDRESS,
     abi: HealthRecordManager,
     functionName: "initiateCurrentHealthUpdate",
-    args: [patientAddress, dataHash],
+    args: [patientAddress, ipfsHash],
   } as unknown as ContractFunctionParameters;
 
   const handleError = (err: TransactionError) => {
     console.error("Transaction error:", err);
+    setError(err.message || "An error occurred during the transaction");
   };
 
-  const handleSuccess = (response: TransactionResponse) => {
+  const handleSuccess = async (response: TransactionResponse) => {
     console.log("Transaction successful", response);
     if (!accessGranted) {
       setAccessGranted(true);
+      // After access is granted, encrypt and store the data
+      try {
+        const encryptedData = encryptData(formData);
+        const hash = await storeDataOnIPFS(encryptedData);
+        setIpfsHash(hash);
+      } catch (error) {
+        console.error("Error storing data:", error);
+        setError("Failed to store data. Please try again.");
+      }
     }
   };
 
   return (
     <div className="flex w-[450px] flex-col space-y-4">
+      {error && <div className="text-red-500">{error}</div>}
       {!accessGranted ? (
         <Transaction
           contracts={[requestAccessContract]}
@@ -172,7 +107,7 @@ export default function MedicalRecordWrapper({
             <TransactionStatusAction />
           </TransactionStatus>
         </Transaction>
-      ) : (
+      ) : ipfsHash ? (
         <Transaction
           contracts={[addMedicalRecordContract]}
           chainId={84532}
@@ -185,6 +120,8 @@ export default function MedicalRecordWrapper({
             <TransactionStatusAction />
           </TransactionStatus>
         </Transaction>
+      ) : (
+        <div>Storing data... Please wait.</div>
       )}
     </div>
   );

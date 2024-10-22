@@ -1,4 +1,4 @@
-export const TemporaryAccess = [
+export const TemporaryAccess =  [
     {
       "type": "constructor",
       "inputs": [

@@ -8,22 +8,7 @@ export const HealthRecordManager = [
           "internalType": "address"
         },
         {
-          "name": "_personalInfo",
-          "type": "address",
-          "internalType": "address"
-        },
-        {
-          "name": "_medicalHistory",
-          "type": "address",
-          "internalType": "address"
-        },
-        {
-          "name": "_currentHealth",
-          "type": "address",
-          "internalType": "address"
-        },
-        {
-          "name": "_treatmentRecords",
+          "name": "_medicalRecords",
           "type": "address",
           "internalType": "address"
         },
@@ -72,19 +57,6 @@ export const HealthRecordManager = [
     },
     {
       "type": "function",
-      "name": "currentHealth",
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "",
-          "type": "address",
-          "internalType": "contract CurrentHealth"
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
       "name": "dataMonetizationOptIn",
       "inputs": [{ "name": "", "type": "address", "internalType": "address" }],
       "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
@@ -92,63 +64,49 @@ export const HealthRecordManager = [
     },
     {
       "type": "function",
-      "name": "getCurrentHealthDoctor",
+      "name": "getAnonymizedMedicalRecords",
       "inputs": [
         { "name": "_patient", "type": "address", "internalType": "address" }
       ],
       "outputs": [
-        { "name": "", "type": "string", "internalType": "string" },
-        { "name": "", "type": "uint256", "internalType": "uint256" }
+        { "name": "", "type": "uint256[]", "internalType": "uint256[]" }
       ],
-      "stateMutability": "view"
+      "stateMutability": "nonpayable"
     },
     {
       "type": "function",
-      "name": "getCurrentHealthPatient",
+      "name": "getBuilderMedicalRecords",
       "inputs": [
         { "name": "_patient", "type": "address", "internalType": "address" }
       ],
       "outputs": [
-        { "name": "", "type": "string", "internalType": "string" },
-        { "name": "", "type": "uint256", "internalType": "uint256" }
+        { "name": "", "type": "uint256[]", "internalType": "uint256[]" }
       ],
-      "stateMutability": "view"
+      "stateMutability": "nonpayable"
     },
     {
       "type": "function",
-      "name": "getMedicalHistoryDoctor",
+      "name": "getMedicalRecordsDoctor",
       "inputs": [
         { "name": "_patient", "type": "address", "internalType": "address" }
       ],
       "outputs": [
-        { "name": "", "type": "string", "internalType": "string" },
-        { "name": "", "type": "uint256", "internalType": "uint256" }
+        { "name": "", "type": "string[]", "internalType": "string[]" },
+        { "name": "", "type": "uint256[]", "internalType": "uint256[]" }
       ],
-      "stateMutability": "view"
+      "stateMutability": "nonpayable"
     },
     {
       "type": "function",
-      "name": "getMedicalHistoryPatient",
+      "name": "getMedicalRecordsPatient",
       "inputs": [
         { "name": "_patient", "type": "address", "internalType": "address" }
       ],
       "outputs": [
-        { "name": "", "type": "string", "internalType": "string" },
-        { "name": "", "type": "uint256", "internalType": "uint256" }
+        { "name": "", "type": "string[]", "internalType": "string[]" },
+        { "name": "", "type": "uint256[]", "internalType": "uint256[]" }
       ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getPersonalInfo",
-      "inputs": [
-        { "name": "_patient", "type": "address", "internalType": "address" }
-      ],
-      "outputs": [
-        { "name": "", "type": "string", "internalType": "string" },
-        { "name": "", "type": "uint256", "internalType": "uint256" }
-      ],
-      "stateMutability": "view"
+      "stateMutability": "nonpayable"
     },
     {
       "type": "function",
@@ -157,30 +115,6 @@ export const HealthRecordManager = [
         { "name": "role", "type": "bytes32", "internalType": "bytes32" }
       ],
       "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getTreatmentRecordsDoctor",
-      "inputs": [
-        { "name": "_patient", "type": "address", "internalType": "address" }
-      ],
-      "outputs": [
-        { "name": "", "type": "string[]", "internalType": "string[]" },
-        { "name": "", "type": "uint256[]", "internalType": "uint256[]" }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "getTreatmentRecordsPatient",
-      "inputs": [
-        { "name": "_patient", "type": "address", "internalType": "address" }
-      ],
-      "outputs": [
-        { "name": "", "type": "string[]", "internalType": "string[]" },
-        { "name": "", "type": "uint256[]", "internalType": "uint256[]" }
-      ],
       "stateMutability": "view"
     },
     {
@@ -205,37 +139,7 @@ export const HealthRecordManager = [
     },
     {
       "type": "function",
-      "name": "initiateCurrentHealthUpdate",
-      "inputs": [
-        { "name": "_patient", "type": "address", "internalType": "address" },
-        { "name": "_dataHash", "type": "string", "internalType": "string" }
-      ],
-      "outputs": [],
-      "stateMutability": "nonpayable"
-    },
-    {
-      "type": "function",
-      "name": "initiateMedicalHistoryUpdate",
-      "inputs": [
-        { "name": "_patient", "type": "address", "internalType": "address" },
-        { "name": "_dataHash", "type": "string", "internalType": "string" }
-      ],
-      "outputs": [],
-      "stateMutability": "nonpayable"
-    },
-    {
-      "type": "function",
-      "name": "initiatePersonalInfoUpdate",
-      "inputs": [
-        { "name": "_patient", "type": "address", "internalType": "address" },
-        { "name": "_dataHash", "type": "string", "internalType": "string" }
-      ],
-      "outputs": [],
-      "stateMutability": "nonpayable"
-    },
-    {
-      "type": "function",
-      "name": "initiateTreatmentRecordAdd",
+      "name": "initiateMedicalRecordUpdate",
       "inputs": [
         { "name": "_patient", "type": "address", "internalType": "address" },
         { "name": "_dataHash", "type": "string", "internalType": "string" }
@@ -258,13 +162,13 @@ export const HealthRecordManager = [
     },
     {
       "type": "function",
-      "name": "medicalHistory",
+      "name": "medicalRecords",
       "inputs": [],
       "outputs": [
         {
           "name": "",
           "type": "address",
-          "internalType": "contract MedicalHistory"
+          "internalType": "contract MedicalRecords"
         }
       ],
       "stateMutability": "view"
@@ -281,19 +185,6 @@ export const HealthRecordManager = [
       "name": "owner",
       "inputs": [],
       "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
-      "name": "personalInfo",
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "",
-          "type": "address",
-          "internalType": "contract PersonalInfo"
-        }
-      ],
       "stateMutability": "view"
     },
     {
@@ -373,19 +264,6 @@ export const HealthRecordManager = [
     },
     {
       "type": "function",
-      "name": "treatmentRecords",
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "",
-          "type": "address",
-          "internalType": "contract TreatmentRecords"
-        }
-      ],
-      "stateMutability": "view"
-    },
-    {
-      "type": "function",
       "name": "updateApproval",
       "inputs": [],
       "outputs": [
@@ -412,6 +290,25 @@ export const HealthRecordManager = [
     },
     {
       "type": "event",
+      "name": "DataUpdateCompleted",
+      "inputs": [
+        {
+          "name": "patient",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "updateId",
+          "type": "bytes32",
+          "indexed": true,
+          "internalType": "bytes32"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
       "name": "DataUpdateInitiated",
       "inputs": [
         {
@@ -425,12 +322,6 @@ export const HealthRecordManager = [
           "type": "address",
           "indexed": true,
           "internalType": "address"
-        },
-        {
-          "name": "dataType",
-          "type": "string",
-          "indexed": false,
-          "internalType": "string"
         },
         {
           "name": "updateId",

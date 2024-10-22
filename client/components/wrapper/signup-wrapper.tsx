@@ -93,7 +93,7 @@ export default function SignUpWrapper({
   };
 
   return (
-    <div className="flex w-[450px]">
+    <div className="flex w-[450px] bg-blue-600">
       <Transaction
         contracts={contracts}
         className="w-[450px]"
@@ -101,7 +101,7 @@ export default function SignUpWrapper({
         onError={handleError}
         onSuccess={handleSuccess}
       >
-        <TransactionButton className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]" />
+        <TransactionButton className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]" text='Create Account' />
         <TransactionStatus>
           <TransactionStatusLabel />
           <TransactionStatusAction />

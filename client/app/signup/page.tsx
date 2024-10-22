@@ -8,7 +8,6 @@ import TextInput from "@/components/inputs/TextInput";
 import DateInput from "@/components/inputs/DateInput";
 import Link from "next/link";
 import { format } from "date-fns";
-import WalletWrapper from "@/components/buttons/wallet-wrapper";
 import { useAccount } from "wagmi";
 import SignUpWrapper from "@/components/wrapper/signup-wrapper";
 
@@ -78,20 +77,7 @@ const Signup = () => {
                 }}
               />
 
-              <div className="flex flex-col my-3 items-center justify-center">
-                <WalletWrapper className="min-w-full" text="Connect Wallet" />
-              </div>
-
               <div className="flex flex-col justify-start mb-5">
-                <p className="text-[#909090] p-1 text-sm font-semibold">
-                  Have an account?{" "}
-                  <Link
-                    href="/login"
-                    className="hover:text-black text-gray-300"
-                  >
-                    Login
-                  </Link>
-                </p>
                 <p className="text-[#909090] p-1 text-sm font-semibold">
                   <Link href="/signup/doctor" className="hover:text-black">
                     Create a Doctor's Account?

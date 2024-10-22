@@ -99,16 +99,14 @@ You should now be able to use the Maisha-Care application normally.
 
 Here are the addresses for the deployed smart contracts:
 
-- VerifiedAddressRegistry: `0x1234...5678`
-- RoleManager: `0x2345...6789`
-- UpdateApproval: `0x3456...7890`
-- MaishaToken: `0x4567...8901`
-- PersonalInfo: `0x5678...9012`
-- MedicalHistory: `0x6789...0123`
-- CurrentHealth: `0x7890...1234`
-- TreatmentRecords: `0x8901...2345`
-- TemporaryAccess: `0x9012...3456`
-- HealthRecordManager: `0x0123...4567`
+  Deployed contract addresses
+  - VerifiedAddressRegistry deployed to: 0x0FeF1C3Fa2c01E512939fbD2b8069Ed97fc9fe91   
+  - RoleManager deployed to: 0xf29F5ba6f29F885008680D1B866bcA6102D5da60
+  - UpdateApproval deployed to: 0x0F1b14764bFE8C67158F5Be10EdC1Eee212382EC
+  - MaishaToken deployed to: 0xe3fEd9dF9a71b75E6a59cDAEFb0d5e47902C4bfb
+  - MedicalRecords deployed to: 0xfb8B4e4b84F472306B64d16Abcc8dA9d946AeFDE
+  - TemporaryAccess deployed to: 0xFceb81c34E9685365fCAf7dE493B7d6F09E42D4e
+  - HealthRecordManager deployed to: 0x7a473659CE83D536C282F308C4deA4E897B12E1d 
 
 ## Project Structure
 

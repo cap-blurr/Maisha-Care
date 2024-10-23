@@ -32,7 +32,7 @@ Before you begin, ensure you have the following installed:
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/maisha-care.git
+git clone https://github.com/cap-blurr/Maisha-Care.git
 cd maisha-care
 ```
 

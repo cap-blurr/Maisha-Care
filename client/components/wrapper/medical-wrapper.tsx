@@ -221,7 +221,37 @@ export default function MedicalRecordWrapper({
     console.log("Transaction successful", response);
     if (!accessGranted) {
       setAccessGranted(true);
+      // After access is granted, encrypt and store the data
+      try {
+        const encryptedData = encryptData(formData);
+        const hash = await storeDataOnIPFS(encryptedData);
+        setIpfsHash(hash);
+      } catch (error) {
+        console.error("Error storing data:", error);
+        setError("Failed to store data. Please try again.");
+      }
     }
+  };
+
+  const requestAccessContract = {
+    address: TEMPORARY_ACCESS_ADDRESS,
+    abi: TemporaryAccess,
+    functionName: "requestAccess",
+    args: [patientAddress],
+  } as unknown as ContractFunctionParameters;
+
+  const createMedicalRecordContract = async () => {
+    const encryptedPackage = await prepareEncryptedData();
+    const dataHash = ethers.keccak256(
+      ethers.solidityPacked(['bytes'], [encryptedPackage.encryptedData])
+    );
+
+    return {
+      address: HEALTH_RECORD_MANAGER_ADDRESS,
+      abi: HealthRecordManager,
+      functionName: "initiateCurrentHealthUpdate",
+      args: [patientAddress, dataHash],
+    } as unknown as ContractFunctionParameters;
   };
 
   const requestAccessContract = {

@@ -16,13 +16,10 @@ import {
   type Address,
   type ContractFunctionParameters,
 } from "viem";
-import CryptoJS from 'crypto-js';
+
 import { TEMPORARY_ACCESS_ADDRESS, HEALTH_RECORD_MANAGER_ADDRESS } from "../../constants";
 import { TemporaryAccess } from '@/abi/TemporaryAccess';
 import { HealthRecordManager } from '@/abi/HealthRecordManager';
-import axios from 'axios';
-import { MedicalFormData } from '@/types/api-types';
-
 import { MedicalFormData } from '@/types/medical';
 
 // Updated encryption utilities with proper typing
@@ -175,83 +172,17 @@ export default function MedicalRecordWrapper({
       setLoading(false);
     }
   };
-  const [ipfsHash, setIpfsHash] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const encryptData = (data: MedicalFormData) => {
-    const secretKey = process.env.NEXT_PUBLIC_ENCRYPTION_KEY || 'defaultSecretKey';
-    return CryptoJS.AES.encrypt(JSON.stringify(data), secretKey).toString();
-  };
-
-  const storeDataOnIPFS = async (encryptedData: string) => {
-    try {
-      const response = await axios.post('/api/store-data', {
-        patientId: patientAddress,
-        dataType: 'currentHealth',
-        encryptedDataPackage: { data: encryptedData }
-      });
-      return response.data.ipfsHash;
-    } catch (error) {
-      console.error('Error storing data on IPFS:', error);
-      throw error;
-    }
-  };
-
-  const requestAccessContract = {
-    address: TEMPORARY_ACCESS_ADDRESS,
-    abi: TemporaryAccess,
-    functionName: "requestAccess",
-    args: [patientAddress],
-  } as unknown as ContractFunctionParameters;
-
-  const addMedicalRecordContract = {
-    address: HEALTH_RECORD_MANAGER_ADDRESS,
-    abi: HealthRecordManager,
-    functionName: "initiateCurrentHealthUpdate",
-    args: [patientAddress, ipfsHash],
-  } as unknown as ContractFunctionParameters;
 
   const handleError = (err: TransactionError) => {
     console.error("Transaction error:", err);
     setError(err.message);
-    setError(err.message || "An error occurred during the transaction");
   };
 
-  const handleSuccess = async (response: TransactionResponse) => {
+  const handleSuccess = (response: TransactionResponse) => {
     console.log("Transaction successful", response);
     if (!accessGranted) {
       setAccessGranted(true);
-      // After access is granted, encrypt and store the data
-      try {
-        const encryptedData = encryptData(formData);
-        const hash = await storeDataOnIPFS(encryptedData);
-        setIpfsHash(hash);
-      } catch (error) {
-        console.error("Error storing data:", error);
-        setError("Failed to store data. Please try again.");
-      }
     }
-  };
-
-  const requestAccessContract = {
-    address: TEMPORARY_ACCESS_ADDRESS,
-    abi: TemporaryAccess,
-    functionName: "requestAccess",
-    args: [patientAddress],
-  } as unknown as ContractFunctionParameters;
-
-  const createMedicalRecordContract = async () => {
-    const encryptedPackage = await prepareEncryptedData();
-    const dataHash = ethers.keccak256(
-      ethers.solidityPacked(['bytes'], [encryptedPackage.encryptedData])
-    );
-
-    return {
-      address: HEALTH_RECORD_MANAGER_ADDRESS,
-      abi: HealthRecordManager,
-      functionName: "initiateCurrentHealthUpdate",
-      args: [patientAddress, dataHash],
-    } as unknown as ContractFunctionParameters;
   };
 
   const requestAccessContract = {

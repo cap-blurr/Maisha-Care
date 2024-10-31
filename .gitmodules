@@ -1,7 +1,4 @@
-<<<<<<< Updated upstream
 
 [submodule "contracts/lib/openzeppelin-contracts"]
 	path = contracts/lib/openzeppelin-contracts
 	url = https://github.com/OpenZeppelin/openzeppelin-contracts
-=======
->>>>>>> Stashed changes

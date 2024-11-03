@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ethers }from 'ethers';
+import { ethers } from 'ethers';
 import crypto from 'crypto';
 import {
   Transaction,
@@ -22,69 +22,99 @@ import { TemporaryAccess } from '@/abi/TemporaryAccess';
 import { HealthRecordManager } from '@/abi/HealthRecordManager';
 import { MedicalFormData } from '@/types/medical';
 
+// Type definitions for encrypted data
+interface EncryptedPackage {
+  encryptedData: Uint8Array;
+  iv: Uint8Array;
+  authTag: Uint8Array;
+  encryptedSymmetricKey: Uint8Array;
+  signature: Uint8Array;
+}
+
 // Updated encryption utilities with proper typing
-const encryptData = async (data: MedicalFormData, symmetricKey: Buffer) => {
-  const iv = crypto.randomBytes(12);
-  const cipher = crypto.createCipheriv('aes-256-gcm', symmetricKey, iv);
+const encryptData = async (data: MedicalFormData, symmetricKey: Uint8Array): Promise<{
+  iv: Uint8Array;
+  encryptedData: Uint8Array;
+  authTag: Uint8Array;
+}> => {
+  // Convert Buffer to Uint8Array for iv
+  const iv = new Uint8Array(crypto.randomBytes(12));
+  
+  // Create cipher with Uint8Array parameters
+  const cipher = crypto.createCipheriv(
+    'aes-256-gcm',
+    Buffer.from(symmetricKey),
+    iv
+  ) as crypto.CipherGCM;
 
   const jsonString = JSON.stringify(data);
+  
+  // Convert string to Uint8Array for encryption
+  const inputData = new TextEncoder().encode(jsonString);
+  
+  // Update and finalize encryption
   const encryptedBuffer = Buffer.concat([
-    cipher.update(Buffer.from(jsonString, 'utf8')),
+    cipher.update(inputData),
     cipher.final()
   ]);
 
-  const authTag = cipher.getAuthTag();
-
+  // Convert Buffer to Uint8Array for consistency
+  const authTag = new Uint8Array(cipher.getAuthTag());
+  
   return {
     iv,
-    encryptedData: encryptedBuffer,
+    encryptedData: new Uint8Array(encryptedBuffer),
     authTag
   };
 };
 
 const decryptData = async (
-  encryptedPackage: {
-    encryptedData: Buffer,
-    iv: Buffer,
-    authTag: Buffer,
-    encryptedSymmetricKey: Buffer,
-    signature: Buffer
-  },
+  encryptedPackage: EncryptedPackage,
   privateKey: string,
   publicKey: string
-) => {
+): Promise<MedicalFormData> => {
   try {
     const pemPrivateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`;
     const pemPublicKey = `-----BEGIN PUBLIC KEY-----\n${publicKey}\n-----END PUBLIC KEY-----`;
 
+    // Decrypt symmetric key
     const decryptedSymmetricKey = crypto.privateDecrypt(
       {
         key: pemPrivateKey,
         padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
       },
-      encryptedPackage.encryptedSymmetricKey
+      Buffer.from(encryptedPackage.encryptedSymmetricKey)
     );
 
+    // Verify signature
     const verifier = crypto.createVerify('sha256');
-    verifier.update(encryptedPackage.encryptedData);
-    const isVerified = verifier.verify(pemPublicKey, encryptedPackage.signature);
+    verifier.update(Buffer.from(encryptedPackage.encryptedData));
+    const isVerified = verifier.verify(
+      pemPublicKey,
+      Buffer.from(encryptedPackage.signature)
+    );
 
     if (!isVerified) {
       throw new Error('Signature verification failed');
     }
 
+    // Create decipher
     const decipher = crypto.createDecipheriv(
       'aes-256-gcm',
       decryptedSymmetricKey,
-      encryptedPackage.iv
-    );
-    decipher.setAuthTag(encryptedPackage.authTag);
+      Buffer.from(encryptedPackage.iv)
+    ) as crypto.DecipherGCM;
 
+    // Set auth tag
+    decipher.setAuthTag(Buffer.from(encryptedPackage.authTag));
+
+    // Decrypt data
     const decryptedBuffer = Buffer.concat([
-      decipher.update(encryptedPackage.encryptedData),
+      decipher.update(Buffer.from(encryptedPackage.encryptedData)),
       decipher.final()
     ]);
 
+    // Parse decrypted data
     return JSON.parse(decryptedBuffer.toString('utf8'));
   } catch (error) {
     console.error('Decryption failed:', error);
@@ -114,11 +144,9 @@ export default function MedicalRecordWrapper({
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
       
-      // Using ethers v6 syntax for message signing
       const message = "Please sign this message to access your public key for encryption";
       const signature = await signer.signMessage(message);
       
-      // Get public key using SigningKey
       const messageHash = ethers.hashMessage(message);
       const signatureBytes = ethers.Signature.from(signature);
       const signingKey = ethers.SigningKey.recoverPublicKey(messageHash, signatureBytes);
@@ -138,20 +166,24 @@ export default function MedicalRecordWrapper({
       setLoading(true);
       setError(null);
 
-      const symmetricKey = crypto.randomBytes(32);
+      // Generate symmetric key as Uint8Array
+      const symmetricKey = new Uint8Array(crypto.randomBytes(32));
       const { publicKey, signer } = await getUserKeys();
 
       const encryptedResult = await encryptData(formData, symmetricKey);
 
-      const encryptedSymmetricKey = crypto.publicEncrypt(
-        {
-          key: publicKey,
-          padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-        },
-        symmetricKey
+      // Encrypt symmetric key
+      const encryptedSymmetricKey = new Uint8Array(
+        crypto.publicEncrypt(
+          {
+            key: publicKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+          },
+          Buffer.from(symmetricKey)
+        )
       );
 
-      // Using ethers v6 syntax for keccak256
+      // Sign encrypted data
       const messageToSign = ethers.keccak256(
         ethers.solidityPacked(['bytes'], [encryptedResult.encryptedData])
       );
@@ -162,7 +194,7 @@ export default function MedicalRecordWrapper({
         iv: encryptedResult.iv,
         authTag: encryptedResult.authTag,
         encryptedSymmetricKey,
-        signature: Buffer.from(signature.slice(2), 'hex')
+        signature: new Uint8Array(Buffer.from(signature.slice(2), 'hex'))
       };
     } catch (error) {
       console.error('Error preparing encrypted data:', error);

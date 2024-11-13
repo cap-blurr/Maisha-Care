@@ -2,13 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPublicClient, http, Address } from 'viem';
-import { baseGoerli } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 import { RoleManager } from '@/abi/RoleManager';
+import { VerifiedAddressRegistry } from '@/abi/VerifiedAddressRegistry';
 import { ROLE_MANAGER_ADDRESS } from '@/constants';
+import { ethers } from 'ethers';
 
 // Create a public client
 const publicClient = createPublicClient({
-  chain: baseGoerli,
+  chain: baseSepolia,
   transport: http()
 });
 
@@ -21,6 +23,9 @@ export default function ContractDataReader({ userAddress }: ContractDataReaderPr
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const patient = ethers.keccak256('patient');
+  const doctor = ethers.keccak256('doctor');
+
   useEffect(() => {
     async function fetchUserRole() {
       setIsLoading(true);
@@ -30,14 +35,14 @@ export default function ContractDataReader({ userAddress }: ContractDataReaderPr
           address: ROLE_MANAGER_ADDRESS,
           abi: RoleManager,
           functionName: 'hasRole',
-          args: [RoleManager.PATIENT_ROLE(), userAddress],
+          args: [patient, userAddress],
         });
 
         const hasDoctorRole = await publicClient.readContract({
           address: ROLE_MANAGER_ADDRESS,
           abi: RoleManager,
           functionName: 'hasRole',
-          args: [RoleManager.DOCTOR_ROLE(), userAddress],
+          args: [doctor, userAddress],
         });
 
         if (hasPatientRole) {

@@ -1,17 +1,15 @@
+// 'use client';
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import "@/styles/style.css";
 import { ThemeProvider } from "@/components/dashboard/theme-provider";
-// import "@coinbase/onchainkit/styles.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import dynamic from "next/dynamic";
+import { PrivyProviderWrapper } from '@/providers/PrivyProvider';
 
 // Dynamic imports
-const OnchainProviders = dynamic(() => import("../context/onchain-provider"), {
-  ssr: false,
-});
-
 const BufferProvider = dynamic(
   () => import("@/components/providers/buffer-provider"),
   {
@@ -37,6 +35,8 @@ export const metadata: Metadata = {
   description: "Health Onchain",
 };
 
+export const dynamicConfig = 'force-dynamic';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -44,8 +44,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
+      <body 
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"
@@ -54,7 +55,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <BufferProvider>
-            <OnchainProviders>{children}</OnchainProviders>
+            <PrivyProviderWrapper>
+              {children}
+            </PrivyProviderWrapper>
           </BufferProvider>
         </ThemeProvider>
       </body>

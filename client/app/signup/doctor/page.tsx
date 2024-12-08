@@ -10,11 +10,14 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { useAccount } from "wagmi";
 import SignUpWrapper from "@/components/wrapper/signup-wrapper";
-
+import { usePrivy } from '@privy-io/react-auth';
+export const dynamic = 'force-dynamic';
 const Signup = () => {
   const router = useRouter();
   const { address, isConnected } = useAccount();
   const [error, setError] = useState<string | null>(null);
+
+  const { login, ready, authenticated } = usePrivy();
 
   const SignupSchema = Yup.object({
     formData: Yup.object({
@@ -96,6 +99,18 @@ const Signup = () => {
               ) : (
                 <p className="text-red-500 mt-2">Please connect your wallet to continue</p>
               )}
+
+              <button
+                onClick={() => login()}
+                disabled={!ready || authenticated}
+                className={`w-full py-2 px-4 rounded-md transition-colors ${
+                  ready && !authenticated
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                }`}
+              >
+                Sign Up with Google
+              </button>
             </Form>
           )}
         </Formik>

@@ -1,9 +1,8 @@
-// 'use client';
 
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import "@/styles/style.css";
+import "@/styles/style.css"
 import { ThemeProvider } from "@/components/dashboard/theme-provider";
 import "@rainbow-me/rainbowkit/styles.css";
 import dynamic from "next/dynamic";
@@ -54,11 +53,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <BufferProvider>
-            <PrivyProviderWrapper>
+          {/* <BufferProvider> */}
+            {/* <PrivyProviderWrapper> */}
               {children}
-            </PrivyProviderWrapper>
-          </BufferProvider>
+            {/* </PrivyProviderWrapper> */}
+          {/* </BufferProvider> */}
         </ThemeProvider>
       </body>
     </html>

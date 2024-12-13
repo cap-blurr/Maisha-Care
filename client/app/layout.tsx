@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/dashboard/theme-provider";
 // import "@coinbase/onchainkit/styles.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import dynamic from "next/dynamic";
+import PrivyProviderContainer from "@/components/providers/privy-provider";
 
 // Dynamic imports
 const OnchainProviders = dynamic(() => import("../context/onchain-provider"), {
@@ -54,7 +55,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <BufferProvider>
-            <OnchainProviders>{children}</OnchainProviders>
+            <PrivyProviderContainer>
+              <OnchainProviders>{children}</OnchainProviders>
+            </PrivyProviderContainer>
           </BufferProvider>
         </ThemeProvider>
       </body>

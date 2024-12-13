@@ -1,53 +1,78 @@
-// Login.tsx
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Adjusted import for useRouter
-import * as Yup from "yup";
+import React, { useState, useEffect } from "react";
+import { usePrivy, useLogin } from "@privy-io/react-auth";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LoginFormFields } from "@/types/form-types";
-import { useMutation } from "@tanstack/react-query";
-import useAxios from "@/hooks/useAxios";
 import LoadingDialog from "@/components/dialog/LoadingDialog";
 import ErrorDialog from "@/components/dialog/ErrorDialog";
-import { Form, Formik } from "formik";
-import TextInput from "@/components/inputs/TextInput";
-import PasswordInput from "@/components/inputs/PasswordInput";
 
 const Login: React.FC = () => {
   const [openLoading, setOpenLoading] = useState(false);
-  const [openLoggin, setOpenLoggin] = useState(false); // Opens the Account Creation Loading Dialog
-  const [openAccErr, setOpenAccErr] = useState(false); // Opens the Failed Acc Creation Loading Dialog
-  const api = useAxios();
+  const [openLoggin, setOpenLoggin] = useState(false);
+  const [openAccErr, setOpenAccErr] = useState(false);
   const router = useRouter();
 
-  // Mutation to Initiate Login User
-  const initiateLoginUser = useMutation({
-    mutationFn: (initiateLoginUserPost: LoginFormFields) => {
-      return api.post(
-        "auth/login",
-        {
-          email: initiateLoginUserPost.email,
-          password: initiateLoginUserPost.password,
-        },
-        {
-          method: "POST",
-        }
+  const { ready, authenticated } = usePrivy();
+
+  // Disable login when Privy is not ready or user is already authenticated
+  const disableLogin = !ready || (ready && authenticated);
+
+  const { login } = useLogin({
+    onComplete: (
+      user,
+      isNewUser,
+      wasAlreadyAuthenticated,
+      loginMethod,
+      linkedAccount
+    ) => {
+      console.log(
+        user,
+        isNewUser,
+        wasAlreadyAuthenticated,
+        loginMethod,
+        linkedAccount
       );
+      setOpenLoading(true);
+      setTimeout(() => {
+        router.replace("/patient");
+      }, 1500);
+      // Any logic you'd like to execute if the user is/becomes authenticated while this
+      // component is mounted
     },
-    onSuccess: (data, variables, context) => {
-      setOpenLoading(false);
-      setOpenLoggin(true);
-      router.replace("/home");
-    },
-    onError: (error, variables, context) => {
-      // Handle errors, e.g., show a message to the user
-      console.error(error);
-      setOpenLoading(false);
+    onError: (error) => {
+      console.log(error);
       setOpenAccErr(true);
+      // Any logic you'd like to execute after a user exits the login flow or there is an error
     },
-    onSettled: (data, error, variables, context) => {},
   });
+
+  //   const handleLogin = async () => {
+  //     try {
+  //       await login({
+  //         disableSignup: false,
+  //       });
+  //     } catch (error) {
+  //       console.error(error);
+  //       setOpenLoading(false);
+  //       setOpenAccErr(true);
+  //     }
+  //   };
+
+  //   const handleSuccessfulLogin = async () => {
+  //     try {
+  //       setOpenLoading(false);
+  //       setOpenLoggin(true);
+  //       // Add a small delay to show the success message
+  //       setTimeout(() => {
+  //         router.replace("/home");
+  //       }, 1500);
+  //     } catch (error) {
+  //       console.error(error);
+  //       setOpenAccErr(true);
+  //       setOpenLoggin(false);
+  //     }
+  //   };
 
   return (
     <section className="app-background">
@@ -66,80 +91,33 @@ const Login: React.FC = () => {
         openError={openAccErr}
         setOpenError={setOpenAccErr}
       />
+
       <article>
         <h2 className="text-4xl text-white font-bold">Sign in to MaishaCare</h2>
-        <h4 className="text-white my-5">Enter your Email to Login</h4>
-        {/* SignUp using Formik */}
-        <Formik
-          initialValues={{
-            fullname: "",
-            email: "",
-            password: "",
-          }}
-          validationSchema={Yup.object({
-            fullname: Yup.string()
-              .min(6, "Min of  6 Characters required")
-              .required("Full Name is Required"),
-            email: Yup.number()
-              .min(13, "Min of 13 Characters required")
-              .required("Email is Required"),
-            password: Yup.string()
-              .max(20, "Must be 20 characters or less")
-              .min(5, "Min of 5 Characters required")
-              .required("Password is Required"),
-          })}
-          onSubmit={(values, { setSubmitting }) => {
-            setTimeout(async () => {
-              // Use the modifiedPhoneNumber in your API request
-              const requestData = {
-                ...values,
-              };
+        <h4 className="text-white my-5">Choose your preferred login method</h4>
 
-              // Call the Initiate Register User Mutation
-              initiateLoginUser.mutate(requestData);
-              setOpenLoggin(false);
-              setSubmitting(false);
-            }, 400);
-          }}
-        >
-          <Form>
-            <TextInput
-              label="Patient's Name"
-              name="fullname"
-              type="text"
-              placeholder="Enter your FullName"
-            />
-            <TextInput
-              label="Email"
-              name="email"
-              type="email"
-              placeholder="Enter your Email"
-            />
-            <PasswordInput
-              label="Password"
-              name="password"
-              placeholder="Enter your Password"
-            />
-            <div className="flex flex-col justify-start mb-5">
-              <p className="text-[#909090] p-1 text-sm font-semibold">
-                <Link href="/signup" className="hover:text-white">
-                  Create a Patient's Account?
-                </Link>
-              </p>
-              <p className="text-[#909090] p-1 text-sm font-semibold">
-                <Link href="/signup/doctor" className="hover:text-white">
-                  Create a Doctor's Account?
-                </Link>
-              </p>
-            </div>
-            <button
-              type="submit"
-              className="bg-white mt-5 p-3 rounded-full font-bold w-full cursor-pointer"
-            >
-              Submit
-            </button>
-          </Form>
-        </Formik>
+        <div className="flex flex-col gap-4">
+          <button
+            onClick={login}
+            disabled={disableLogin}
+            className="bg-white p-3 rounded-full font-bold w-full cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors"
+          >
+            Sign In with Privy
+          </button>
+
+          <div className="flex flex-col justify-start mb-5">
+            <p className="text-[#909090] p-1 text-sm font-semibold">
+              <Link href="/signup" className="hover:text-white">
+                Create a Patient's Account?
+              </Link>
+            </p>
+            <p className="text-[#909090] p-1 text-sm font-semibold">
+              <Link href="/signup/doctor" className="hover:text-white">
+                Create a Doctor's Account?
+              </Link>
+            </p>
+          </div>
+        </div>
       </article>
     </section>
   );

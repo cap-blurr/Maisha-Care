@@ -14,12 +14,10 @@ import {
 import {
   Bars3Icon,
   BellIcon,
-  CalendarIcon,
   ChartPieIcon,
   Cog6ToothIcon,
   DocumentDuplicateIcon,
   FolderIcon,
-  HomeIcon,
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -28,30 +26,32 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 import Link from "next/link";
-import ConnectButton from "@/components/buttons/connect-button";
-import { Address, Avatar, Name } from '@coinbase/onchainkit/identity';
-import { color } from '@coinbase/onchainkit/theme';
-import { WalletComponents } from "@/components/buttons/wallet-components";
 import { ShoppingBasketIcon } from "lucide-react";
+import { usePrivy } from "@privy-io/react-auth";
 
 const navigation = [
   { name: "Patient", href: "/patient", icon: UsersIcon, current: false },
   { name: "Doctor", href: "/doctor", icon: FolderIcon, current: false },
-  { name: "Marketplace", href: "/market", icon: ShoppingBasketIcon, current: false },
-  { name: "Settings", href: "/settings", icon: DocumentDuplicateIcon, current: false },
+  {
+    name: "Marketplace",
+    href: "/market",
+    icon: ShoppingBasketIcon,
+    current: false,
+  },
+  {
+    name: "Settings",
+    href: "/settings",
+    icon: DocumentDuplicateIcon,
+    current: false,
+  },
 ];
+
 const teams = [
   { id: 1, name: "Dashboard", href: "/", initial: "H", current: false },
-
 ];
 
 const tools = [
-    { name: "Analytics", href: "/analytics", icon: ChartPieIcon, current: false },
-  ];
-
-const userNavigation = [
-  { name: "Your profile", href: "#" },
-  { name: "Sign out", href: "#" },
+  { name: "Analytics", href: "/analytics", icon: ChartPieIcon, current: false },
 ];
 
 function classNames(...classes: string[]) {
@@ -60,10 +60,11 @@ function classNames(...classes: string[]) {
 
 export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user, ready, authenticated } = usePrivy();
 
   return (
     <>
-      <div className=" ">
+      <div>
         <Transition show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -116,8 +117,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                       </button>
                     </div>
                   </TransitionChild>
-                  {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-background px-6 pb-4 ring-1 ring-white/10 bg-[#ff6f91]  text-black">
+                  {/* Sidebar component for mobile */}
+                  <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-background px-6 pb-4 ring-1 ring-white/10 bg-[#ff6f91] text-black">
                     <div className="flex h-16 shrink-0 items-center">
                       <img
                         className="h-8 w-auto"
@@ -127,31 +128,30 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                     </div>
                     <nav className="flex flex-1 flex-col">
                       <ul role="list" className="flex flex-1 flex-col gap-y-7">
-                      <li>
-                         
-                         <ul role="list" className="-mx-2 mt-2 space-y-1">
-                           {teams.map((team) => (
-                             <li key={team.name}>
-                               <Link
-                                 href={team.href}
-                                 className={classNames(
-                                   team.current
-                                     ? "bg-gray-800 text-white"
-                                     : "text-white hover:text-white hover:bg-gray-800",
-                                   "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-                                 )}
-                               >
-                                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">
-                                   {team.initial}
-                                 </span>
-                                 <span className="truncate">{team.name}</span>
-                               </Link>
-                             </li>
-                           ))}
-                         </ul>
-                       </li>
                         <li>
-                        <div className="text-xs font-semibold leading-6 text-gray-800">
+                          <ul role="list" className="-mx-2 mt-2 space-y-1">
+                            {teams.map((team) => (
+                              <li key={team.name}>
+                                <Link
+                                  href={team.href}
+                                  className={classNames(
+                                    team.current
+                                      ? "bg-gray-800 text-white"
+                                      : "text-white hover:text-white hover:bg-gray-800",
+                                    "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                                  )}
+                                >
+                                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">
+                                    {team.initial}
+                                  </span>
+                                  <span className="truncate">{team.name}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </li>
+                        <li>
+                          <div className="text-xs font-semibold leading-6 text-gray-800">
                             Media
                           </div>
                           <ul role="list" className="-mx-2 space-y-1">
@@ -176,7 +176,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                             ))}
                           </ul>
                         </li>
-                       
                         <li className="mt-auto">
                           <a
                             href="#"
@@ -200,7 +199,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col bg-[#ff6f91] text-white">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-background px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <Link href="/">Medicare</Link>
@@ -297,7 +295,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
 
-            {/* Separator */}
             <div
               className="h-6 w-px bg-gray-900/80 lg:hidden"
               aria-hidden="true"
@@ -329,14 +326,75 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
 
-                <WalletComponents />
-                {/* Separator */}
+                {authenticated && user && (
+                  <Menu as="div" className="relative">
+                    <MenuButton className="-m-1.5 flex items-center p-1.5">
+                      <span className="sr-only">Open user menu</span>
+                      <div className="h-8 w-8 rounded-full bg-gray-700 flex items-center justify-center text-white">
+                        {user.google?.name?.[0] ||
+                          user.email?.address?.[0] ||
+                          "?"}
+                      </div>
+                      <span className="hidden lg:flex lg:items-center">
+                        <span
+                          className="ml-4 text-sm font-semibold leading-6 text-gray-300"
+                          aria-hidden="true"
+                        >
+                          {user.google?.name ||
+                            user.email?.address?.split("@")[0] ||
+                            "User"}
+                        </span>
+                        <ChevronDownIcon
+                          className="ml-2 h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </MenuButton>
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <MenuItems className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+                        <MenuItem>
+                          {({ active }) => (
+                            <Link
+                              href="/profile"
+                              className={classNames(
+                                active ? "bg-gray-50" : "",
+                                "block px-3 py-1 text-sm leading-6 text-gray-900"
+                              )}
+                            >
+                              Your profile
+                            </Link>
+                          )}
+                        </MenuItem>
+                        <MenuItem>
+                          {({ active }) => (
+                            <Link
+                              href="/settings"
+                              className={classNames(
+                                active ? "bg-gray-50" : "",
+                                "block px-3 py-1 text-sm leading-6 text-gray-900"
+                              )}
+                            >
+                              Settings
+                            </Link>
+                          )}
+                        </MenuItem>
+                      </MenuItems>
+                    </Transition>
+                  </Menu>
+                )}
+
                 <div
                   className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/70"
                   aria-hidden="true"
                 />
-                  
-
               </div>
             </div>
           </div>

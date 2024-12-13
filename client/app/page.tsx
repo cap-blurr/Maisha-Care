@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { Menu, X } from 'lucide-react'
-import { Andre, Wambugu,logo,Stephanie } from "@/constants/img"
+import { Andre, Wambugu,Logo, Dashboard } from "@/constants/img"
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -15,7 +15,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2">
             <Image 
-              src={logo} 
+              src={Logo} 
               alt="Maisha Care Logo" 
               width={80} 
               height={80} 
@@ -70,7 +70,7 @@ export default function LandingPage() {
               <div className="md:w-1/2">
                 <div className="bg-white p-4 rounded-2xl shadow-xl">
                   <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dashboard-WVd1lFp4IL2g2ulSuox74aJ0Bka0DV.png"
+                    src={Dashboard}
                     alt="Maisha Care Dashboard"
                     width={600}
                     height={400}
@@ -154,7 +154,7 @@ export default function LandingPage() {
                 <p className="text-gray-600">Cofounder, Tech Lead, Smart Contract Engineer and Data Scientist</p>
               </div>
               <div className="text-center">
-                <Image src={Stephanie} alt="Stephanie" width={200} height={200} className="rounded-full mx-auto mb-4" />
+                <Image src={Andre} alt="Stephanie" width={200} height={200} className="rounded-full mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Stephanie Ndung'u</h3>
                 <p className="text-gray-600">Medical Doctor and Lead Medical Advisor</p>
               </div>

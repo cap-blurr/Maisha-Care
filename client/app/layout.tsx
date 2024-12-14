@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/dashboard/theme-provider";
 import "@rainbow-me/rainbowkit/styles.css";
 import dynamic from "next/dynamic";
 import PrivyProviderContainer from "@/components/providers/privy-provider";
+import { Toaster } from "sonner";
 
 // Dynamic imports
 const OnchainProviders = dynamic(() => import("../context/onchain-provider"), {
@@ -57,6 +58,7 @@ export default function RootLayout({
           <BufferProvider>
             <PrivyProviderContainer>
               <OnchainProviders>{children}</OnchainProviders>
+              <Toaster richColors position="top-center" />
             </PrivyProviderContainer>
           </BufferProvider>
         </ThemeProvider>

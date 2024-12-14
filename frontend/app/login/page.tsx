@@ -8,6 +8,7 @@ import LoadingDialog from "@/components/dialog/LoadingDialog";
 import ErrorDialog from "@/components/dialog/ErrorDialog";
 
 const Login: React.FC = () => {
+  const [mounted, setMounted] = React.useState(false);
   const [dialogState, setDialogState] = React.useState({
     loading: false,
     logging: false,
@@ -15,8 +16,15 @@ const Login: React.FC = () => {
   });
 
   const router = useRouter();
-  const { ready, authenticated } = usePrivy();
+
+  // Only initialize Privy hooks after component is mounted
+  const { ready, authenticated } = mounted ? usePrivy() : { ready: false, authenticated: false };
   const disableLogin = !ready || (ready && authenticated);
+
+  // Setup mount check
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { login } = useLogin({
     onComplete: (user, isNewUser, wasAlreadyAuthenticated, loginMethod, linkedAccount) => {
@@ -30,7 +38,6 @@ const Login: React.FC = () => {
 
       setDialogState(prev => ({ ...prev, loading: true }));
       
-      // Use Router.push for client-side transitions
       const redirectTimer = setTimeout(() => {
         router.push("/patient");
       }, 1500);
@@ -46,6 +53,15 @@ const Login: React.FC = () => {
   const handleDialogClose = (type: keyof typeof dialogState) => {
     setDialogState(prev => ({ ...prev, [type]: false }));
   };
+
+  // Show loading state on initial mount
+  if (!mounted) {
+    return (
+      <div className="app-background min-h-screen flex items-center justify-center">
+        <div className="text-white text-lg">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <section className="app-background">
@@ -66,7 +82,7 @@ const Login: React.FC = () => {
         setOpenError={() => handleDialogClose('error')}
       />
 
-      <article className="max-w-md mx-auto px-4">
+      <article className="max-w-md mx-auto px-4 pt-20">
         <h2 className="text-4xl text-white font-bold mb-3">
           Sign in to MaishaCare
         </h2>
@@ -76,7 +92,11 @@ const Login: React.FC = () => {
 
         <div className="flex flex-col gap-4">
           <button
-            onClick={login}
+            onClick={() => {
+              if (mounted) {
+                login();
+              }
+            }}
             disabled={disableLogin}
             className="bg-white p-3 rounded-full font-bold w-full 
                      cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed 

@@ -1,14 +1,15 @@
-import DashboardHero from '@/components/dashboard/DashboardHero'
-import MedicalRecordTableContainer from '@/components/medical-record-table/medical-record-table-container'
-import React from 'react'
+'use client';
 
-const Patient = () => {
-  return (
-    <div>
-      <DashboardHero />
-      <MedicalRecordTableContainer />
-    </div>
-  )
+import dynamic from 'next/dynamic';
+import React from 'react';
+
+const PatientContent = dynamic(
+  () => import('./PatientContent'),
+  { 
+    ssr: false
+  }
+);
+
+export default function PatientPage() {
+  return <PatientContent />;
 }
-
-export default Patient

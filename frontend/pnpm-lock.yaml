@@ -27,8 +27,11 @@ dependencies:
     specifier: ^2.1.7
     version: 2.1.7(react-dom@19.0.0)(react@19.0.0)
   '@privy-io/react-auth':
-    specifier: ^1.97.0
+    specifier: ^1.94.0
     version: 1.97.0(@solana/web3.js@1.95.8)(@types/react@19.0.0)(@upstash/redis@1.34.3)(bs58@4.0.1)(react-dom@19.0.0)(react@19.0.0)(typescript@5.0.2)
+  '@privy-io/wagmi':
+    specifier: ^0.2.13
+    version: 0.2.13(@privy-io/react-auth@1.97.0)(react@19.0.0)(viem@2.21.55)(wagmi@2.14.1)
   '@radix-ui/react-checkbox':
     specifier: ^1.1.3
     version: 1.1.3(@types/react-dom@19.0.0)(@types/react@19.0.0)(react-dom@19.0.0)(react@19.0.0)
@@ -3505,6 +3508,20 @@ packages:
       - use-sync-external-store
       - utf-8-validate
       - zod
+    dev: false
+
+  /@privy-io/wagmi@0.2.13(@privy-io/react-auth@1.97.0)(react@19.0.0)(viem@2.21.55)(wagmi@2.14.1):
+    resolution: {integrity: sha512-NOyM43Kbc1K+hu3OwaSpKE1twhUEof9+jPefX4f1OLhbnEZGfcKAYP75O9xjc5rxTPgKfod9FSmt/xbKxJfUHw==}
+    peerDependencies:
+      '@privy-io/react-auth': ^1.64.1
+      react: '>=18'
+      viem: ^2
+      wagmi: ^2
+    dependencies:
+      '@privy-io/react-auth': 1.97.0(@solana/web3.js@1.95.8)(@types/react@19.0.0)(@upstash/redis@1.34.3)(bs58@4.0.1)(react-dom@19.0.0)(react@19.0.0)(typescript@5.0.2)
+      react: 19.0.0
+      viem: 2.21.55(typescript@5.0.2)(zod@3.22.4)
+      wagmi: 2.14.1(@tanstack/react-query@5.62.7)(@types/react@19.0.0)(@upstash/redis@1.34.3)(react@19.0.0)(typescript@5.0.2)(viem@2.21.55)
     dev: false
 
   /@radix-ui/number@1.1.0:

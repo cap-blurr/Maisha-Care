@@ -1,29 +1,48 @@
-"use client";
+'use client';
 
-import { PrivyProvider } from "@privy-io/react-auth";
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {http} from 'viem';
+import {mainnet, sepolia} from 'viem/chains';
 
-export default function PrivyProviderContainer({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+import type {PrivyClientConfig} from '@privy-io/react-auth';
+import {PrivyProvider} from '@privy-io/react-auth';
+import {WagmiProvider, createConfig} from '@privy-io/wagmi';
+
+const queryClient = new QueryClient();
+
+export const wagmiConfig = createConfig({
+  chains: [mainnet, sepolia],
+  transports: {
+    [mainnet.id]: http(),
+    [sepolia.id]: http(),
+  },
+});
+
+const privyConfig: PrivyClientConfig = {
+  embeddedWallets: {
+    createOnLogin: 'users-without-wallets',
+    requireUserPasswordOnCreate: true,
+    noPromptOnSignature: false,
+  },
+  loginMethods: ['wallet', 'email', 'sms'],
+  appearance: {
+    showWalletLoginFirst: true,
+  },
+};
+
+export default function PrivyProviderContainer({children}: {children: React.ReactNode}) {
   return (
     <PrivyProvider
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID as string}
-      config={{
-        // Customize Privy's appearance in your app
-        appearance: {
-          theme: "light",
-          accentColor: "#676FFF",
-          logo: "https://your-logo-url",
-        },
-        // Create embedded wallets for users who don't have a wallet
-        embeddedWallets: {
-          createOnLogin: "users-without-wallets",
-        },
-      }}
+      config={privyConfig}
     >
-      {children}
+      <QueryClientProvider client={queryClient}>
+        <WagmiProvider config={wagmiConfig} reconnectOnMount={false}>
+          {children}
+        </WagmiProvider>
+      </QueryClientProvider>
     </PrivyProvider>
   );
 }

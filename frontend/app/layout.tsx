@@ -44,7 +44,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <PrivyProviderContainer>
-            <OnchainProviders>{children}</OnchainProviders>
+            {children}
             <Toaster richColors position="top-center" />
           </PrivyProviderContainer>
         </ThemeProvider>

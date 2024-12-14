@@ -5,13 +5,7 @@ import React from 'react';
 
 const AddMedicalRecordContent = dynamic(
   () => import('./AddMedicalRecordContent'),
-  { 
-    loading: () => (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-gray-600 text-lg">Loading...</div>
-      </div>
-    )
-  }
+  { ssr: false }
 );
 
 export default function AddMedicalRecordPage() {

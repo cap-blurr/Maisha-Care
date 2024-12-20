@@ -3,7 +3,7 @@
 import type {PrivyClientConfig} from '@privy-io/react-auth';
 import {PrivyProvider} from '@privy-io/react-auth';
 import {http} from 'viem';
-import {mainnet, sepolia} from 'viem/chains';
+import {mainnet, liskSepolia} from 'viem/chains';
 import {createConfig} from '@privy-io/wagmi';
 import ClientProviders from './client-provider';
 
@@ -21,7 +21,7 @@ const privyConfig: PrivyClientConfig = {
     requireUserPasswordOnCreate: true,
     noPromptOnSignature: false,
   },
-  loginMethods: ['wallet', 'email', 'sms'],
+  loginMethods: ['wallet', 'email', 'sms', 'google', ],
   appearance: {
     showWalletLoginFirst: true,
   },

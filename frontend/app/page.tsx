@@ -59,7 +59,7 @@ export default function LandingPage() {
                   Your Health, Your Data, Your Control
                 </p>
                 <div className="flex justify-center md:justify-start space-x-4">
-                  <Link href="/signup" className="bg-white text-[#ff6f91] px-6 py-3 rounded-md font-semibold hover:bg-gray-100 transition duration-300">
+                  <Link href="/login" className="bg-white text-[#ff6f91] px-6 py-3 rounded-md font-semibold hover:bg-gray-100 transition duration-300">
                     Get Started
                   </Link>
                   <Link href="#features" className="border border-white text-white px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-[#ff6f91] transition duration-300">

@@ -8,5 +8,5 @@ const LoginContent = dynamic(
 );
 
 export default function Login() {
-  return <LoginContent />;
+  return <LoginContent/>;
 }

@@ -8,7 +8,7 @@ import Link from "next/link";
 import LoadingDialog from "@/components/dialog/LoadingDialog";
 import ErrorDialog from "@/components/dialog/ErrorDialog";
 
-const SigupContentontent: React.FC = () => {
+const SignupContent: React.FC = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState(false);
   
@@ -27,7 +27,7 @@ const SigupContentontent: React.FC = () => {
   const handleLogin = () => {
     try {
       login({
-        disableSignup: true, // Allow only login 
+        disableSignup: false, // Allow both login and signup
       });
     } catch (err) {
       console.error("Login error:", err);
@@ -89,4 +89,4 @@ const SigupContentontent: React.FC = () => {
   );
 };
 
-export default SigupContentontent;
+export default SignupContent;

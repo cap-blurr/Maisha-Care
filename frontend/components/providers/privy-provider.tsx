@@ -3,7 +3,7 @@
 import type {PrivyClientConfig} from '@privy-io/react-auth';
 import {PrivyProvider} from '@privy-io/react-auth';
 import {http} from 'viem';
-import {mainnet, liskSepolia} from 'viem/chains';
+import {mainnet,sepolia,} from 'viem/chains';
 import {createConfig} from '@privy-io/wagmi';
 import ClientProviders from './client-provider';
 

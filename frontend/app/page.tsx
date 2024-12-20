@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { Menu, X } from 'lucide-react'
-import { Andre, Wambugu,Logo, Dashboard } from "@/constants/img"
+import { Andre,Steph ,Wambugu,Logo, Dashboard } from "@/constants/img"
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -154,7 +154,7 @@ export default function LandingPage() {
                 <p className="text-gray-600">Cofounder, Tech Lead, Smart Contract Engineer and Data Scientist</p>
               </div>
               <div className="text-center">
-                <Image src={Andre} alt="Stephanie" width={200} height={200} className="rounded-full mx-auto mb-4" />
+                <Image src={Steph} alt="Stephanie" width={200} height={200} className="rounded-full mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Stephanie Ndung&apos;u</h3>
                 <p className="text-gray-600">Medical Doctor and Lead Medical Advisor</p>
               </div>

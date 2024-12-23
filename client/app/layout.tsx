@@ -1,7 +1,9 @@
+
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import "@/styles/style.css";
+import "@/styles/style.css"
+import { ThemeProvider } from "@/components/dashboard/theme-provider";
 import "@rainbow-me/rainbowkit/styles.css";
 import { ClientProviders } from "./client-providers";
 
@@ -36,9 +38,18 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <ClientProviders>
-          {children}
-        </ClientProviders>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {/* <BufferProvider> */}
+            {/* <PrivyProviderWrapper> */}
+              {children}
+            {/* </PrivyProviderWrapper> */}
+          {/* </BufferProvider> */}
+        </ThemeProvider>
       </body>
     </html>
   );

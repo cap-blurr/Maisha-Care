@@ -1,21 +1,9 @@
-// 'use client';
-
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import "@/styles/style.css";
-import { ThemeProvider } from "@/components/dashboard/theme-provider";
 import "@rainbow-me/rainbowkit/styles.css";
-import dynamic from "next/dynamic";
-import { PrivyProviderWrapper } from '@/providers/PrivyProvider';
-
-// Dynamic imports
-const BufferProvider = dynamic(
-  () => import("@/components/providers/buffer-provider"),
-  {
-    ssr: false,
-  }
-);
+import { ClientProviders } from "./client-providers";
 
 // Font configurations
 const geistSans = localFont({
@@ -35,7 +23,7 @@ export const metadata: Metadata = {
   description: "Health Onchain",
 };
 
-export const dynamicConfig = 'force-dynamic';
+// export const dynamicConfig = 'force-dynamic';
 
 export default function RootLayout({
   children,
@@ -43,23 +31,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body 
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <BufferProvider>
-            <PrivyProviderWrapper>
-              {children}
-            </PrivyProviderWrapper>
-          </BufferProvider>
-        </ThemeProvider>
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

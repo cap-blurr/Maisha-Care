@@ -24,6 +24,7 @@ contract RoleManager is AccessControl {
 
     // Events
     event SuccessfullyRegistered(address indexed account, bytes32 indexed role);
+    event AccountDeleted(address indexed account, bytes32 indexed role);
 
     /// @notice Contract constructor
     /// @param _verifiedRegistry Address of the VerifiedAddressRegistry contract
@@ -90,5 +91,31 @@ contract RoleManager is AccessControl {
         address account
     ) public override onlyRole(ADMIN_ROLE) {
         _revokeRole(role, account);
+    }
+
+    /// @notice Remove account from the system (verification and role)
+    /// @dev Removes both verification status and role assignment
+    function deleteAccount() external {
+        // Find the role of the caller
+        bytes32 role;
+        if (hasRole(PATIENT_ROLE, msg.sender)) {
+            role = PATIENT_ROLE;
+        } else if (hasRole(DOCTOR_ROLE, msg.sender)) {
+            role = DOCTOR_ROLE;
+        } else if (hasRole(RESEARCHER_ROLE, msg.sender)) {
+            role = RESEARCHER_ROLE;
+        } else if (hasRole(BUILDER_ROLE, msg.sender)) {
+            role = BUILDER_ROLE;
+        } else {
+            revert NotVerified(bytes32(0));
+        }
+
+        // Remove verification first
+        verifiedRegistry.removeVerification(role);
+
+        // Remove role
+        _revokeRole(role, msg.sender);
+
+        emit AccountDeleted(msg.sender, role);
     }
 }

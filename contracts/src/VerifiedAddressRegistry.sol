@@ -10,6 +10,7 @@ contract VerifiedAddressRegistry is AccessControl {
     // Custom errors
     error AddressAlreadyVerified();
     error AddressNotVerified();
+    error NotVerifiedAddress();
 
     /// @notice Constants for predefined roles
     bytes32 public constant ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
@@ -30,6 +31,11 @@ contract VerifiedAddressRegistry is AccessControl {
     /// @param role The role for which the address is unverified
     /// @param account The address that was unverified
     event AddressUnverified(bytes32 indexed role, address indexed account);
+
+    /// @notice Emitted when verification is removed for an address
+    /// @param account The address for which verification is removed
+    /// @param role The role for which verification is removed
+    event VerificationRemoved(address indexed account, bytes32 indexed role);
 
     /// @notice Contract constructor
     /// @dev Grants the ADMIN_ROLE to the contract deployer
@@ -96,5 +102,15 @@ contract VerifiedAddressRegistry is AccessControl {
     /// @return bytes32 The BUILDER_ROLE identifier
     function getBuilderRole() public pure returns (bytes32) {
         return BUILDER_ROLE;
+    }
+
+    /// @notice Remove verification status for caller
+    /// @param role The role to remove verification for
+    function removeVerification(bytes32 role) external {
+        if (!isVerified(role, msg.sender)) {
+            revert NotVerifiedAddress();
+        }
+        delete verifiedAddresses[role][msg.sender];
+        emit VerificationRemoved(msg.sender, role);
     }
 }
